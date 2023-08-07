@@ -1,18 +1,4 @@
-# create-svelte
-
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+# Film Club Website
 
 ## Developing
 
@@ -24,6 +10,23 @@ npm run dev
 # or start the server and open the app in a new browser tab
 npm run dev -- --open
 ```
+
+### Discord webhook
+To enable posting scores to discord, you need to set the environment variable
+`DISCORD_WEBHOOK_URL__FILM_CLUB` to a valid discord webhook URL for the film club channel.
+
+You can access existing webhooks and generate new ones through the discord app, go to:
+`your discord server -> server settings -> integrations -> webhooks`
+Click on a `webhook -> copy webhook url` to copy it's URL
+
+To set the environment variable (env var) when running locally, you can run:
+`DISCORD_WEBHOOK_URL__FILM_CLUB="https://discord.com/api/webhooks/<rest of it>" npm run dev`
+If you're sick of that you could run:
+`export DISCORD_WEBHOOK_URL__FILM_CLUB="https://discord.com/api/webhooks/<rest of it>"`
+and then every time you run `npm run dev` in that terminal session, the env var will be set.
+
+If you're on Windows, you're on your own. Sorry.
+
 
 ## Building
 
