@@ -33,10 +33,14 @@ When you have modified the schema and want to execute your changes run `npm pris
 #### Fly.io
 If you want to push your changes to Fly.io, you will need to migrate the Fly.io database.
 Change your `DATABASE_URL` in your `.env` file to the fly.io connection string (If you don't have the password ask Ted).
-`DATABASE_URL="postgres://postgres:<password>@localhost:15432/film_club_discord_bot?schema=public"`
+```
+DATABASE_URL="postgres://postgres:<password>@localhost:15432/film_club_discord_bot?schema=public"
+```
 
 Now you will need to setup a connection to the Fly.io database, this will allow you to connect as if it was a local database.
-`fly proxy 15432:5432 -a pg-film-club-discord-bot`
+```bash
+fly proxy 15432:5432 -a pg-film-club-discord-bot
+```
 
 In a seperate terminal run `npx prisma migrate deploy`, after it is done you can close the proxy connection and you are done.
 
