@@ -1,22 +1,16 @@
 <script lang="ts">
+    import type { Film } from "@prisma/client";
+
+
     export let title:string
     export let body:string
+    export let films:Film[]
 
     let name: string = "test"
     let showBackground = false
 
-    let films = [
-        "test",
-        "anotherFilm"
-    ]
-
-    let changeFilms = () => {
-        showBackground = true
-        films = [...films, "myNewFilm"]
-    }
-
     let changeName = () => {
-        name = "Ted"
+        name = 'Ted'
     }
 
     $: { 
@@ -35,11 +29,10 @@
     <h1>films</h1>
     <div class:reactiveclass={showBackground}>
         {#each films as film}
-            <p>{film}</p>
+            <p>{film.title}</p>
         {/each}
     </div>
     <button on:click={changeName}>Change Name</button>
-    <button on:click={changeFilms}>Change Films</button>
 </section>
 
 <style>

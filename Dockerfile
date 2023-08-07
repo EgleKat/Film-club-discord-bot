@@ -27,6 +27,9 @@ RUN npm ci --include=dev
 # Copy application code
 COPY --link . .
 
+# Initialize prisma client
+RUN npx prisma generate
+
 # Build application
 RUN npm run build
 
@@ -36,6 +39,10 @@ RUN npm prune --omit=dev
 
 # Final stage for app image
 FROM base
+
+# Install openssl for prisma
+RUN apt-get update -y && apt-get install -y openssl
+
 
 # Copy built application
 COPY --from=build /app /app
