@@ -10,7 +10,10 @@ export interface Score {
     score: string,
 }
 
-export interface Film {
-    title: string,
-    year: number,
+export interface OmdbFilm {
+    Title: string,
+    Year: number,
+    imdbID: string,
+    Type: string,
+    Poster: string,
 }
