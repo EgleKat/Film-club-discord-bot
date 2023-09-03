@@ -28,6 +28,7 @@
         This weeks film:
         <article>
             <h1>{data.currentFilm.Title} ({data.currentFilm.Year})</h1>
+            <img src={data.currentFilm.Poster} alt={`Poster for ${data.currentFilm.Title}`} />
         </article>
     {:else}
         <p>
