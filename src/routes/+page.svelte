@@ -4,14 +4,12 @@
 
 
 <script lang="ts">
-    import FilmCard from '$lib/FilmCard.svelte'
     import type { OmdbFilm } from '$lib/types';
-    import type { Film } from '@prisma/client'
     import { debounce } from 'lodash';
 
-    export let data: { currentFilm?: Film }
+    export let data: { currentFilm?: OmdbFilm }
 
-    let autoCompleteList: HTMLUListElement;
+    let autoCompleteList: OmdbFilm[] = [];
 
     const searchFilm = debounce((e: Event) => {
         e.preventDefault()
@@ -20,22 +18,17 @@
         fetch(`/api/v1/omdb?type=movie&s=${encodeURIComponent(title)}`, { method: 'GET' })
             .then(res => res.json())
             .then(filmData => {
-                autoCompleteList.innerHTML = ''
-                autoCompleteList.append(...filmData.Search.map((film: OmdbFilm) => {
-                    const li = document.createElement('li')
-                    li.textContent = film.Title
-                    li.addEventListener('click', () => {
-                        input.value = film.Title
-                    })
-                    return li
-                }))
+                autoCompleteList = filmData.Search
             })
     }, 500)
 </script>
 
 <main>
     {#if data.currentFilm }
-        This weeks film: <FilmCard film={data.currentFilm} />
+        This weeks film:
+        <article>
+            <h1>{data.currentFilm.Title} ({data.currentFilm.Year})</h1>
+        </article>
     {:else}
         <p>
             No film set for this week yet!
@@ -46,8 +39,14 @@
     <form>
         <!--Searches a film database for film suggestions-->
         <input type="text" placeholder="Search for a film" on:input={searchFilm} />
-        <ul bind:this={autoCompleteList}>
-
+        <ul>
+            {#each autoCompleteList as film}
+                <li>
+                    <button type="button" on:click={() => data.currentFilm = film }>
+                        {film.Title} ({film.Year})
+                    </button>
+                </li>
+            {/each}
         </ul>
         <button type="submit">Set Film</button>
     </form>

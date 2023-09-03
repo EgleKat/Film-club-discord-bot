@@ -14,6 +14,5 @@ export interface OmdbFilm {
     Title: string,
     Year: number,
     imdbID: string,
-    Type: string,
     Poster: string,
 }
