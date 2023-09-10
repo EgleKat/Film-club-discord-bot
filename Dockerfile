@@ -49,4 +49,5 @@ COPY --from=build /app /app
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD [ "npm", "run", "start" ]
+# migrate the database and start the server
+CMD npm run migrate:deploy && npm run start

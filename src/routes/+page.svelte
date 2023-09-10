@@ -5,7 +5,8 @@
 
 <script lang="ts">
     import type { OmdbFilm, Meeting } from '$lib/types';
-    import { debounce } from 'lodash';
+    import lodash from 'lodash';
+    const { debounce } = lodash;
 
     export let data: { meeting?: Meeting, usernames: string[] }
     const film = data.meeting?.film;
