@@ -4,8 +4,7 @@
 
 
 <script lang="ts">
-    import type { Meeting } from '$lib/server/database';
-    import type { OmdbFilm } from '$lib/types';
+    import type { OmdbFilm, Meeting } from '$lib/types';
     import { debounce } from 'lodash';
 
     export let data: { meeting?: Meeting, usernames: string[] }

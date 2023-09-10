@@ -1,11 +1,12 @@
 import { env } from '$env/dynamic/private';
+import { building } from '$app/environment';
 
 const password = env.FILM_CLUB_PASSWORD;
-if (!password || password === "") {
+if (!building && !password || password === "") {
     throw new Error("FILM_CLUB_PASSWORD should be set to a password");
 }
 export const usernames = env.FILM_CLUB_USERNAMES?.split(",") ?? [];
-if (usernames.length === 0) {
+if (!building && usernames.length === 0) {
     throw new Error("FILM_CLUB_USERNAMES should be set to a comma-separated list of usernames");
 }
 

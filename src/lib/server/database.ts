@@ -1,5 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client"
-import { update } from "lodash"
+import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
@@ -23,17 +22,4 @@ export const getCurrentMeeting = async () => {
         orderBy: { date: 'desc' },
         include: { film: true },
     })
-}
-export type Meeting = {
-    film: {
-        imdbId: string;
-        title: string;
-        year: number;
-        poster: string;
-        plot: string;
-    };
-    id: number;
-    date: Date;
-    filmId: string;
-    host: string;
 }
