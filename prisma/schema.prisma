@@ -8,7 +8,18 @@ datasource db {
 }
 
 model Film {
-  id          Int     @id @default(autoincrement())
-  title       String
-  description String?
+  imdbId  String    @id
+  title   String
+  plot    String
+  year    String
+  poster  String
+  Meeting Meeting[]
+}
+
+model Meeting {
+  id     Int      @id @default(autoincrement())
+  date   DateTime @unique
+  film   Film     @relation(fields: [filmId], references: [imdbId])
+  filmId String
+  host   String
 }

@@ -1,4 +1,5 @@
-import type { Film, Score } from "./types";
+import type { Film } from "@prisma/client";
+import type { Score } from "../types";
 
 const filmClubChannelWebhookUrl = process.env.DISCORD_WEBHOOK_URL__FILM_CLUB
 

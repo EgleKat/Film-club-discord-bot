@@ -4,10 +4,12 @@
 
 
 <script lang="ts">
+    import type { Meeting } from '$lib/server/database';
     import type { OmdbFilm } from '$lib/types';
     import { debounce } from 'lodash';
 
-    export let data: { currentFilm?: OmdbFilm }
+    export let data: { meeting?: Meeting, usernames: string[] }
+    const film = data.meeting?.film;
 
     let autoCompleteList: OmdbFilm[] = [];
 
@@ -24,31 +26,50 @@
 </script>
 
 <main>
-    {#if data.currentFilm }
+    {#if film }
         This weeks film:
         <article>
-            <h1>{data.currentFilm.Title} ({data.currentFilm.Year})</h1>
-            <img src={data.currentFilm.Poster} alt={`Poster for ${data.currentFilm.Title}`} />
+            <h1>{film.title} ({film.year})</h1>
+            <h3>Chosen by {data.meeting?.host}</h3>
+            <h3>To be discussed on {data.meeting?.date.toLocaleDateString()}</h3>
+            <div>{film.plot}</div>
+            <img src={film.poster} alt={`Poster for ${film.title}`} />
         </article>
     {:else}
         <p>
             No film set for this week yet!
         </p>
     {/if}
-    <p>
-    Set film:
-    <form>
-        <!--Searches a film database for film suggestions-->
+    <form method="POST">
+        <p>
+        Date:
+        <input type="date" name="date"/>
+        <p>
+        <fieldset>
+            <legend>Host</legend>
+            {#each data?.usernames as username}
+                <div>
+                    <input type="radio" name="host" value={username} id={username} />
+                    <label for={username}>{username}</label>
+                </div>
+            {/each}
+        </fieldset>
+        <p>
+        Film:
         <input type="text" placeholder="Search for a film" on:input={searchFilm} />
+        {#if autoCompleteList.length > 0}
         <ul>
+            <fieldset style="border: none;">
             {#each autoCompleteList as film}
-                <li>
-                    <button type="button" on:click={() => data.currentFilm = film }>
-                        {film.Title} ({film.Year})
-                    </button>
+                <li style="list-style-type: none;">
+                    <input type="radio" id={film.imdbID} name="film" value={film.imdbID} />
+                    <label for={film.imdbID}>{film.Title} ({film.Year})</label>
                 </li>
             {/each}
+            </fieldset>
         </ul>
-        <button type="submit">Set Film</button>
+        {/if}
+
+        <button type="submit">Set next film</button>
     </form>
 </main>

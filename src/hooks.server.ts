@@ -1,4 +1,4 @@
-import { verifyBasicAuth } from "$lib/password";
+import { verifyBasicAuth } from "$lib/server/password";
 import type { Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {

@@ -4,7 +4,7 @@ const password = env.FILM_CLUB_PASSWORD;
 if (!password || password === "") {
     throw new Error("FILM_CLUB_PASSWORD should be set to a password");
 }
-const usernames = env.FILM_CLUB_USERNAMES?.split(",") ?? [];
+export const usernames = env.FILM_CLUB_USERNAMES?.split(",") ?? [];
 if (usernames.length === 0) {
     throw new Error("FILM_CLUB_USERNAMES should be set to a comma-separated list of usernames");
 }

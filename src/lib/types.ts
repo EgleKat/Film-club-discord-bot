@@ -12,7 +12,11 @@ export interface Score {
 
 export interface OmdbFilm {
     Title: string,
-    Year: number,
+    Year: string,
     imdbID: string,
     Poster: string,
+}
+
+export interface OmdbFilmWithPlot extends OmdbFilm {
+    Plot: string,
 }
