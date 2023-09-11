@@ -1,8 +1,8 @@
-import type { Film, Score } from "./types";
+import type { OmdbFilm, Score } from "./types";
 
 const filmClubChannelWebhookUrl = process.env.DISCORD_WEBHOOK_URL__FILM_CLUB
 
-export async function postScores(film: Film, scores: Score[]) {
+export async function postScores(film: OmdbFilm, scores: Score[]) {
     console.log("Posting scores to discord");
     if (!filmClubChannelWebhookUrl) {
         console.error("DISCORD_WEBHOOK_URL__FILM_CLUB should be set to a valid discord webhook URL");

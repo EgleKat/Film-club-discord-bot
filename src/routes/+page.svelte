@@ -27,8 +27,8 @@
     {#if data.currentFilm }
         This weeks film:
         <article>
-            <h1>{data.currentFilm.Title} ({data.currentFilm.Year})</h1>
-            <img src={data.currentFilm.Poster} alt={`Poster for ${data.currentFilm.Title}`} />
+            <h1>{data.currentFilm.title} ({data.currentFilm.year})</h1>
+            <img src={data.currentFilm.poster} alt={`Poster for ${data.currentFilm.title}`} />
         </article>
     {:else}
         <p>
@@ -44,7 +44,7 @@
             {#each autoCompleteList as film}
                 <li>
                     <button type="button" on:click={() => data.currentFilm = film }>
-                        {film.Title} ({film.Year})
+                        {film.title} ({film.year})
                     </button>
                 </li>
             {/each}

@@ -11,8 +11,8 @@ export interface Score {
 }
 
 export interface OmdbFilm {
-    Title: string,
-    Year: number,
+    title: string,
+    year: number,
     imdbID: string,
-    Poster: string,
+    poster: string,
 }
