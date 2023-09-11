@@ -1,25 +1,38 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model Film {
-  imdbId  String    @id
-  title   String
-  plot    String
-  year    String
-  poster  String
-  Meeting Meeting[]
+    imdbId  String    @id
+    title   String
+    plot    String
+    year    String
+    poster  String
+    meeting Meeting[]
 }
 
 model Meeting {
-  id     Int      @id @default(autoincrement())
-  date   DateTime @unique
-  film   Film     @relation(fields: [filmId], references: [imdbId])
-  filmId String
-  host   String
+    id     Int      @id @default(autoincrement())
+    date   DateTime @unique
+    host   String
+
+    film   Film     @relation(fields: [filmId], references: [imdbId])
+    filmId String
+
+    score Score[]
+}
+
+model Score {
+    id          Int     @id @default(autoincrement())
+    clubber      String
+    score       String
+    meetingId   Int
+    meeting     Meeting @relation(fields: [meetingId], references: [id])
+
+    @@unique([clubber, meetingId], name: "userMeetingScoreIdentifier")
 }

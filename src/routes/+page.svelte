@@ -1,21 +1,18 @@
-<svelte:head>
-    <title>North Pole Film Club</title>
-</svelte:head>
-
-
 <script lang="ts">
-    import type { OmdbFilm, Meeting } from '$lib/types';
-    import lodash from 'lodash';
-    const { debounce } = lodash;
+    import ScoreModal from '$lib/components/ScoreModal.svelte'
+    import type { OmdbFilm, Meeting, Score } from '$lib/types'
+    import lodash from 'lodash'
+    const { debounce } = lodash
 
-    export let data: { meeting?: Meeting, usernames: string[] }
-    const film = data.meeting?.film;
+    export let data: { meeting?: Meeting, usernames: string[], scores: Score[]}
+    const film = data.meeting?.film
+    const scores = data.scores
 
-    let autoCompleteList: OmdbFilm[] = [];
+    let autoCompleteList: OmdbFilm[] = []
 
     const searchFilm = debounce((e: Event) => {
         e.preventDefault()
-        const input = e.target as HTMLInputElement;
+        const input = e.target as HTMLInputElement
         const title = input.value
         fetch(`/api/v1/omdb?type=movie&s=${encodeURIComponent(title)}`, { method: 'GET' })
             .then(res => res.json())
@@ -25,7 +22,7 @@
     }, 500)
 </script>
 
-<main>
+<section>
     {#if film }
         This weeks film:
         <article>
@@ -40,7 +37,7 @@
             No film set for this week yet!
         </p>
     {/if}
-    <form method="POST">
+    <form method="POST" action="?/searchFilm">
         <p>
         Date:
         <input type="date" name="date"/>
@@ -57,19 +54,25 @@
         <p>
         Film:
         <input type="text" placeholder="Search for a film" on:input={searchFilm} />
-        {#if autoCompleteList.length > 0}
+        {#if autoCompleteList?.length > 0}
         <ul>
-            <fieldset style="border: none;">
+            <fieldset style="border: none">
             {#each autoCompleteList as film}
-                <li style="list-style-type: none;">
+                <li style="list-style-type: none">
                     <input type="radio" id={film.imdbID} name="film" value={film.imdbID} />
-                    <label for={film.imdbID}>{film.title} ({film.year})</label>
+                    <label for={film.imdbID}>{film.Title} ({film.Year})</label>
                 </li>
             {/each}
             </fieldset>
         </ul>
         {/if}
-
+    
         <button type="submit">Set next film</button>
     </form>
-</main>
+</section>
+<section>
+    <ScoreModal
+        title={film?.title ?? ""}
+        scores={scores}
+    />
+</section>
