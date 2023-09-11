@@ -21,7 +21,7 @@ export const actions = {
         const host = data.get('host') as string;
         const imdbID = data.get('film') as string;
         const film = await omdb.query<OmdbFilmWithPlot>(`i=${imdbID}&type=movie&plot=short`);
-        await addFilm(imdbID, film.Title, film.Year, film.Poster, film.Plot);
+        await addFilm(imdbID, film.title, film.year, film.poster, film.Plot);
         await createMeeting(imdbID, new Date(date), host);
     },
 } satisfies Actions;

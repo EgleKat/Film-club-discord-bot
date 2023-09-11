@@ -1,5 +1,4 @@
 import { env } from "$env/dynamic/private";
-import type { OmdbFilm } from "$lib/types";
 
 async function query<T>(params: string): Promise<T> {
     if (env.OMDB_API_KEY === undefined) throw new Error("OMDB_API_KEY is not defined");
