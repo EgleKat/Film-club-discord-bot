@@ -19,7 +19,7 @@
             .then(filmData => {
                 autoCompleteList = filmData.results
             })
-    }, 500)
+    }, 200)
 
     const today = new Date();
     const nextSundayUtc = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() + (7 - today.getDay())));
