@@ -4,25 +4,28 @@
 
 
 <script lang="ts">
-    import type { OmdbFilm, Meeting } from '$lib/types';
+    import type { Meeting, TmdbFilm } from '$lib/types';
     import lodash from 'lodash';
     const { debounce } = lodash;
 
     export let data: { meeting?: Meeting, usernames: string[] }
     const film = data.meeting?.film;
 
-    let autoCompleteList: OmdbFilm[] = [];
+    let autoCompleteList: TmdbFilm[] | null = null;
 
     const searchFilm = debounce((e: Event) => {
         e.preventDefault()
         const input = e.target as HTMLInputElement;
         const title = input.value
-        fetch(`/api/v1/omdb?type=movie&s=${encodeURIComponent(title)}`, { method: 'GET' })
+        fetch(`/api/v1/tmdb/search?query=${encodeURIComponent(title)}`, { method: 'GET' })
             .then(res => res.json())
             .then(filmData => {
-                autoCompleteList = filmData.Search
+                autoCompleteList = filmData.results
             })
     }, 500)
+
+    const today = new Date();
+    const nextSundayUtc = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() + (7 - today.getDay())));
 </script>
 
 <main>
@@ -43,33 +46,40 @@
     <form method="POST">
         <p>
         Date:
-        <input type="date" name="date"/>
+        <!--default to next sunday-->
+        <input type="date" name="date" autocomplete="off" value={nextSundayUtc.toISOString().substring(0, 10)} />
         <p>
         <fieldset>
             <legend>Host</legend>
             {#each data?.usernames as username}
                 <div>
-                    <input type="radio" name="host" value={username} id={username} />
+                    <input type="radio" name="host" value={username} id={username} autocomplete="off" />
                     <label for={username}>{username}</label>
                 </div>
             {/each}
         </fieldset>
         <p>
         Film:
-        <input type="text" placeholder="Search for a film" on:input={searchFilm} />
-        {#if autoCompleteList.length > 0}
+        <input type="text" placeholder="Search for a film" on:input={searchFilm} autocomplete="off" />
+
+        {#if !autoCompleteList}
+            <p>Start typing to search for a film</p>
+        {/if}
+        {#if autoCompleteList && autoCompleteList.length === 0}
+            <p>No films found</p>
+        {/if}
+        {#if autoCompleteList && autoCompleteList.length > 0}
         <ul>
             <fieldset style="border: none;">
             {#each autoCompleteList as film}
                 <li style="list-style-type: none;">
-                    <input type="radio" id={film.imdbID} name="film" value={film.imdbID} />
-                    <label for={film.imdbID}>{film.Title} ({film.Year})</label>
+                    <input type="radio" id={film.id.toString()} name="film" value={film.id} autocomplete="off" />
+                    <label for={film.id.toString()}>{film.original_title} ({film.release_date.substring(0, 4)})</label>
                 </li>
             {/each}
             </fieldset>
         </ul>
-        {/if}
-
         <button type="submit">Set next film</button>
+        {/if}
     </form>
 </main>
