@@ -1,21 +1,18 @@
-<svelte:head>
-    <title>North Pole Film Club</title>
-</svelte:head>
-
-
 <script lang="ts">
-    import type { Meeting, TmdbFilm } from '$lib/types';
-    import lodash from 'lodash';
-    const { debounce } = lodash;
+    import ScoreModal from '$lib/components/ScoreModal.svelte'
+    import type { TmdbFilm, Meeting, Score } from '$lib/types'
+    import lodash from 'lodash'
+    const { debounce } = lodash
 
-    export let data: { meeting?: Meeting, usernames: string[] }
-    const film = data.meeting?.film;
+    export let data: { meeting?: Meeting, usernames: string[], scores: Score[]}
+    const film = data.meeting?.film
+    const scores = data.scores
 
     let autoCompleteList: TmdbFilm[] | null = null;
 
     const searchFilm = debounce((e: Event) => {
         e.preventDefault()
-        const input = e.target as HTMLInputElement;
+        const input = e.target as HTMLInputElement
         const title = input.value
         fetch(`/api/v1/tmdb/search?query=${encodeURIComponent(title)}`, { method: 'GET' })
             .then(res => res.json())
@@ -28,7 +25,7 @@
     const nextSundayUtc = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() + (7 - today.getDay())));
 </script>
 
-<main>
+<section>
     {#if film }
         This weeks film:
         <article>
@@ -43,7 +40,7 @@
             No film set for this week yet!
         </p>
     {/if}
-    <form method="POST">
+    <form method="POST" action="?/meeting">
         <p>
         Date:
         <!--default to next sunday-->
@@ -70,7 +67,7 @@
         {/if}
         {#if autoCompleteList && autoCompleteList.length > 0}
         <ul>
-            <fieldset style="border: none;">
+            <fieldset style="border: none">
             {#each autoCompleteList as film}
                 <li style="list-style-type: none;">
                     <input type="radio" id={film.id.toString()} name="film" value={film.id} autocomplete="off" />
@@ -82,4 +79,10 @@
         <button type="submit">Set next film</button>
         {/if}
     </form>
-</main>
+</section>
+<section>
+    <ScoreModal
+        title={film?.title ?? ""}
+        scores={scores}
+    />
+</section>

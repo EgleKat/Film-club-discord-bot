@@ -1,12 +1,11 @@
-import type { Film } from "@prisma/client";
-import type { Score } from "../types";
+import type { Film, Score } from "@prisma/client"
 
 const filmClubChannelWebhookUrl = process.env.DISCORD_WEBHOOK_URL__FILM_CLUB
 
 export async function postScores(film: Film, scores: Score[]) {
-    console.log("Posting scores to discord");
+    console.log("Posting scores to discord")
     if (!filmClubChannelWebhookUrl) {
-        console.error("DISCORD_WEBHOOK_URL__FILM_CLUB should be set to a valid discord webhook URL");
+        console.error("DISCORD_WEBHOOK_URL__FILM_CLUB should be set to a valid discord webhook URL")
     }
     const messageHeader = `**${film.title} (${film.year})**`
     const messageBody = (
@@ -20,7 +19,7 @@ export async function postScores(film: Film, scores: Score[]) {
 async function sendMessage(webhookUrl: string | undefined, content: string) {
     if (!webhookUrl) {
         console.log(`Would have POSTed the following message to discord:\n ${content}`)
-        return;
+        return
     }
     const response = await fetch(webhookUrl, {
         method: "POST",

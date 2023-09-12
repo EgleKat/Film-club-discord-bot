@@ -1,20 +1,28 @@
 import type { Actions } from './$types';
-import { addFilm, createMeeting, getCurrentMeeting } from "$lib/server/database";
 import MovieSearch from '$lib/server/movie-search';
-import { usernames } from '$lib/server/password';
 import { fail } from '@sveltejs/kit';
+import { addFilm, createMeeting, createScore, getCurrentMeeting, getScores } from "$lib/server/database"
+import { usernames } from '$lib/server/password'
+import type { Score } from '@prisma/client'
 
-export const load = async () => {
-    const meeting = await getCurrentMeeting();
+export const load = async ({locals}) => {
+    const meeting = await getCurrentMeeting()
+    let scores: Score[] = []
+
+    if (meeting) {
+        scores = await getScores(meeting.id)
+    }
+
     return {
         meeting,
         usernames,
+        scores
     }
-};
+}
 
 
 export const actions = {
-    default: async ({request}) => {
+    meeting: async ({request}) => {
         const data = await request.formData();
         const date = data.get('date');
         const host = data.get('host');
@@ -29,4 +37,14 @@ export const actions = {
         await addFilm(film.imdb_id, film.original_title, film.release_date.substring(0, 4), "https://image.tmdb.org/t/p/w500" + film.poster_path, film.overview);
         await createMeeting(film.imdb_id, new Date(date as string), host as string);
     },
-} satisfies Actions;
+    score: async ({request, locals}) => {
+        const data = await request.formData()
+        const score = data.get('score') as string
+    
+        const meeting = await getCurrentMeeting()
+
+        if (meeting) {
+            createScore(meeting.id,  locals.user.username, score)
+        }
+    }
+} satisfies Actions

@@ -23,3 +23,22 @@ export const getCurrentMeeting = async () => {
         include: { film: true },
     })
 }
+
+
+export const createScore = async (meetingId: number, clubber: string, score: string) => {
+    return prisma.score.upsert({
+        where: { 
+            userMeetingScoreIdentifier: { meetingId, clubber }
+        },
+        update: { score },
+        create: { meetingId, clubber, score }
+    })
+}
+
+
+export const getScores = async (meetingId: number) => {
+    return await prisma.score.findMany({
+        where: { meetingId },
+        orderBy: { clubber: 'desc' }
+    })
+}
