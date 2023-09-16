@@ -18,15 +18,30 @@ export const createMeeting = async (filmId: string, date: Date, host: string) =>
 }
 
 export const getCurrentMeeting = async () => {
+    // get the next meeting
+    const meeting = await prisma.meeting.findFirst({
+        orderBy: { date: 'asc' },
+        include: { film: true },
+        where: { date: { gte: new Date() } }
+    })
+    if (meeting !== null) {
+        return meeting
+    }
+
+    // if there is no next meeting, get the last meeting
     return await prisma.meeting.findFirst({
         orderBy: { date: 'desc' },
         include: { film: true },
     })
 }
 
+export const deleteMeeting = async (meetingId: number) => {
+    return await prisma.meeting.delete({ where: { id: meetingId } })
+}
+
 
 export const createScore = async (meetingId: number, clubber: string, score: string) => {
-    return prisma.score.upsert({
+    return await prisma.score.upsert({
         where: { 
             userMeetingScoreIdentifier: { meetingId, clubber }
         },
