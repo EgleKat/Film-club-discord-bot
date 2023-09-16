@@ -22,7 +22,7 @@ export const getCurrentMeeting = async () => {
     const meeting = await prisma.meeting.findFirst({
         orderBy: { date: 'asc' },
         include: { film: true, scores: true },
-        where: { date: { gte: new Date() } }
+        where: { date: { gte: new Date() }, hidden: false }
     })
     if (meeting !== null) {
         return meeting
@@ -32,6 +32,7 @@ export const getCurrentMeeting = async () => {
     return await prisma.meeting.findFirst({
         orderBy: { date: 'desc' },
         include: { film: true, scores: true },
+        where: { hidden: false },
     })
 }
 

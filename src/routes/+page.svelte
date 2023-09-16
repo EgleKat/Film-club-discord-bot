@@ -27,7 +27,7 @@
 </script>
 
 <section>
-    {#if film && !meeting.hidden }
+    {#if film }
         This weeks film:
         <article>
             <h1>{film.title} ({film.year})</h1>
@@ -82,7 +82,7 @@
     </form>
 </section>
 <section>
-    {#if film && !meeting.hidden }
+    {#if film }
     <ScoreModal
         title={film?.title ?? ""}
         scores={scores ?? []}
