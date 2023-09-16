@@ -33,6 +33,8 @@ export type Meeting = {
     date: Date
     filmId: string
     host: string
+    scores: Score[]
+    hidden: boolean
 }
 
 export type Score = {

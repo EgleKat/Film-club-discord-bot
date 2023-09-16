@@ -1,5 +1,5 @@
 import { verifyBasicAuth, getUserData } from "$lib/server/password"
-import type { Handle } from "@sveltejs/kit"
+import type { Handle, HandleServerError } from "@sveltejs/kit"
 
 export const handle: Handle = async ({ event, resolve }) => {
     const auth = getUserData(event.request.headers)
@@ -19,3 +19,10 @@ export const handle: Handle = async ({ event, resolve }) => {
     }
     return resolve(event)
 }
+
+export const handleError: HandleServerError = ({ error, event }) => {
+	return {
+		message: JSON.stringify(error),
+		code: (error as any)?.code,
+	};
+};

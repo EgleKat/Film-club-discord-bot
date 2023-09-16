@@ -13,7 +13,9 @@
         <input type="submit" name="submit" value="Submit score" />
     </form>
     Scores:
+    <ul>
     {#each scores as score}
-    {score.clubber} {score.score}
+    <li>{score.clubber} - {score.score}</li>
     {/each}
+    </ul>
 </section>

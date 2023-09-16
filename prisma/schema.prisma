@@ -20,11 +20,12 @@ model Meeting {
     id     Int      @id @default(autoincrement())
     date   DateTime @unique
     host   String
+    hidden Boolean  @default(false)
 
     film   Film     @relation(fields: [filmId], references: [imdbId])
     filmId String
 
-    score Score[]
+    scores Score[]
 }
 
 model Score {

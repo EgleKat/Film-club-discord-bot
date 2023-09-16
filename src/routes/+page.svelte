@@ -4,9 +4,10 @@
     import lodash from 'lodash'
     const { debounce } = lodash
 
-    export let data: { meeting?: Meeting, usernames: string[], scores: Score[]}
-    const film = data.meeting?.film
-    const scores = data.scores
+    export let data: { meeting?: Meeting, usernames: string[] }
+    const meeting = data.meeting
+    const film = meeting?.film
+    const scores = meeting?.scores
 
     let autoCompleteList: TmdbFilm[] | null = null;
 
@@ -26,12 +27,12 @@
 </script>
 
 <section>
-    {#if film }
+    {#if film && !meeting.hidden }
         This weeks film:
         <article>
             <h1>{film.title} ({film.year})</h1>
-            <h3>Chosen by {data.meeting?.host}</h3>
-            <h3>To be discussed on {data.meeting?.date.toLocaleDateString()}</h3>
+            <h3>Chosen by {meeting?.host}</h3>
+            <h3>To be discussed on {meeting?.date.toLocaleDateString()}</h3>
             <div>{film.plot}</div>
             <img src={film.poster} alt={`Poster for ${film.title}`} />
         </article>
@@ -81,8 +82,10 @@
     </form>
 </section>
 <section>
+    {#if film && !meeting.hidden }
     <ScoreModal
         title={film?.title ?? ""}
-        scores={scores}
+        scores={scores ?? []}
     />
+    {/if}
 </section>
