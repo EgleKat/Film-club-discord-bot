@@ -2,9 +2,11 @@
     import ScoreModal from '$lib/components/ScoreModal.svelte'
     import type { TmdbFilm, Meeting, Score } from '$lib/types'
     import lodash from 'lodash'
+    import Toast from '$lib/components/Toast.svelte'
     const { debounce } = lodash
 
     export let data: { meeting?: Meeting, usernames: string[], scores: Score[] }
+    export let form;
     const meeting = data.meeting
     const film = meeting?.film
     const scores = data?.scores
@@ -27,6 +29,9 @@
 </script>
 
 <section>
+    {#if form?.error}
+        <Toast status="error" title={form.error}/>
+    {/if}
     {#if film }
         This weeks film:
         <article>
@@ -41,7 +46,7 @@
             No film set for this week yet!
         </p>
     {/if}
-    <form method="POST" action="?/meeting">
+    <form method="POST" action="?/meeting" onerror="">
         <p>
         Date:
         <!--default to next sunday-->

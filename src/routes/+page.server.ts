@@ -28,9 +28,9 @@ export const actions = {
         const host = data.get('host');
         const tmdbId = data.get('film');
 
-        if (!date) return fail(400, {missingFilm: true});
-        if (!host) return fail(400, {missingHost: true});
-        if (!tmdbId) return fail(400, {missingFilm: true});
+        if (!date) return fail(400, {error: "Missing date"});
+        if (!host) return fail(400, {error: "Missing host"});
+        if (!tmdbId) return fail(400, {error: "Missing film"});
 
         const film = await MovieSearch.tmdbGetMovie(parseInt(tmdbId as string, 10));
         if (!film.imdb_id) {
