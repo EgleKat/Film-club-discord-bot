@@ -17,19 +17,20 @@ model Film {
 }
 
 model Meeting {
-    id     Int      @id @default(autoincrement())
-    date   DateTime @unique
-    host   String
+    id          Int         @id @default(autoincrement())
+    date        DateTime    @unique
+    host        String
 
-    film   Film     @relation(fields: [filmId], references: [imdbId])
-    filmId String
+    film        Film        @relation(fields: [filmId], references: [imdbId])
+    filmId      String
 
-    score Score[]
+    score       Score[]
+    showScore   Boolean     @default(false)
 }
 
 model Score {
     id          Int     @id @default(autoincrement())
-    clubber      String
+    clubber     String
     score       String
     meetingId   Int
     meeting     Meeting @relation(fields: [meetingId], references: [id])

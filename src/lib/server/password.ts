@@ -19,6 +19,6 @@ export const getUserData = (headers: Headers) => {
     return {username, password}
 }
 
-export function verifyBasicAuth(username: string, passwordAttempt: string): boolean {
+export const verifyBasicAuth = (username: string, passwordAttempt: string): boolean => {
     return passwordAttempt === password && usernames.includes(username)
 }

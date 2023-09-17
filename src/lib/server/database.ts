@@ -42,3 +42,25 @@ export const getScores = async (meetingId: number) => {
         orderBy: { clubber: 'desc' }
     })
 }
+
+
+export const getShownScores = async (id: number) => {
+    const meeting = await prisma.meeting.findUnique({
+        where: { id, showScore: true },
+        include: {
+            score: true
+        }
+    })
+
+    if (!meeting) return []
+
+    return meeting.score
+}
+
+
+export const setShowScore = async (id: number) => {
+    return await prisma.meeting.update({
+        where: { id },
+        data: { showScore: true }
+    })
+}

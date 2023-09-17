@@ -83,6 +83,6 @@
 <section>
     <ScoreModal
         title={film?.title ?? ""}
-        scores={scores}
+        {scores}
     />
 </section>
