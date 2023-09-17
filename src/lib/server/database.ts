@@ -76,13 +76,13 @@ export const getShownScores = async (id: number) => {
     const meeting = await prisma.meeting.findUnique({
         where: { id, showScore: true },
         include: {
-            score: true
+            scores: true
         }
     })
 
     if (!meeting) return []
 
-    return meeting.score
+    return meeting.scores
 }
 
 

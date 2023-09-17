@@ -25,7 +25,7 @@ model Meeting {
     film        Film        @relation(fields: [filmId], references: [imdbId])
     filmId      String
 
-    score       Score[]
+    scores       Score[]
     showScore   Boolean     @default(false)
 }
 
