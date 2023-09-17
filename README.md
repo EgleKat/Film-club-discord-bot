@@ -1,11 +1,21 @@
 # Film Club Website
 
 ## Developing
+### Install Postgresql
+1. https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+2. Ensure you setup a user account with superuser privileges during this process
+3. Make sure PostgreSQL bin directory is added to the path
+4. Open terminal and type `psql -U <username>` and enter your password
+
+```sql
+CREATE DATABASE film_club_discord_bot;
+GRANT ALL PRIVILEGES ON DATABASE film_club_discord_bot TO <username>;
+```
 ### Setup Prisma
 
-Add a `.env` file in your root directory with a `DATABASE_URL` variable inside, updating `<password>` to your database password.
+Add a `.env` file in your root directory with a `DATABASE_URL` variable inside, updating `<password>` to your database password and `<username>` to your username (e.g. postgres).
 ```
-DATABASE_URL="postgresql://postgres:<password>@localhost:5432/film_club_discord_bot?schema=public"
+DATABASE_URL="postgresql://<username>:<password>@localhost:5432/film_club_discord_bot?schema=public"
 ```
 
 Then run the following commands
@@ -15,6 +25,18 @@ npx prisma migrate deploy # Run current migrations
 npx prisma generate # Setup Prisma client
 ```
 
+### Create env
+Add an `.env` file to your root directory of the project, it should contain the following variables.
+Ask Ted or Alex for passwords.
+
+```
+DATABASE_URL="postgres://<username>:<password>@localhost:15432/film_club_discord_bot?schema=public"
+DISCORD_WEBHOOK_URL__FILM_CLUB="https://discord.com/api/webhooks/..."
+OMDB_API_KEY=<api key>
+FILM_CLUB_PASSWORD=<club password>
+FILM_CLUB_USERNAMES=alex,hong,egle,ted
+TMDB_ACCESS_KEY=<TMDB api key>
+```
 
 ### Run Development Environment
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
@@ -34,7 +56,7 @@ When you have modified the schema and want to execute your changes run `npm pris
 If you want to push your changes to Fly.io, you will need to migrate the Fly.io database.
 Change your `DATABASE_URL` in your `.env` file to the fly.io connection string (If you don't have the password ask Ted).
 ```
-DATABASE_URL="postgres://postgres:<password>@localhost:15432/film_club_discord_bot?schema=public"
+DATABASE_URL="postgres://<username>:<password>@localhost:15432/film_club_discord_bot?schema=public"
 ```
 
 Now you will need to setup a connection to the Fly.io database, this will allow you to connect as if it was a local database.
