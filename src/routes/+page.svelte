@@ -4,10 +4,10 @@
     import lodash from 'lodash'
     const { debounce } = lodash
 
-    export let data: { meeting?: Meeting, usernames: string[] }
+    export let data: { meeting?: Meeting, usernames: string[], scores: Score[] }
     const meeting = data.meeting
     const film = meeting?.film
-    const scores = meeting?.scores
+    const scores = data?.scores
 
     let autoCompleteList: TmdbFilm[] | null = null;
 
