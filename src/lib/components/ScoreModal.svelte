@@ -27,7 +27,9 @@
         on:click={sendScores}
     />
     Scores:
+    <ul>
     {#each scores as score}
-    {score.clubber} {score.score}
+    <li>{score.clubber} - {score.score}</li>
     {/each}
+    </ul>
 </section>

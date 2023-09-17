@@ -13,20 +13,48 @@ export const createMeeting = async (filmId: string, date: Date, host: string) =>
     return await prisma.meeting.upsert({
         where: { date },
         create: { filmId, date, host },
-        update: { filmId, host },
+        update: { filmId, host, hidden: false },
     })
 }
 
 export const getCurrentMeeting = async () => {
+    // get the next meeting
+    const meeting = await prisma.meeting.findFirst({
+        orderBy: { date: 'asc' },
+        include: { film: true, scores: true },
+        where: { date: { gte: new Date() }, hidden: false }
+    })
+    if (meeting !== null) {
+        return meeting
+    }
+
+    // if there is no next meeting, get the last meeting
     return await prisma.meeting.findFirst({
         orderBy: { date: 'desc' },
-        include: { film: true },
+        include: { film: true, scores: true },
+        where: { hidden: false },
     })
 }
 
+export const getAllMeetings = async () => {
+    return await prisma.meeting.findMany({
+        orderBy: { date: 'asc' },
+        include: { film: true, scores: true },
+    })
+}
+
+export const toggleHiddenMeeting = async (meetingId: number) => {
+    const meeting = await prisma.meeting.findUniqueOrThrow({
+        where: { id: meetingId },
+    })
+    return await prisma.meeting.update({
+        where: { id: meetingId },
+        data: { hidden: !meeting.hidden },
+    })
+}
 
 export const createScore = async (meetingId: number, clubber: string, score: string) => {
-    return prisma.score.upsert({
+    return await prisma.score.upsert({
         where: { 
             userMeetingScoreIdentifier: { meetingId, clubber }
         },
