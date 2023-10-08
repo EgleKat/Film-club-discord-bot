@@ -12,5 +12,10 @@
         width: 90vw;
         margin: 2vh auto;
         font-family: AR;
+        background-color: #f0f0ff;
+        @include desktop {
+            max-width: 60vw;
+        }
     }
+
 </style>

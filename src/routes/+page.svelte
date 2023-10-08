@@ -3,6 +3,7 @@
     import type { TmdbFilm, Meeting, Score } from '$lib/types'
     import lodash from 'lodash'
     import Toast from '$lib/components/Toast.svelte'
+    import Icon from '$lib/components/Icon.svelte';
     const { debounce } = lodash
 
     type PageData = {
@@ -41,14 +42,15 @@
         <Toast status="error" title="Error" description={form.error}/>
     {/if}
     {#if film }
-        This weeks film:
-        <article>
-            <h1>{film.title} ({film.year})</h1>
-            <h3>Chosen by {meeting?.host}</h3>
-            <h3>To be discussed on {meeting?.date.toLocaleDateString()}</h3>
-            <div>{film.plot}</div>
-            <img src={film.poster} alt={`Poster for ${film.title}`} />
-        </article>
+        This week, chosen by <Icon type="user" /> <span class="film-host">{meeting?.host}</span>
+        <div class="film-description">
+            <div class="film-title">{film.title} ({film.year})</div>
+            <div class="film-poster-and-plot">
+                <img class="film-poster" src={film.poster} alt={`Poster for ${film.title}`} />
+                <p class="film-plot">{film.plot}</p>
+            </div>
+        </div>
+        <h3>To be discussed on {meeting?.date.toLocaleDateString()}</h3>
     {:else}
         <p>
             No film set for this week yet!
@@ -103,3 +105,52 @@
     />
     {/if}
 </section>
+
+<style lang="scss">
+    .film-host {
+        font-weight: bold;
+        text-transform: capitalize;
+    }
+    .film-description {
+        background-color: #ffef6b;
+        padding: 2rem;
+        .film-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+    .film-poster-and-plot {
+        border-radius: 4px;
+
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        @include tablet {
+            flex-direction: column;
+        }
+        @include desktop {
+            flex-direction: row;
+        }
+        .film-poster {
+            border-radius: 8px;
+            height: auto;
+            flex: 0 0 auto;
+            @include tablet{
+                width: 60%;
+                max-width: 50vw;
+            }
+            @include desktop{
+                width: 50%;
+                max-width: 30vw;
+            }
+        }
+        .film-plot {
+            margin: auto 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            line-height: 1.5rem;
+            background-color: #5e9dff;
+        }
+    }
+    }
+</style>
