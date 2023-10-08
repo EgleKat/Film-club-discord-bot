@@ -1,16 +1,8 @@
 <script lang="ts">
-    // import type { Score } from "$lib/types";
-
+    let nodeRef: HTMLDivElement;
     export let title: string
     export let description: string
     export let status: "success" | "warning" | "error"
-    // const sendScores = () => {
-    //     fetch("/api/v1/discord/scores", { method: 'POST' })
-    //         .then(res => res.json())
-    //         .then(res => {
-    //             scores = res.scores
-    //         })
-    // }
 </script>
 
 <style>
@@ -29,11 +21,14 @@
     }
 </style>
 
-<div class={"toast " + status} >
+<div class={"toast " + status} bind:this={nodeRef}>
     <span class:hidden={title}>
         {title}
     </span>
     <div class:hidden={description}>
         {description}
     </div>
+    <button aria-label="Close" on:click={() => nodeRef?.parentNode?.removeChild(nodeRef)}>
+        X
+    </button>
 </div>
