@@ -30,7 +30,7 @@
 
 <section>
     {#if form?.error}
-        <Toast status="error" title={form.error}/>
+        <Toast status="error" title="Error" description={form.error}/>
     {/if}
     {#if film }
         This weeks film:
