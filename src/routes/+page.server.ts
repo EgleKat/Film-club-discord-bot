@@ -1,22 +1,26 @@
 import type { Actions } from './$types';
 import MovieSearch from '$lib/server/movie-search';
 import { fail } from '@sveltejs/kit';
-import { addFilm, createMeeting, createScore, getCurrentMeeting, getShownScores } from "$lib/server/database"
+import { addFilm, createMeeting, createScore, getCurrentMeeting, getNumberOfScoresSubmitted, getShownScores } from "$lib/server/database"
 import { usernames } from '$lib/server/password'
 import type { Score } from '@prisma/client';
 
 export const load = async () => {
     const meeting = await getCurrentMeeting()
     let scores: Score[] = []
+    let numberOfSubmittedScores: number = 0
 
     if (meeting) {
         scores = await getShownScores(meeting.id)
+        numberOfSubmittedScores = await getNumberOfScoresSubmitted(meeting.id)
     }
+
 
     return {
         meeting,
         usernames,
-        scores
+        scores,
+        numberOfSubmittedScores
     }
 }
 

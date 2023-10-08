@@ -1,8 +1,9 @@
 <script lang="ts">
-    import type { Score } from "$lib/types";
+    import type { Score } from "$lib/types"
 
     export let title: string
     export let scores: Score[]
+    export let numberOfSubmittedScores: number
 
     const sendScores = () => {
         fetch("/api/v1/discord/scores", { method: 'POST' })
@@ -26,10 +27,12 @@
         value="Send Scores to Discord" 
         on:click={sendScores}
     />
+    {numberOfSubmittedScores} Scores Submitted
+    <br>
     Scores:
     <ul>
     {#each scores as score}
-    <li>{score.clubber} - {score.score}</li>
+        <li>{score.clubber} - {score.score}</li>
     {/each}
     </ul>
 </section>

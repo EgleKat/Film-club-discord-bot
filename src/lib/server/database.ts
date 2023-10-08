@@ -72,6 +72,18 @@ export const getScores = async (meetingId: number) => {
 }
 
 
+export const getNumberOfScoresSubmitted = async (meetingId: number) => {
+    const aggregation =  await prisma.score.aggregate({
+        _count: { 
+            id: true
+        },
+        where: { meetingId }
+    })
+
+    return aggregation._count.id
+}
+
+
 export const getShownScores = async (id: number) => {
     const meeting = await prisma.meeting.findUnique({
         where: { id, showScore: true },

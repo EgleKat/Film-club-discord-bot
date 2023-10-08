@@ -5,13 +5,21 @@
     import Toast from '$lib/components/Toast.svelte'
     const { debounce } = lodash
 
-    export let data: { meeting?: Meeting, usernames: string[], scores: Score[] }
-    export let form;
+    type PageData = {
+        meeting?: Meeting
+        usernames: string[]
+        scores: Score[] 
+        numberOfSubmittedScores: number
+    }
+
+    export let data: PageData
+    export let form
     const meeting = data.meeting
     const film = meeting?.film
     const scores = data?.scores
+    const numberOfSubmittedScores = data?.numberOfSubmittedScores
 
-    let autoCompleteList: TmdbFilm[] | null = null;
+    let autoCompleteList: TmdbFilm[] | null = null
 
     const searchFilm = debounce((e: Event) => {
         e.preventDefault()
@@ -91,6 +99,7 @@
     <ScoreModal
         title={film?.title ?? ""}
         {scores}
+        {numberOfSubmittedScores}
     />
     {/if}
 </section>
