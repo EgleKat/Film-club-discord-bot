@@ -4,6 +4,7 @@
     import lodash from 'lodash'
     import Toast from '$lib/components/Toast.svelte'
     import Icon from '$lib/components/Icon.svelte';
+    import SpanWithIcon from '$lib/components/SpanWithIcon.svelte';
     const { debounce } = lodash
 
     type PageData = {
@@ -42,7 +43,17 @@
         <Toast status="error" title="Error" description={form.error}/>
     {/if}
     {#if film }
-        This week, chosen by <Icon type="user" /> <span class="film-host">{meeting?.host}</span>
+        <div>
+            <SpanWithIcon>
+                <span> This week, chosen by </span> <Icon type="user" /> <span class="film-host">{meeting?.host}</span>
+            </SpanWithIcon>
+        </div>
+        <div>
+            <SpanWithIcon>
+                <span>To be discussed on </span> <Icon type="calendar-mark" /> <span>{meeting?.date.toLocaleDateString()}</span></SpanWithIcon>
+        </div>
+        
+
         <div class="film-description">
             <div class="film-title">{film.title} ({film.year})</div>
             <div class="film-poster-and-plot">
@@ -50,7 +61,6 @@
                 <p class="film-plot">{film.plot}</p>
             </div>
         </div>
-        <h3>To be discussed on {meeting?.date.toLocaleDateString()}</h3>
     {:else}
         <p>
             No film set for this week yet!
