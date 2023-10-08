@@ -7,3 +7,10 @@
     <a href="/meetings">Meetings</a>
     <slot />
 </main>
+<style lang="scss" >
+    :global(body) {
+        width: 90vw;
+        margin: 2vh auto;
+        font-family: AR;
+    }
+</style>
