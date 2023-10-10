@@ -5,11 +5,11 @@ import { addFilm, createMeeting, createScore, getCurrentMeeting, getNumberOfScor
 import { usernames } from '$lib/server/password'
 import type { Score } from '@prisma/client';
 
-export const load = async () => {
+export const load = async ({locals}) => {
     const meeting = await getCurrentMeeting()
     let scores: Score[] = []
     let numberOfSubmittedScores: number = 0
-
+    const currentUserUsername = locals.user.username;
     if (meeting) {
         scores = await getShownScores(meeting.id)
         numberOfSubmittedScores = await getNumberOfScoresSubmitted(meeting.id)
@@ -17,6 +17,7 @@ export const load = async () => {
 
 
     return {
+        currentUserUsername,
         meeting,
         usernames,
         scores,
@@ -48,7 +49,7 @@ export const actions = {
     score: async ({request, locals}) => {
         const data = await request.formData()
         const score = data.get('score') as string
-    
+        const user = locals.user;
         const meeting = await getCurrentMeeting()
 
         if (meeting) {

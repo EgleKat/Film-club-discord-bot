@@ -2,6 +2,13 @@ $breakpoint-desktop: 960px;
 $breakpoint-tablet: 768px;
 $breakpoint-phone: 480px;
 
+$body-color: #f0f0ff;
+$main-blue: #054a91;
+$main-orange: #ec9a29;
+$main-bordo: #23001e;
+$main-light-blue: #a5d8ff;
+$main-red: #de3c4b;
+
 @mixin desktop {
   @media (min-width: #{$breakpoint-desktop}) {
     @content;

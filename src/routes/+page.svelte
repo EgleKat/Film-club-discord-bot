@@ -11,7 +11,7 @@
         meeting?: Meeting
         usernames: string[]
         scores: Score[] 
-        numberOfSubmittedScores: number
+        numberOfSubmittedScores: number,
     }
 
     export let data: PageData
@@ -20,7 +20,6 @@
     const film = meeting?.film
     const scores = data?.scores
     const numberOfSubmittedScores = data?.numberOfSubmittedScores
-
     let autoCompleteList: TmdbFilm[] | null = null
 
     const searchFilm = debounce((e: Event) => {
@@ -43,7 +42,7 @@
         <Toast status="error" title="Error" description={form.error}/>
     {/if}
     {#if film }
-        <div>
+        <div class="this-week">
             <SpanWithIcon>
                 <span> This week, chosen by </span> <Icon type="user" /> <span class="film-host">{meeting?.host}</span>
             </SpanWithIcon>
@@ -117,21 +116,42 @@
 </section>
 
 <style lang="scss">
-    .film-host {
-        font-weight: bold;
-        text-transform: capitalize;
+    .this-week {
+        margin-top: 2rem;
+        .film-host {
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+
     }
     .film-description {
-        background-color: #ffef6b;
+        margin: 1rem 0;
+        background-color: $main-orange;
         padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        $cutout-height: 6rem;
+        margin-bottom: $cutout-height;
+        padding-bottom: $cutout-height - 2rem;
+        &:after {
+            content: "";
+            position: absolute;
+            display: block;
+            left: 0rem;
+            width: 100%;
+            background-color: #f0f0ff;
+            transform: skewY(-3deg);
+            border-top: solid #f0f0ff $cutout-height;
+        }
         .film-title {
+            color: #2a1a04;
             font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 1rem;
         }
     .film-poster-and-plot {
         border-radius: 4px;
-
+        margin-bottom: 3rem;
         display: flex;
         gap: 1rem;
         align-items: center;
@@ -147,11 +167,10 @@
             flex: 0 0 auto;
             @include tablet{
                 width: 60%;
-                max-width: 50vw;
+                max-height: 90vw;
             }
             @include desktop{
                 width: 50%;
-                max-width: 30vw;
             }
         }
         .film-plot {
@@ -159,7 +178,10 @@
             padding: 1rem;
             border-radius: 4px;
             line-height: 1.5rem;
-            background-color: #5e9dff;
+            background-color: $main-blue;
+            color: #cadff4;
+            z-index: 1;
+            transform: skewY(-3deg);
         }
     }
     }
