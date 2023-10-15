@@ -138,7 +138,7 @@
             position: absolute;
             display: block;
             left: 0rem;
-            width: 100%;
+            width: 101%;
             background-color: #f0f0ff;
             transform: skewY(-3deg);
             border-top: solid #f0f0ff $cutout-height;
