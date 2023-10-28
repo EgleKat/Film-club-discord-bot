@@ -12,6 +12,7 @@
     );
     let autoCompleteList: TmdbFilm[] | null = null;
     export let usernames: string[];
+    export let closeSidePanel: () => void;
     const searchFilm = debounce((e: Event) => {
         e.preventDefault();
         const input = e.target as HTMLInputElement;
@@ -91,7 +92,7 @@
                         {/each}
                     </fieldset>
                 </ul>
-                <button type="submit">Set next film</button>
+                <button type="submit" on:click={closeSidePanel}>Set next film</button>
             {/if}
         </p>
     </form>
