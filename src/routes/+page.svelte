@@ -1,11 +1,11 @@
 <script lang="ts">
     import ScoreModal from '$lib/components/ScoreModal.svelte'
-    import type { TmdbFilm, Meeting, Score } from '$lib/types'
+    import type { Meeting, Score } from '$lib/types'
     import lodash from 'lodash'
     import Toast from '$lib/components/Toast.svelte'
     import Icon from '$lib/components/Icon.svelte';
     import SpanWithIcon from '$lib/components/SpanWithIcon.svelte';
-    const { debounce } = lodash
+    import SetNext from '$lib/components/SetNext.svelte';
 
     type PageData = {
         meeting?: Meeting
@@ -20,21 +20,8 @@
     const film = meeting?.film
     const scores = data?.scores
     const numberOfSubmittedScores = data?.numberOfSubmittedScores
-    let autoCompleteList: TmdbFilm[] | null = null
+    let isSidePanelOpen = false;
 
-    const searchFilm = debounce((e: Event) => {
-        e.preventDefault()
-        const input = e.target as HTMLInputElement
-        const title = input.value
-        fetch(`/api/v1/tmdb/search?query=${encodeURIComponent(title)}`, { method: 'GET' })
-            .then(res => res.json())
-            .then(filmData => {
-                autoCompleteList = filmData.results
-            })
-    }, 200)
-
-    const today = new Date();
-    const nextSundayUtc = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() + (7 - today.getDay())));
 </script>
 
 <section>
@@ -65,45 +52,11 @@
             No film set for this week yet!
         </p>
     {/if}
-    <form method="POST" action="?/meeting" onerror="">
-        <p>
-        Date:
-        <!--default to next sunday-->
-        <input type="date" name="date" autocomplete="off" value={nextSundayUtc.toISOString().substring(0, 10)} />
-        <p>
-        <fieldset>
-            <legend>Host</legend>
-            {#each data?.usernames as username}
-                <div>
-                    <input type="radio" name="host" value={username} id={username} autocomplete="off" />
-                    <label for={username}>{username}</label>
-                </div>
-            {/each}
-        </fieldset>
-        <p>
-        Film:
-        <input type="text" placeholder="Search for a film" on:input={searchFilm} autocomplete="off" />
 
-        {#if !autoCompleteList}
-            <p>Start typing to search for a film</p>
-        {/if}
-        {#if autoCompleteList && autoCompleteList.length === 0}
-            <p>No films found</p>
-        {/if}
-        {#if autoCompleteList && autoCompleteList.length > 0}
-        <ul>
-            <fieldset style="border: none">
-            {#each autoCompleteList as film}
-                <li style="list-style-type: none;">
-                    <input type="radio" id={film.id.toString()} name="film" value={film.id} autocomplete="off" />
-                    <label for={film.id.toString()}>{film.original_title} ({film.release_date.substring(0, 4)})</label>
-                </li>
-            {/each}
-            </fieldset>
-        </ul>
-        <button type="submit">Set next film</button>
-        {/if}
-    </form>
+    <button class="add-film" on:click={() => isSidePanelOpen = !isSidePanelOpen}>Choose next film</button>
+    {#if isSidePanelOpen}
+    <SetNext usernames={data?.usernames} />
+    {/if}
 </section>
 <section>
     {#if film }
@@ -183,6 +136,12 @@
             z-index: 1;
             transform: skewY(-3deg);
         }
+    }
+
+    .add-film {
+        background-color: blue;
+        padding: 1rem;
+        border-radius: 50%;
     }
     }
 </style>
