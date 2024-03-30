@@ -16,9 +16,24 @@ export interface TmdbFilm {
     poster_path: string,
     overview: string,
 }
-
+export interface CrewMember {
+    adult :boolean,
+    gender : number,
+    id : number,
+    known_for_department :string,
+    name :string,
+    original_name :string,
+    popularity :number,
+    profile_path :string,
+    credit_id :string,
+    department :string,
+    job :string,
+}
 export interface TmdbFilmWithExtras extends TmdbFilm {
     imdb_id: string,
+}
+export interface TmdbFilmCredits {
+    crew: CrewMember[],
 }
 
 export type Meeting = {
@@ -27,7 +42,8 @@ export type Meeting = {
         title: string
         year: number
         poster: string
-        plot: string
+        plot: string,
+        director: string
     }
     id: number
     date: Date

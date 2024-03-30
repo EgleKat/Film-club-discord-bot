@@ -13,6 +13,7 @@ model Film {
     plot    String
     year    String
     poster  String
+    director String?
     meeting Meeting[]
 }
 

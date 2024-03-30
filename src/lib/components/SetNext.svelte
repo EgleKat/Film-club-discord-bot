@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { TmdbFilm } from "$lib/types";
     import { debounce } from "lodash";
+    import Icon from "./Icon.svelte";
 
     const today = new Date();
     const nextSundayUtc = new Date(
@@ -28,6 +29,9 @@
 </script>
 
 <div class="set-next-film">
+    <button class="icon-button" on:click={closeSidePanel}>
+        Close
+     </button>
     <form method="POST" action="?/meeting">
         <p>
             Date:
@@ -72,25 +76,23 @@
             {/if}
             {#if autoCompleteList && autoCompleteList.length > 0}
                 <ul>
-                    <fieldset style="border: none">
-                        {#each autoCompleteList as film}
-                            <li style="list-style-type: none;">
-                                <input
-                                    type="radio"
-                                    id={film.id.toString()}
-                                    name="film"
-                                    value={film.id}
-                                    autocomplete="off"
-                                />
-                                <label for={film.id.toString()}
-                                    >{film.original_title} ({film.release_date.substring(
-                                        0,
-                                        4
-                                    )})</label
-                                >
-                            </li>
-                        {/each}
-                    </fieldset>
+                    {#each autoCompleteList as film}
+                    <li style="list-style-type: none;">
+                        <input
+                            type="radio"
+                            id={film.id.toString()}
+                            name="film"
+                            value={film.id}
+                            autocomplete="off"
+                        />
+                        <label for={film.id.toString()}
+                        >{film.original_title} ({film.release_date.substring(
+                            0,
+                            4
+                            )})</label
+                        >
+                    </li>
+                    {/each}
                 </ul>
                 <button type="submit" on:click={closeSidePanel}>Set next film</button>
             {/if}
@@ -102,5 +104,9 @@
     .set-next-film {
         border-left: 1px solid rgb(184, 184, 184);
         padding-left: 1rem;
+    }
+    ul {
+        overflow-y: auto;
+        max-height: 60vh;
     }
 </style>

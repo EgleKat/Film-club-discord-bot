@@ -2,11 +2,11 @@ import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
-export const addFilm = async (imdbId: string, title: string, year: string, poster: string, plot: string) => {
+export const addFilm = async (imdbId: string, title: string, year: string, poster: string, plot: string, director: string) => {
     return await prisma.film.upsert({ 
         where: { imdbId },
-        create: { imdbId, title, year, poster, plot },
-        update: { title, year, poster, plot },
+        create: { imdbId, title, year, poster, plot, director },
+        update: { title, year, poster, plot, director },
     })
 }
 export const createMeeting = async (filmId: string, date: Date, host: string) => {

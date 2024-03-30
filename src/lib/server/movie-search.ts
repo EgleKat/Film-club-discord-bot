@@ -1,6 +1,6 @@
 import { env } from "$env/dynamic/private";
 import { building } from '$app/environment';
-import type { TmdbFilmWithExtras } from "$lib/types";
+import type { TmdbFilmWithExtras, TmdbFilmCredits} from "$lib/types";
 
 async function queryOmdb<T>(params: string): Promise<T> {
     if (env.OMDB_API_KEY === undefined) throw new Error("OMDB_API_KEY is not defined");
@@ -30,6 +30,13 @@ async function tmdbGetMovie(tmdbId: number): Promise<TmdbFilmWithExtras> {
     );
     return (await result).json();
 }
+async function tmdbGetMovieCredits(tmdbId: number): Promise<TmdbFilmCredits> {
+    const result = fetch(
+        `https://api.themoviedb.org/3/movie/${tmdbId}/credits`,
+        tmdbFetchOptions
+    );
+    return (await result).json();
+}
 
 
-export default {queryOmdb, tmdbSearch, tmdbGetMovie}
+export default {queryOmdb, tmdbSearch, tmdbGetMovie, tmdbGetMovieCredits}

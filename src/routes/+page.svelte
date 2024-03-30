@@ -52,6 +52,7 @@
                     src={film.poster}
                     alt={`Poster for ${film.title}`}
                 />
+                <p class="film-director">Director - {film.director}</p>
                 <p class="film-plot">{film.plot}</p>
             </div>
         </div>
@@ -153,7 +154,6 @@
                 background-color: $main-blue;
                 color: #cadff4;
                 z-index: 1;
-                transform: skewY(-3deg);
             }
         }
     }
