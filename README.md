@@ -11,12 +11,15 @@
 CREATE DATABASE film_club_discord_bot;
 GRANT ALL PRIVILEGES ON DATABASE film_club_discord_bot TO <username>;
 ```
+### Alternatively run postgres in docker
+1. docker run --name film-club-postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=film_club_discord_bot -p 5432:5432 -d postgres
 ### Setup Prisma
 
 Add a `.env` file in your root directory with a `DATABASE_URL` variable inside, updating `<password>` to your database password and `<username>` to your username (e.g. postgres).
 ```
 DATABASE_URL="postgresql://<username>:<password>@localhost:5432/film_club_discord_bot?schema=public"
 ```
+If you followed the docker db setup, your username will be `postgres` and password `password`
 
 Then run the following commands
 ```bash

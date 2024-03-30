@@ -40,3 +40,9 @@ model Score {
 
     @@unique([clubber, meetingId], name: "userMeetingScoreIdentifier")
 }
+
+model Session {
+    id          String      @db.Uuid @id @default(uuid())
+    clubber     String
+    expiryTime  DateTime
+}

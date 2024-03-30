@@ -104,3 +104,30 @@ export const setShowScore = async (id: number) => {
         data: { showScore: true }
     })
 }
+
+// excludes expired sessions
+export const getValidSession = async (sessionId: string) => {
+    // remove expired sessions
+    await prisma.session.deleteMany({
+        where: {
+            expiryTime: { lte: new Date() },
+        }
+    })
+    return await prisma.session.findUnique({
+        where: { 
+            expiryTime: { gt: new Date() },
+            id: sessionId,
+        }
+    })
+}
+
+export const createSession = async (clubber: string) => {
+    const now = new Date();
+    const inOneYear = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    return await prisma.session.create({
+        data: {
+            clubber,
+            expiryTime: inOneYear,
+        },
+    })
+}
