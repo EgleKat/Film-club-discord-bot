@@ -14,6 +14,7 @@ model Film {
     year    String
     poster  String
     director String?
+    budget Int?
     meeting Meeting[]
 }
 

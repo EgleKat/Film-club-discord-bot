@@ -15,6 +15,7 @@ export interface TmdbFilm {
     id: number,
     poster_path: string,
     overview: string,
+    budget: number
 }
 export interface CrewMember {
     adult :boolean,
@@ -43,7 +44,8 @@ export type Meeting = {
         year: number
         poster: string
         plot: string,
-        director: string
+        director: string,
+        budget: number
     }
     id: number
     date: Date

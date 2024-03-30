@@ -46,13 +46,18 @@
 
         <div class="film-description">
             <div class="film-title">{film.title} ({film.year})</div>
+            {#if film.director}
+                <p class="film-director">Director - {film.director}</p>
+            {/if}
+            {#if film.budget > 0}
+                <p class="film-budget">Budget - {film.budget.toLocaleString()}</p>
+            {/if}
             <div class="film-poster-and-plot">
                 <img
                     class="film-poster"
                     src={film.poster}
                     alt={`Poster for ${film.title}`}
                 />
-                <p class="film-director">Director - {film.director}</p>
                 <p class="film-plot">{film.plot}</p>
             </div>
         </div>
@@ -121,6 +126,12 @@
             font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 1rem;
+        }
+        .film-director{
+
+        }
+        .film-budget {
+            
         }
         .film-poster-and-plot {
             border-radius: 4px;
