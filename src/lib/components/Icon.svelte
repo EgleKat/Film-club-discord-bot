@@ -12,7 +12,8 @@
 <style lang="scss">
     svg {
         &.medium-button {
-            margin-bottom: -2px;
+            margin-bottom: -4px;
         }
+        stroke-width: 2px;
     }
 </style>

@@ -17,12 +17,13 @@
 
 <style lang="scss">
     .button {
-        border-radius: 7px;
+        border-radius: 3px;
         border: 1px solid $button-border;
-        padding: 0.2rem 0.8rem;
+        padding: 0.5rem 1.25rem;
         letter-spacing: 0.5px;
         display: button;
         margin-left: 0.2rem;
+        position: relative;
         &--primary {
             background-color: $button-primary-bg;
             color: $button-primary-color;
@@ -37,7 +38,42 @@
             }
         }
         &--secondary {
-            // TODO: implement
+            background-color: $button-secondary-bg;
+            color: $button-secondary-color;
+            border-color: $button-secondary-border;
+            &::after {
+                position: absolute;
+                content: "";
+                display: block;
+
+                border-left: 1.75rem solid transparent;
+                border-top: 0 solid transparent;
+                
+                border-bottom: 1.75rem solid $body-color;
+                right: -5px;
+                bottom: -5px;
+            }
+            &::before {
+                position: absolute;
+                content: "";
+                display: block;
+
+                border-left: 1.75rem solid transparent;
+                border-top: 0 solid transparent;
+                
+                border-bottom: 1.75rem solid black;
+                right: -5px;
+                bottom: -5px;
+            }
+            &:hover,
+            &:focus {
+                background-color: $button-secondary-hover-bg;
+                border-color: $button-secondary-hover-border;
+                color: $button-secondary-hover-color;
+            }
+            &:active {
+                background-color: $button-secondary-active-bg;
+            }
         }
         &--xsmall {
             // TODO: implement

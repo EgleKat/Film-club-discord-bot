@@ -20,6 +20,16 @@ $button-primary-border:  #586b87;
 
 $button-primary-hover-border:  #566884;
 
+$button-secondary-bg:  $main-orange;
+$button-secondary-hover-bg:  #df8f20;
+$button-secondary-active-bg:  #d68719;
+
+$button-secondary-color: #341f02;// #0c0e11;
+$button-secondary-hover-color: #341f02;// #0c0e11;
+$button-secondary-border:  #a86e1c;
+
+$button-secondary-hover-border:  #566884;
+
 @mixin desktop {
   @media (min-width: #{$breakpoint-desktop}) {
     @content;

@@ -21,8 +21,8 @@
         <h1>Score - {title}</h1>
         Your score:
         <input type="text" name="score" placeholder="Enter your score" />
-        <Button variant="primary" size="medium" type="submit">
-            <Icon type="check-circle" class="medium-button"/>
+        <Button variant="secondary" size="medium" type="submit">
+            <Icon type="tick" class="medium-button" width="1.25rem" height="1.25rem"/>
             Submit Score
         </Button>
     </form>
