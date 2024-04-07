@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { Score } from "$lib/types"
     import Button from "./Button.svelte";
+    import Icon from "./Icon.svelte";
     
     export let title: string
     export let scores: Score[]
@@ -21,7 +22,9 @@
         Your score:
         <input type="text" name="score" placeholder="Enter your score" />
         <Button variant="primary" size="medium" type="submit">
-        Submit Score</Button>
+            <Icon type="check-circle" class="medium-button"/>
+            Submit Score
+        </Button>
     </form>
     <input 
         type="submit" 

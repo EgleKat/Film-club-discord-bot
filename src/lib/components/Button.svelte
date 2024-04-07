@@ -49,7 +49,6 @@
             line-height: 1rem;
         }
         &--medium {
-            // TODO: implement
             font-size: 1rem;
             line-height: 1.25rem;
         }

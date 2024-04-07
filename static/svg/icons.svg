@@ -1,17 +1,32 @@
 <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
+        <!-- Icons by <a href="https://iconscout.com/contributors/bharat-icons" class="text-underline font-size-sm">Bharat Design</a> -->
         <symbol id="user" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="6" r="4" stroke="#1C274C" stroke-width="1.5"/>
-            <path d="M19.9975 18C20 17.8358 20 17.669 20 17.5C20 15.0147 16.4183 13 12 13C7.58172 13 4 15.0147 4 17.5C4 19.9853 4 22 12 22C14.231 22 15.8398 21.8433 17 21.5634" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="12" cy="6" r="4" stroke="#1C274C" stroke-width="1.5" />
+            <path
+                d="M19.9975 18C20 17.8358 20 17.669 20 17.5C20 15.0147 16.4183 13 12 13C7.58172 13 4 15.0147 4 17.5C4 19.9853 4 22 12 22C14.231 22 15.8398 21.8433 17 21.5634"
+                stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
         </symbol>
 
-        <symbol id="calendar-mark" viewBox="0 0 24 24" fill="none">
-            <path d="M7 4V2.5" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M17 4V2.5" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
-            <circle cx="16.5" cy="16.5" r="1.5" stroke="#1C274C" stroke-width="1.5"/>
-            <path d="M21.5 9H16.625H10.75M2 9H5.875" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M14 22H10C6.22876 22 4.34315 22 3.17157 20.8284C2 19.6569 2 17.7712 2 14V12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12V14C22 17.7712 22 19.6569 20.8284 20.8284C20.1752 21.4816 19.3001 21.7706 18 21.8985" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
-        </symbol>    
 
+        <symbol id="calendar-mark" viewBox="0 0 24 24" fill="none">
+            <path d="M7 4V2.5" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M17 4V2.5" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
+            <circle cx="16.5" cy="16.5" r="1.5" stroke="#1C274C" stroke-width="1.5" />
+            <path d="M21.5 9H16.625H10.75M2 9H5.875" stroke="#1C274C" stroke-width="1.5"
+                stroke-linecap="round" />
+            <path
+                d="M14 22H10C6.22876 22 4.34315 22 3.17157 20.8284C2 19.6569 2 17.7712 2 14V12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12V14C22 17.7712 22 19.6569 20.8284 20.8284C20.1752 21.4816 19.3001 21.7706 18 21.8985"
+                stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
+        </symbol>
+
+        <symbol id="check-circle" viewBox="0 0 24 24" fill="none">
+            <path fill="#111" fill-rule="evenodd"
+                d="M16.0303 8.96967C16.3232 9.26256 16.3232 9.73744 16.0303 10.0303L11.0303 15.0303C10.7374 15.3232 10.2626 15.3232 9.96967 15.0303L7.96967 13.0303C7.67678 12.7374 7.67678 12.2626 7.96967 11.9697C8.26256 11.6768 8.73744 11.6768 9.03033 11.9697L10.5 13.4393L14.9697 8.96967C15.2626 8.67678 15.7374 8.67678 16.0303 8.96967Z"
+                clip-rule="evenodd"></path>
+            <path fill="#111" fill-rule="evenodd"
+                d="M12 2.75C10.3139 2.75 8.73533 3.20043 7.37554 3.98703C7.017 4.19443 6.5582 4.07191 6.3508 3.71337C6.14339 3.35482 6.26591 2.89602 6.62446 2.68862C8.2064 1.77351 10.0432 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12C1.25 10.0432 1.77351 8.2064 2.68862 6.62446C2.89602 6.26591 3.35482 6.14339 3.71337 6.3508C4.07191 6.5582 4.19443 7.017 3.98703 7.37554C3.20043 8.73533 2.75 10.3139 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75Z"
+                clip-rule="evenodd"></path>
+        </symbol>
     </defs>
 </svg>

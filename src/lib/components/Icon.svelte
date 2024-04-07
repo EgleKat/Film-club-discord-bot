@@ -7,3 +7,12 @@
 <svg class={$$props.class} width={width} height={height}>
     <use href={`/svg/icons.svg#${type}`} />
 </svg>
+
+
+<style lang="scss">
+    svg {
+        &.medium-button {
+            margin-bottom: -2px;
+        }
+    }
+</style>
