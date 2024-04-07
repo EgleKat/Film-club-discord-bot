@@ -8,6 +8,7 @@
     import SetNext from "$lib/components/SetNext.svelte";
     import { slide } from "svelte/transition";
     import { quintOut } from "svelte/easing";
+    import Button from "$lib/components/Button.svelte";
     type PageData = {
         meeting?: Meeting;
         usernames: string[];
@@ -65,11 +66,13 @@
         <p>No film set for this week yet!</p>
     {/if}
 
-    <button
+    <Button variant="primary" size="medium">
+        <button
         class="add-film"
         on:click={() => (isSidePanelOpen = !isSidePanelOpen)}
-        >Choose next film</button
-    >
+        >Choose next film
+        </button>    
+    </Button>
     {#if isSidePanelOpen}
         <div
             class="side-panel"

@@ -9,6 +9,17 @@ $main-bordo: #23001e;
 $main-light-blue: #a5d8ff;
 $main-red: #de3c4b;
 
+$button-border: #7193ae71;
+
+$button-primary-bg:  #a5d8ff;
+$button-primary-hover-bg:  #99cef5;
+$button-primary-active-bg:  #6fbbf1;
+
+$button-primary-color:  #0c0e11;
+$button-primary-border:  #586b87;
+
+$button-primary-hover-border:  #566884;
+
 @mixin desktop {
   @media (min-width: #{$breakpoint-desktop}) {
     @content;
