@@ -46,7 +46,13 @@
         </div>
 
         <div class="film-description">
-            <div class="film-title">{film.title} ({film.year})</div>
+            <div class="film-header">
+                <div class="film-title">{film.title} ({film.year})</div>
+                <Button variant="tertiary" size="small" class="add-film" on:click={() => (isSidePanelOpen = !isSidePanelOpen)}>
+                    Choose next film
+                    <Icon type="chevron-double-right" width="1.5rem" height="1.5rem" />
+                </Button>
+            </div>
             {#if film.director}
                 <p class="film-director">Director - {film.director}</p>
             {/if}
@@ -65,14 +71,6 @@
     {:else}
         <p>No film set for this week yet!</p>
     {/if}
-
-    <Button variant="primary" size="medium">
-        <button
-        class="add-film"
-        on:click={() => (isSidePanelOpen = !isSidePanelOpen)}
-        >Choose next film
-        </button>    
-    </Button>
     {#if isSidePanelOpen}
         <div
             class="side-panel"
@@ -109,11 +107,9 @@
         margin: 1rem 0;
         background-color: $main-orange;
         padding: 2rem;
-        margin-bottom: 2rem;
         position: relative;
         $cutout-height: 6rem;
         margin-bottom: $cutout-height;
-        padding-bottom: $cutout-height - 2rem;
         &:after {
             content: "";
             position: absolute;
@@ -123,6 +119,10 @@
             background-color: #f0f0ff;
             transform: skewY(-3deg);
             border-top: solid #f0f0ff $cutout-height;
+        }
+        .film-header{
+            display: flex;
+            justify-content: space-between;
         }
         .film-title {
             color: #2a1a04;

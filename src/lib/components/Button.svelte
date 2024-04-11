@@ -1,12 +1,12 @@
 <script lang="ts">
-    export let variant: "primary" | "secondary" | undefined;
+    export let variant: "primary" | "secondary" | "tertiary" | undefined;
     export let size: "small" | "medium" | "large" | undefined;
 
     const variantText = variant ? " button--" + variant : "";
     const sizeText = size ? " button--" + size : "";
     let buttonProps: any = {
         type: $$restProps.type,
-        class: [$$restProps.class + " button" + variantText + sizeText],
+        class: [variantText + sizeText + " " +$$restProps.class + " button"],
     };
 </script>
 
@@ -24,6 +24,9 @@
         display: button;
         margin-left: 0.2rem;
         position: relative;
+        &:hover{
+            cursor: pointer;
+        }
         &--primary {
             background-color: $button-primary-bg;
             color: $button-primary-color;
@@ -75,14 +78,32 @@
                 background-color: $button-secondary-active-bg;
             }
         }
+
+        &--tertiary {
+            background-color: $button-tertiary-bg;
+            color: $button-tertiary-color;
+            border-color: $button-tertiary-border;
+            &:hover,
+            &:focus {
+                background-color: $button-tertiary-hover-bg;
+                border-color: $button-tertiary-hover-border;
+                color: $button-tertiary-hover-color;
+            }
+            &:active {
+                background-color: $button-tertiary-active-bg;
+            }
+        }
+
         &--xsmall {
             // TODO: implement
             font-size: 0.5rem;
         }
         &--small {
-            // TODO: implement
+            padding: 0.1rem 0.8rem;
             font-size: 0.75rem;
             line-height: 1rem;
+            height: 2rem;
+            letter-spacing: 0.6px;
         }
         &--medium {
             font-size: 1rem;
@@ -95,6 +116,11 @@
         &--xlarge {
             // TODO: implement
             font-size: 1.5rem;
+        }
+        &.add-film {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
     }
 </style>
