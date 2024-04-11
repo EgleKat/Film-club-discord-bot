@@ -49,7 +49,7 @@
                 border-left: 1.75rem solid transparent;
                 border-top: 0 solid transparent;
                 
-                border-bottom: 1.75rem solid $body-color;
+                border-bottom: 1.75rem solid $section-bg;
                 right: -5px;
                 bottom: -5px;
             }
