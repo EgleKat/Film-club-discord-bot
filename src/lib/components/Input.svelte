@@ -3,6 +3,7 @@
         type: $$restProps.type,
         id: $$restProps.id,
         class: [$$restProps.class + " input"],
+        name: $$restProps.name,
     };
 </script>
 
