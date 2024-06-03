@@ -10,6 +10,7 @@ export interface OmdbFilmWithPlot extends OmdbFilm {
 }
 
 export interface TmdbFilm {
+    title: string;
     original_title: string,
     release_date: string,
     id: number,
@@ -39,6 +40,7 @@ export interface TmdbFilmCredits {
 
 export type Meeting = {
     film: {
+        originalTitle: string;
         imdbId: string
         title: string
         year: number

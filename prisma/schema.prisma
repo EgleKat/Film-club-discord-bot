@@ -9,7 +9,8 @@ datasource db {
 
 model Film {
     imdbId  String    @id
-    title   String
+    title   String?
+    originalTitle   String
     plot    String
     year    String
     poster  String

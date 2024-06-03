@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { getTitleWithOriginalTitle } from "$lib";
     import type { Meeting } from "$lib/types";
 
     export let data: { meetings: Meeting[]}
@@ -18,7 +19,7 @@
             <tr class:hidden={meeting.hidden}>
                 <td>{meeting.date.toLocaleDateString()}</td>
                 <td>{meeting.host}</td>
-                <td>{meeting.film.title}</td>
+                <td>{getTitleWithOriginalTitle(meeting.film)}</td>
                 <td>{meeting.scores.map(score => score.clubber[0] + ":" + score.score).join(",")}</td>
                 <td>
                     <form method="post" action="?/toggleHidden">

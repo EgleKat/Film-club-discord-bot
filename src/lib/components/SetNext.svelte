@@ -2,6 +2,7 @@
     import type { TmdbFilm } from "$lib/types";
     import { debounce } from "lodash";
     import Icon from "./Icon.svelte";
+    import { getTitleWithOriginalTitle } from "$lib";
 
     const today = new Date();
     const nextSundayUtc = new Date(
@@ -86,7 +87,7 @@
                             autocomplete="off"
                         />
                         <label for={film.id.toString()}
-                        >{film.original_title} ({film.release_date.substring(
+                        >{getTitleWithOriginalTitle({title: film.title, originalTitle: film.original_title})} ({film.release_date.substring(
                             0,
                             4
                             )})</label

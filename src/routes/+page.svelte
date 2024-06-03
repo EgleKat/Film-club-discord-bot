@@ -9,6 +9,7 @@
     import { slide } from "svelte/transition";
     import { quintOut } from "svelte/easing";
     import Button from "$lib/components/Button.svelte";
+    import { getTitleWithOriginalTitle } from "$lib";
     type PageData = {
         meeting?: Meeting;
         usernames: string[];
@@ -47,7 +48,7 @@
 
         <div class="film-description">
             <div class="film-header">
-                <div class="film-title">{film.title} ({film.year})</div>
+                <div class="film-title">{getTitleWithOriginalTitle(film)} ({film.year})</div>
                 <Button variant="tertiary" size="small" class="add-film" on:click={() => (isSidePanelOpen = !isSidePanelOpen)}>
                     Choose next film
                     <Icon type="chevron-double-right" width="1.5rem" height="1.5rem" />
@@ -63,7 +64,7 @@
                 <img
                     class="film-poster"
                     src={film.poster}
-                    alt={`Poster for ${film.title}`}
+                    alt={`Poster for ${film.originalTitle}`}
                 />
                 <p class="film-plot">{film.plot}</p>
             </div>
@@ -88,7 +89,7 @@
 <section>
     {#if film}
         <ScoreModal
-            title={film?.title ?? ""}
+            title={getTitleWithOriginalTitle(film)}
             {scores}
             {numberOfSubmittedScores}
         />

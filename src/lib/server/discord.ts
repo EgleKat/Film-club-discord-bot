@@ -7,7 +7,7 @@ export async function postScores(film: Film, scores: Score[]) {
     if (!filmClubChannelWebhookUrl) {
         console.error("DISCORD_WEBHOOK_URL__FILM_CLUB should be set to a valid discord webhook URL")
     }
-    const messageHeader = `**${film.title} (${film.year})**`
+    const messageHeader = `**${film.originalTitle}${film.title ? " (" + film.title + ")" : ""} (${film.year})**`
     const messageBody = (
         scores.length !== 0
             ? scores.map(score => `${score.clubber} - ${score.score}`).join("\n")
