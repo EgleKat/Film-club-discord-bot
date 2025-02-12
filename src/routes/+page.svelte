@@ -1,7 +1,6 @@
 <script lang="ts">
     import ScoreModal from "$lib/components/ScoreModal.svelte";
     import type { Meeting, Score } from "$lib/types";
-    import lodash from "lodash";
     import Toast from "$lib/components/Toast.svelte";
     import Icon from "$lib/components/Icon.svelte";
     import SpanWithIcon from "$lib/components/SpanWithIcon.svelte";
@@ -71,6 +70,10 @@
         </div>
     {:else}
         <p>No film set for this week yet!</p>
+        <Button variant="tertiary" size="small" class="add-film" on:click={() => (isSidePanelOpen = !isSidePanelOpen)}>
+            Choose next film
+            <Icon type="chevron-double-right" width="1.5rem" height="1.5rem" />
+        </Button>
     {/if}
     {#if isSidePanelOpen}
         <div

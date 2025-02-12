@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, WatchListEntry } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
@@ -129,5 +129,42 @@ export const createSession = async (clubber: string) => {
             clubber,
             expiryTime: inOneYear,
         },
+    })
+}
+
+/**
+ * @returns Watched & unwatched watch records of films
+ */
+export const getWatchList = async (clubber: string) => {
+    // TODO: get scores for all films from other clubbers from meetings and watchlists
+    return await prisma.watchListEntry.findMany({
+        where: { clubber },
+        orderBy: { dateWatched: "desc" },
+        include: { film: true }
+    })
+}
+export const addToWatchList = async (filmId: string, clubber: string, dateWatched?: Date, score?: string) => {
+    return await prisma.watchListEntry.create({
+        data: {
+            filmId,
+            dateWatched,
+            clubber,
+            score
+        }
+    })
+}
+export const watchAndReview = async (watchListEntryId: number, dateWatched: Date, score: string) => {
+    return await prisma.watchListEntry.update({
+        where: {  id: watchListEntryId },
+        data: { dateWatched, score },
+    })
+}
+export const toggleHiddenWatchListEntry = async (watchlistEntryId: number) => {
+    const watchlistEntry = await prisma.watchListEntry.findUniqueOrThrow({
+        where: { id: watchlistEntryId },
+    })
+    return await prisma.watchListEntry.update({
+        where: { id: watchlistEntryId },
+        data: { hidden: !watchlistEntry.hidden },
     })
 }

@@ -1,8 +1,5 @@
 <script lang="ts">
-    import type { TmdbFilm } from "$lib/types";
-    import { debounce } from "lodash";
-    import Icon from "./Icon.svelte";
-    import { getTitleWithOriginalTitle } from "$lib";
+    import FilmSelector from "./FilmSelector.svelte";
 
     const today = new Date();
     const nextSundayUtc = new Date(
@@ -12,21 +9,8 @@
             today.getDate() + (7 - today.getDay())
         )
     );
-    let autoCompleteList: TmdbFilm[] | null = null;
     export let usernames: string[];
     export let closeSidePanel: () => void;
-    const searchFilm = debounce((e: Event) => {
-        e.preventDefault();
-        const input = e.target as HTMLInputElement;
-        const title = input.value;
-        fetch(`/api/v1/tmdb/search?query=${encodeURIComponent(title)}`, {
-            method: "GET",
-        })
-            .then((res) => res.json())
-            .then((filmData) => {
-                autoCompleteList = filmData.results;
-            });
-    }, 200);
 </script>
 
 <div class="set-next-film">
@@ -42,6 +26,7 @@
                 name="date"
                 autocomplete="off"
                 value={nextSundayUtc.toISOString().substring(0, 10)}
+                required
             />
         </p>
         <p />
@@ -55,49 +40,16 @@
                         value={username}
                         id={username}
                         autocomplete="off"
+                        required
                     />
                     <label for={username}>{username}</label>
                 </div>
             {/each}
         </fieldset>
         <p>
-            Film:
-            <input
-                type="text"
-                placeholder="e.g. Titanic"
-                on:input={searchFilm}
-                autocomplete="off"
-            />
-
-            {#if !autoCompleteList}
-                <p>Start typing to search for a film</p>
-            {/if}
-            {#if autoCompleteList && autoCompleteList.length === 0}
-                <p>No films found</p>
-            {/if}
-            {#if autoCompleteList && autoCompleteList.length > 0}
-                <ul>
-                    {#each autoCompleteList as film}
-                    <li style="list-style-type: none;">
-                        <input
-                            type="radio"
-                            id={film.id.toString()}
-                            name="film"
-                            value={film.id}
-                            autocomplete="off"
-                        />
-                        <label for={film.id.toString()}
-                        >{getTitleWithOriginalTitle({title: film.title, originalTitle: film.original_title})} ({film.release_date.substring(
-                            0,
-                            4
-                            )})</label
-                        >
-                    </li>
-                    {/each}
-                </ul>
-                <button type="submit" on:click={closeSidePanel}>Set next film</button>
-            {/if}
+            <FilmSelector />
         </p>
+        <button type="submit" on:submit={closeSidePanel}>Set next film</button>
     </form>
 </div>
 
@@ -105,9 +57,5 @@
     .set-next-film {
         border-left: 1px solid rgb(184, 184, 184);
         padding-left: 1rem;
-    }
-    ul {
-        overflow-y: auto;
-        max-height: 60vh;
     }
 </style>

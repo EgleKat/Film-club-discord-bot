@@ -16,7 +16,8 @@ model Film {
     poster  String
     director String?
     budget Int?
-    meeting Meeting[]
+    meetings Meeting[]
+    watchListEntries WatchListEntry[]
 }
 
 model Meeting {
@@ -46,4 +47,16 @@ model Session {
     id          String      @db.Uuid @id @default(uuid())
     clubber     String
     expiryTime  DateTime
+}
+
+model WatchListEntry {
+    id          Int         @id @default(autoincrement())
+    clubber     String
+    score       String?
+    dateWatched DateTime?
+
+    film        Film        @relation(fields: [filmId], references: [imdbId])
+    filmId      String
+
+    hidden      Boolean     @default(false)
 }
