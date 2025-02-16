@@ -1,4 +1,4 @@
-import { PrismaClient, WatchListEntry } from "@prisma/client"
+import { Film, PrismaClient, WatchListEntry } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
@@ -132,16 +132,72 @@ export const createSession = async (clubber: string) => {
     })
 }
 
+interface MergedWatchListEntry {
+    id: number | null,
+    film: Film,
+    hidden: boolean,
+    dateWatched: Date | null,
+    scores: { clubber: string, score: string | null }[]
+    isMeeting: boolean,
+}
+
 /**
  * @returns Watched & unwatched watch records of films
  */
 export const getWatchList = async (clubber: string) => {
-    // TODO: get scores for all films from other clubbers from meetings and watchlists
-    return await prisma.watchListEntry.findMany({
+    const myWatchlist = await prisma.watchListEntry.findMany({
         where: { clubber },
         orderBy: { dateWatched: "desc" },
         include: { film: true }
     })
+    // console.log(myWatchlist)
+
+    const watchListFilms = myWatchlist.map(w => w.filmId)
+    const otherWatchListEntriesWithMyFilms = await prisma.watchListEntry.findMany({
+        where: { NOT: { clubber }, filmId: { in: watchListFilms } },
+    })
+    const meetingsIwasIn = await prisma.meeting.findMany({
+        where: { scores: { some: { clubber } }, hidden: false },
+        include: { scores: true, film: true }
+    });
+    const meetingsWithMyFilmsIWasNotIn = await prisma.meeting.findMany({
+        where: { filmId: { in: watchListFilms }, hidden: false, NOT: { scores: { some: { clubber } } } },
+        include: { scores: true }
+    })
+    let filmToScores: MergedWatchListEntry[] = meetingsIwasIn.map(meeting => ({
+        id: null,
+        film: meeting.film,
+        hidden: false,
+        dateWatched: meeting.date,
+        scores: meeting.scores.map(score => ({
+            clubber: score.clubber,
+            score: score.score,
+        })),
+        isMeeting: true,
+    }))
+    filmToScores = filmToScores.concat(myWatchlist.map(watchListEntry => ({
+        id: watchListEntry.id,
+        film: watchListEntry.film,
+        hidden: watchListEntry.hidden,
+        dateWatched: watchListEntry.dateWatched,
+        scores: [
+            { clubber: watchListEntry.clubber, score: watchListEntry.score }
+        ].concat(
+            meetingsWithMyFilmsIWasNotIn.filter(
+                meeting => meeting.filmId === watchListEntry.filmId
+            ).flatMap(
+                meeting => meeting.scores.map(score => ({clubber: score.clubber, score: score.score}))
+            )
+        ).concat(
+            otherWatchListEntriesWithMyFilms.filter(
+                otherWatchListEntry => otherWatchListEntry.filmId === watchListEntry.filmId
+            ).map(
+                watchListEntry => ({clubber: watchListEntry.clubber, score: watchListEntry.score})
+            )
+        ),
+        isMeeting: false,
+    })))
+    return filmToScores;
 }
 export const addToWatchList = async (filmId: string, clubber: string, dateWatched?: Date, score?: string) => {
     return await prisma.watchListEntry.create({

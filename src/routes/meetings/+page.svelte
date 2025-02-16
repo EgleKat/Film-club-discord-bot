@@ -20,7 +20,7 @@
                 <td>{meeting.date.toLocaleDateString()}</td>
                 <td>{meeting.host}</td>
                 <td>{getTitleWithOriginalTitle(meeting.film)}</td>
-                <td>{meeting.scores.map(score => score.clubber[0] + ":" + score.score).join(",")}</td>
+                <td>{meeting.scores.map(score => score.clubber.slice(0, 2) + ":" + score.score).join(",")}</td>
                 <td>
                     <form method="post" action="?/toggleHidden">
                         <input type="hidden" name="id" value={meeting.id} />

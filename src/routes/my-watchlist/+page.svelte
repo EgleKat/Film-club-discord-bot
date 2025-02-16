@@ -18,6 +18,7 @@
         node.valueAsDate = new Date();
     };
     let showHidden = false;
+    let showWatchedInMeetings = true;
 </script>
 {#if isSidePanelOpen}
     <div
@@ -58,7 +59,9 @@
     Add film
     <Icon type="chevron-double-right" width="1.5rem" height="1.5rem" />
 </Button>
-<label for="showHidden">Show hidden films</label><input type="checkbox" value="{showHidden}" on:click={() => showHidden = !showHidden} id="showHidden" />
+<label for="showHidden">Show hidden films</label><input type="checkbox" bind:checked={showHidden} id="showHidden" />
+<br>
+<label for="showWatchedInMeetings">Show films watched for meetings</label><input type="checkbox" bind:checked={showWatchedInMeetings} id="showWatchedInMeetings" />
 <h2>Watched</h2>
 <table>
     <thead>
@@ -70,12 +73,12 @@
     </thead>
     <tbody>
         {#each watchedWatchlist as watchlistEntry}
-            {#if showHidden || !watchlistEntry.hidden}
+            {#if (showHidden || !watchlistEntry.hidden) && (showWatchedInMeetings || !watchlistEntry.isMeeting)}
             <tr class:hidden={watchlistEntry.hidden}>
                 <td>{watchlistEntry.dateWatched.toLocaleDateString()}</td>
                 <td>{getTitleWithOriginalTitle(watchlistEntry.film)}</td>
-                <td>{data.currentUserUsername[0] + ":" + watchlistEntry.score}</td>
-                <!-- TODO: show other clubbers scores for this film-->
+                <td>{watchlistEntry.scores.filter(score => score.score != null).map(score => score.clubber.slice(0, 2) + ":" + score.score).join(",")}</td>
+                {#if !watchlistEntry.isMeeting}
                 <td>
                     <form method="post" action="?/toggleHidden">
                         <input type="hidden" name="id" value={watchlistEntry.id} />
@@ -88,6 +91,7 @@
                         </button>
                     </form>
                 </td>
+                {/if}
             </tr>
             {/if}
         {:else}
@@ -103,6 +107,7 @@
     <thead>
         <tr>
             <th>Film</th>
+            <th>Other people's scores</th>
         </tr>
     </thead>
     <tbody>
@@ -110,6 +115,11 @@
             {#if showHidden || !watchlistEntry.hidden}
             <tr class:hidden={watchlistEntry.hidden}>
                 <td>{getTitleWithOriginalTitle(watchlistEntry.film)}</td>
+                {#if watchlistEntry.scores.length > 0}
+                <td>{watchlistEntry.scores.filter(score => score.score != null).map(score => score.clubber.slice(0, 2) + ":" + score.score).join(",")}</td>
+                {:else}
+                <td></td>
+                {/if}
                 <td>
                     <form method="post" action="?/toggleHidden">
                         <input type="hidden" name="id" value={watchlistEntry.id} />
@@ -145,7 +155,7 @@
             {/if}
         {:else}
             <tr>
-                <td colspan="3">No unwatched films on your list! Congratulations&mdash;why not add another?</td>
+                <td colspan="3">Congratulations, you watched everything! Why not add another?</td>
             </tr>
         {/each}
     </tbody>

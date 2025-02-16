@@ -1,8 +1,6 @@
-import { addFilm, addToWatchList, getWatchList, toggleHiddenWatchListEntry, watchAndReview } from '$lib/server/database.js'
+import { addToWatchList, getWatchList, toggleHiddenWatchListEntry, watchAndReview } from '$lib/server/database.js'
 import { findAndAddFilm } from '$lib/server/service.js';
 import { fail, type Actions } from '@sveltejs/kit'
-import { isInteger } from 'lodash';
-import { parse } from 'path';
 
 export const load = async ({locals}) => {
     const currentUserUsername = locals.user.username;
