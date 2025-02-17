@@ -7,6 +7,7 @@
     import Icon from "$lib/components/Icon.svelte";
     import FilmSelector from "$lib/components/FilmSelector.svelte";
     import Input from "$lib/components/Input.svelte";
+  import FilmTitle from "$lib/components/FilmTitle.svelte";
 
     export let data: PageData
     let watchedWatchlist = data.watchlist.filter(watchlistEntry => watchlistEntry.dateWatched != null);
@@ -61,46 +62,6 @@
 </Button>
 <label for="showHidden">Show hidden films</label><input type="checkbox" bind:checked={showHidden} id="showHidden" />
 <br>
-<label for="showWatchedInMeetings">Show films watched for meetings</label><input type="checkbox" bind:checked={showWatchedInMeetings} id="showWatchedInMeetings" />
-<h2>Watched</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Film</th>
-            <th>Score</th>
-        </tr>
-    </thead>
-    <tbody>
-        {#each watchedWatchlist as watchlistEntry}
-            {#if (showHidden || !watchlistEntry.hidden) && (showWatchedInMeetings || !watchlistEntry.isMeeting)}
-            <tr class:hidden={watchlistEntry.hidden}>
-                <td>{watchlistEntry.dateWatched.toLocaleDateString()}</td>
-                <td>{getTitleWithOriginalTitle(watchlistEntry.film)}</td>
-                <td>{watchlistEntry.scores.filter(score => score.score != null).map(score => score.clubber.slice(0, 2) + ":" + score.score).join(",")}</td>
-                {#if !watchlistEntry.isMeeting}
-                <td>
-                    <form method="post" action="?/toggleHidden">
-                        <input type="hidden" name="id" value={watchlistEntry.id} />
-                        <button type="submit">
-                            {#if watchlistEntry.hidden}
-                                Unhide
-                            {:else}
-                                Hide
-                            {/if}
-                        </button>
-                    </form>
-                </td>
-                {/if}
-            </tr>
-            {/if}
-        {:else}
-            <tr>
-                <td colspan="3">No films watched yet</td>
-            </tr>
-        {/each}
-    </tbody>
-</table>
 
 <h2>Unwatched</h2>
 <table>
@@ -114,7 +75,7 @@
         {#each unwatchedWatchlist as watchlistEntry}
             {#if showHidden || !watchlistEntry.hidden}
             <tr class:hidden={watchlistEntry.hidden}>
-                <td>{getTitleWithOriginalTitle(watchlistEntry.film)}</td>
+                <td><FilmTitle film={watchlistEntry.film}/></td>
                 {#if watchlistEntry.scores.length > 0}
                 <td>{watchlistEntry.scores.filter(score => score.score != null).map(score => score.clubber.slice(0, 2) + ":" + score.score).join(",")}</td>
                 {:else}
@@ -156,6 +117,47 @@
         {:else}
             <tr>
                 <td colspan="3">Congratulations, you watched everything! Why not add another?</td>
+            </tr>
+        {/each}
+    </tbody>
+</table>
+
+<h2>Watched</h2>
+<label for="showWatchedInMeetings">Show films watched for meetings</label><input type="checkbox" bind:checked={showWatchedInMeetings} id="showWatchedInMeetings" />
+<table>
+    <thead>
+        <tr>
+            <th>Film</th>
+            <th>Date</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        {#each watchedWatchlist as watchlistEntry}
+            {#if (showHidden || !watchlistEntry.hidden) && (showWatchedInMeetings || !watchlistEntry.isMeeting)}
+            <tr class:hidden={watchlistEntry.hidden}>
+                <td><FilmTitle film={watchlistEntry.film}/></td>
+                <td>{watchlistEntry.dateWatched.toLocaleDateString()}</td>
+                <td>{watchlistEntry.scores.filter(score => score.score != null).map(score => score.clubber.slice(0, 2) + ":" + score.score).join(",")}</td>
+                {#if !watchlistEntry.isMeeting}
+                <td>
+                    <form method="post" action="?/toggleHidden">
+                        <input type="hidden" name="id" value={watchlistEntry.id} />
+                        <button type="submit">
+                            {#if watchlistEntry.hidden}
+                                Unhide
+                            {:else}
+                                Hide
+                            {/if}
+                        </button>
+                    </form>
+                </td>
+                {/if}
+            </tr>
+            {/if}
+        {:else}
+            <tr>
+                <td colspan="3">No films watched yet</td>
             </tr>
         {/each}
     </tbody>

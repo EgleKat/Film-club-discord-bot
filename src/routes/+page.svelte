@@ -9,12 +9,8 @@
     import { quintOut } from "svelte/easing";
     import Button from "$lib/components/Button.svelte";
     import { getTitleWithOriginalTitle } from "$lib";
-    type PageData = {
-        meeting?: Meeting;
-        usernames: string[];
-        scores: Score[];
-        numberOfSubmittedScores: number;
-    };
+    import type { PageData } from "./$types";
+  import FilmTitle from "$lib/components/FilmTitle.svelte";
 
     export let data: PageData;
     export let form;
@@ -47,7 +43,7 @@
 
         <div class="film-description">
             <div class="film-header">
-                <div class="film-title">{getTitleWithOriginalTitle(film)} ({film.year})</div>
+                <div class="film-title"><FilmTitle film={meeting.film} /></div>
                 <Button variant="tertiary" size="small" class="add-film" on:click={() => (isSidePanelOpen = !isSidePanelOpen)}>
                     Choose next film
                     <Icon type="chevron-double-right" width="1.5rem" height="1.5rem" />
@@ -56,7 +52,7 @@
             {#if film.director}
                 <p class="film-director">Director - {film.director}</p>
             {/if}
-            {#if film.budget > 0}
+            {#if film.budget && film.budget > 0}
                 <p class="film-budget">Budget - {film.budget.toLocaleString()}</p>
             {/if}
             <div class="film-poster-and-plot">

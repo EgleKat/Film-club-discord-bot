@@ -1,25 +1,26 @@
 <script lang="ts">
     import { getTitleWithOriginalTitle } from "$lib";
-    import type { Meeting } from "$lib/types";
+  import FilmTitle from "$lib/components/FilmTitle.svelte";
+    import type { PageData } from "./$types"
 
-    export let data: { meetings: Meeting[]}
+    export let data: PageData
 </script>
 
 <table>
     <thead>
         <tr>
+            <th>Film</th>
             <th>Date</th>
             <th>Host</th>
-            <th>Film</th>
             <th>Score</th>
         </tr>
     </thead>
     <tbody>
         {#each data.meetings as meeting}
             <tr class:hidden={meeting.hidden}>
+                <td><FilmTitle film={meeting.film} /></td>
                 <td>{meeting.date.toLocaleDateString()}</td>
                 <td>{meeting.host}</td>
-                <td>{getTitleWithOriginalTitle(meeting.film)}</td>
                 <td>{meeting.scores.map(score => score.clubber.slice(0, 2) + ":" + score.score).join(",")}</td>
                 <td>
                     <form method="post" action="?/toggleHidden">
