@@ -12,5 +12,8 @@ declare global {
 		// interface Platform {}
 	}
 }
+declare module 'spin-wheel' {
+    export = <any> {};
+}
 
 export {}

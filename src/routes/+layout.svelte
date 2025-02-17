@@ -14,7 +14,8 @@
             <span>North Pole Film Club </span>
             <a href="/">Home</a> |
             <a href="/meetings">Meetings</a> |
-            <a href="/my-watchlist">My Watchlist</a>
+            <a href="/my-watchlist">My Watchlist</a> |
+            <a href="/theme-spinner">Theme Spinner</a>
         </div>
         <div class="right-side">
             <span class="username">
