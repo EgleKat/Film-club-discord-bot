@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { getTitleWithOriginalTitle } from "$lib";
     import { quintOut } from "svelte/easing";
     import type { PageData } from './$types';
     import { slide } from "svelte/transition";
@@ -7,7 +6,7 @@
     import Icon from "$lib/components/Icon.svelte";
     import FilmSelector from "$lib/components/FilmSelector.svelte";
     import Input from "$lib/components/Input.svelte";
-  import FilmTitle from "$lib/components/FilmTitle.svelte";
+    import FilmTitle from "$lib/components/FilmTitle.svelte";
 
     export let data: PageData
     let watchedWatchlist = data.watchlist.filter(watchlistEntry => watchlistEntry.dateWatched != null);
@@ -136,7 +135,7 @@
         {#each watchedWatchlist as watchlistEntry}
             {#if (showHidden || !watchlistEntry.hidden) && (showWatchedInMeetings || !watchlistEntry.isMeeting)}
             <tr class:hidden={watchlistEntry.hidden}>
-                <td><FilmTitle film={watchlistEntry.film}/></td>
+                <td><FilmTitle film={watchlistEntry.film} /></td>
                 <td>{watchlistEntry.dateWatched.toLocaleDateString()}</td>
                 <td>{watchlistEntry.scores.filter(score => score.score != null).map(score => score.clubber.slice(0, 2) + ":" + score.score).join(",")}</td>
                 {#if !watchlistEntry.isMeeting}

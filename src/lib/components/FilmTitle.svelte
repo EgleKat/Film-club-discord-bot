@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { getTitleWithOriginalTitle } from "$lib";
-  import type { Film } from "@prisma/client";
+    import { getTitleWithOriginalTitle } from "$lib";
+    import type { Film } from "@prisma/client";
 
     export let film: Film
 </script>
