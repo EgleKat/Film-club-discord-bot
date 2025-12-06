@@ -56,10 +56,10 @@
                 required
             />
             <label for={film.id.toString()}
-            >{getTitleWithOriginalTitle({title: film.title, originalTitle: film.original_title})} ({film.release_date.substring(
+            >{getTitleWithOriginalTitle({title: film.title, originalTitle: film.original_title})} ({film.release_date?.substring(
                 0,
                 4
-                )})</label
+                ) ?? 'unknown'})</label
             >
         </li>
         {/each}
