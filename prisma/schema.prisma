@@ -60,3 +60,10 @@ model WatchListEntry {
 
     hidden      Boolean     @default(false)
 }
+
+model Theme {
+    id          Int         @id @default(autoincrement())
+    name        String
+    endDate     DateTime
+    createdAt   DateTime    @default(now())
+}
