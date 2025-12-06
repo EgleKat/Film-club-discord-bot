@@ -9,6 +9,11 @@ export interface OmdbFilmWithPlot extends OmdbFilm {
     Plot: string,
 }
 
+export interface TmdbGenre {
+    id: number;
+    name: string;
+}
+
 export interface TmdbFilm {
     title: string;
     original_title: string,
@@ -33,6 +38,12 @@ export interface CrewMember {
 }
 export interface TmdbFilmWithExtras extends TmdbFilm {
     imdb_id: string,
+    // Additional fields for Wrapped awards
+    runtime: number | null,
+    original_language: string,
+    revenue: number,
+    vote_average: number,
+    genres: TmdbGenre[],
 }
 export interface TmdbFilmCredits {
     crew: CrewMember[],
