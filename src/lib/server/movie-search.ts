@@ -38,5 +38,27 @@ async function tmdbGetMovieCredits(tmdbId: number): Promise<TmdbFilmCredits> {
     return (await result).json();
 }
 
+interface TmdbFindResult {
+    movie_results: Array<{ id: number }>;
+}
 
-export default {queryOmdb, tmdbSearch, tmdbGetMovie, tmdbGetMovieCredits}
+/**
+ * Find a movie by IMDB ID using TMDB's find endpoint
+ */
+async function tmdbFindByImdbId(imdbId: string): Promise<TmdbFilmWithExtras | null> {
+    const findResult = await fetch(
+        `https://api.themoviedb.org/3/find/${imdbId}?external_source=imdb_id`,
+        tmdbFetchOptions
+    );
+    const findData: TmdbFindResult = await findResult.json();
+
+    if (findData.movie_results && findData.movie_results.length > 0) {
+        const tmdbId = findData.movie_results[0].id;
+        return await tmdbGetMovie(tmdbId);
+    }
+
+    return null;
+}
+
+
+export default {queryOmdb, tmdbSearch, tmdbGetMovie, tmdbGetMovieCredits, tmdbFindByImdbId}

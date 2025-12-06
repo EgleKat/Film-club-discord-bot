@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Film" ADD COLUMN "runtime" INTEGER;
+ALTER TABLE "Film" ADD COLUMN "originalLanguage" TEXT;
+ALTER TABLE "Film" ADD COLUMN "revenue" BIGINT;
+ALTER TABLE "Film" ADD COLUMN "tmdbVoteAverage" DOUBLE PRECISION;
+ALTER TABLE "Film" ADD COLUMN "genres" TEXT;

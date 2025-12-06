@@ -16,6 +16,12 @@ model Film {
     poster  String
     director String?
     budget Int?
+    // Additional TMDB fields for Wrapped awards
+    runtime Int?  // Runtime in minutes
+    originalLanguage String?  // ISO 639-1 language code (e.g., "en", "ja", "ko")
+    revenue BigInt?  // Box office revenue in dollars
+    tmdbVoteAverage Float?  // TMDB public rating (0-10)
+    genres String?  // JSON array of genre names e.g. '["Action", "Drama"]'
     meetings Meeting[]
     watchListEntries WatchListEntry[]
 }

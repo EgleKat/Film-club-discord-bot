@@ -28,6 +28,8 @@
 	"type": "module",
 	"dependencies": {
 		"@prisma/client": "^5.1.1",
+		"@types/canvas-confetti": "^1.9.0",
+		"canvas-confetti": "^1.9.4",
 		"lodash": "^4.17.21",
 		"openssl": "^2.0.0",
 		"spin-wheel": "^5.0.2"
