@@ -18,7 +18,8 @@
     )
   );
 
-  let selectedTheme: string | null = null;
+  let selectedTheme: string = '';
+  let hasSpun: boolean = false;
   let wheel: any = null;
 
 const themes = `
@@ -75,6 +76,7 @@ const props = {
   itemBackgroundColors: ["#ffbe0b", "#fb5607", "#ff006e", "#8338ec", "#3a86ff"],
   onRest: (event: { currentIndex: number }) => {
     selectedTheme = themes[event.currentIndex];
+    hasSpun = true;
   }
 }
 
@@ -125,11 +127,18 @@ function spinWheel() {
     <Button variant="primary" on:click={spinWheel}>Spin!</Button>
   </div>
 
-  {#if selectedTheme}
+  {#if hasSpun}
     <div class="set-theme-form">
-      <h3>Selected: {selectedTheme}</h3>
       <form method="POST" action="?/setTheme">
-        <input type="hidden" name="theme" value={selectedTheme} />
+        <label>
+          Theme:
+          <input
+            type="text"
+            name="theme"
+            bind:value={selectedTheme}
+            required
+          />
+        </label>
         <label>
           Theme ends on:
           <input
@@ -237,10 +246,16 @@ function spinWheel() {
       align-items: center;
     }
 
-    input[type="date"] {
+    input[type="date"],
+    input[type="text"] {
       padding: 0.5rem;
       border-radius: 4px;
       border: 1px solid #ccc;
+    }
+
+    input[type="text"] {
+      font-size: 1rem;
+      min-width: 200px;
     }
   }
 </style>
