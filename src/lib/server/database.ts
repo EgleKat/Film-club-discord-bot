@@ -224,3 +224,15 @@ export const toggleHiddenWatchListEntry = async (watchlistEntryId: number) => {
         data: { hidden: !watchlistEntry.hidden },
     })
 }
+
+export const getCurrentTheme = async () => {
+    return await prisma.theme.findFirst({
+        orderBy: { createdAt: 'desc' },
+    })
+}
+
+export const setCurrentTheme = async (name: string, endDate: Date) => {
+    return await prisma.theme.create({
+        data: { name, endDate },
+    })
+}

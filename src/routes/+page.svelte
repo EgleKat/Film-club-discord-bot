@@ -16,6 +16,7 @@
     export let form;
     const meeting = data.meeting;
     const film = meeting?.film;
+    const theme = data.theme;
     const scores = data?.scores;
     const numberOfSubmittedScores = data?.numberOfSubmittedScores;
     let isSidePanelOpen = false;
@@ -24,6 +25,15 @@
 <section>
     {#if form?.error}
         <Toast status="error" title="Error" description={form.error} />
+    {/if}
+    {#if theme}
+        <div class="current-theme">
+            <span>Current theme: <strong>{theme.name}</strong></span>
+            <SpanWithIcon>
+                <Icon type="calendar-mark" />
+                <span class="theme-end-date">Ends {theme.endDate.toLocaleDateString()}</span>
+            </SpanWithIcon>
+        </div>
     {/if}
     {#if film}
         <div class="this-week">
@@ -96,6 +106,20 @@
 </section>
 
 <style lang="scss">
+    .current-theme {
+        margin-top: 1rem;
+        padding: 1rem;
+        background-color: $main-blue;
+        color: #cadff4;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .theme-end-date {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    }
     .this-week {
         margin-top: 2rem;
         .film-host {
