@@ -13,6 +13,23 @@
     const isDecember = now.getMonth() === 11
     const isSecondHalfOfDecember = isDecember && now.getDate() >= 15
     const showWrappedLink = isDecember
+
+    // TMDB refresh
+    let isRefreshing = false
+    let refreshResult: { total: number, updated: number, skipped: number, errors: string[] } | null = null
+
+    async function refreshTmdbData() {
+        if (isRefreshing) return
+        isRefreshing = true
+        refreshResult = null
+        try {
+            const response = await fetch('/api/v1/tmdb/refresh', { method: 'POST' })
+            refreshResult = await response.json()
+        } catch (error) {
+            refreshResult = { total: 0, updated: 0, skipped: 0, errors: [String(error)] }
+        }
+        isRefreshing = false
+    }
 </script>
 <main>
     <div class="header">
@@ -40,6 +57,24 @@
     </div>
     <slot />
 </main>
+<footer>
+    <button class="refresh-btn" on:click={refreshTmdbData} disabled={isRefreshing}>
+        {#if isRefreshing}
+            Refreshing TMDB data...
+        {:else}
+            Refresh TMDB Data
+        {/if}
+    </button>
+    {#if refreshResult}
+        <span class="refresh-result">
+            Updated {refreshResult.updated}/{refreshResult.total} films
+            {#if refreshResult.skipped > 0}(skipped {refreshResult.skipped}){/if}
+            {#if refreshResult.errors.length > 0}
+                - {refreshResult.errors.length} errors
+            {/if}
+        </span>
+    {/if}
+</footer>
 <style lang="scss" >
     .header {
         display: flex;
@@ -79,6 +114,40 @@
         background-color: $body-color;
         @include desktop {
             max-width: 60vw;
+        }
+    }
+
+    :global(footer) {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgb(209, 203, 203);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: #666;
+
+        .refresh-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            background: #e8e8e8;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #555;
+
+            &:hover:not(:disabled) {
+                background: #ddd;
+            }
+
+            &:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+        }
+
+        .refresh-result {
+            color: #666;
         }
     }
 
