@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ url }) => {
 
     // Determine visibility status
     const isDecember = month === 11
-    const isSecondHalf = day >= 15
+    const isSecondHalf = day >= 14
     const isWrappedActive = isDecember && isSecondHalf
     const isComingSoon = isDecember && !isSecondHalf
 
