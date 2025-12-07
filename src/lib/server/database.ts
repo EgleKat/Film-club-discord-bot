@@ -3,11 +3,52 @@ import type { Film, WatchListEntry } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
-export const addFilm = async (imdbId: string, title: string, originalTitle: string, year: string, poster: string, plot: string, director: string, budget: number) => {
-    return await prisma.film.upsert({ 
+export const addFilm = async (
+    imdbId: string,
+    title: string,
+    originalTitle: string,
+    year: string,
+    poster: string,
+    plot: string,
+    director: string,
+    budget: number,
+    runtime?: number | null,
+    originalLanguage?: string | null,
+    revenue?: bigint | null,
+    tmdbVoteAverage?: number | null,
+    genres?: string | null
+) => {
+    return await prisma.film.upsert({
         where: { imdbId },
-        create: { imdbId, title, originalTitle, year, poster, plot, director, budget },
-        update: { title, originalTitle, year, poster, plot, director, budget },
+        create: {
+            imdbId,
+            title,
+            originalTitle,
+            year,
+            poster,
+            plot,
+            director,
+            budget,
+            runtime,
+            originalLanguage,
+            revenue,
+            tmdbVoteAverage,
+            genres
+        },
+        update: {
+            title,
+            originalTitle,
+            year,
+            poster,
+            plot,
+            director,
+            budget,
+            runtime,
+            originalLanguage,
+            revenue,
+            tmdbVoteAverage,
+            genres
+        },
     })
 }
 export const createMeeting = async (filmId: string, date: Date, host: string) => {
