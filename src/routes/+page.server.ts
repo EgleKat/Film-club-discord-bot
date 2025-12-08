@@ -1,6 +1,6 @@
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
-import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores } from "$lib/server/database"
+import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile } from "$lib/server/database"
 import { usernames } from '$lib/server/password'
 import { findAndAddFilm } from '$lib/server/service'
 import type { Score } from '@prisma/client';
@@ -10,10 +10,13 @@ export const load = async ({locals}) => {
     const theme = await getCurrentTheme()
     let scores: Score[] = []
     let numberOfSubmittedScores: number = 0
+    let hostProfileImageUrl: string | null = null
     const currentUserUsername = locals.user.username;
     if (meeting) {
         scores = await getShownScores(meeting.id)
         numberOfSubmittedScores = await getNumberOfScoresSubmitted(meeting.id)
+        const hostProfile = await getUserProfile(meeting.host)
+        hostProfileImageUrl = hostProfile?.imageUrl ?? null
     }
 
 
@@ -23,7 +26,8 @@ export const load = async ({locals}) => {
         theme,
         usernames,
         scores,
-        numberOfSubmittedScores
+        numberOfSubmittedScores,
+        hostProfileImageUrl
     }
 }
 

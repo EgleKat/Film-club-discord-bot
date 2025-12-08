@@ -1219,3 +1219,32 @@ export const updateFilmTmdbData = async (
         data
     })
 }
+
+/**
+ * Get a user's profile image
+ */
+export const getUserProfile = async (username: string) => {
+    return await prisma.userProfile.findUnique({
+        where: { username }
+    })
+}
+
+/**
+ * Get profile images for multiple users
+ */
+export const getUserProfiles = async (usernames: string[]) => {
+    return await prisma.userProfile.findMany({
+        where: { username: { in: usernames } }
+    })
+}
+
+/**
+ * Set or update a user's profile image
+ */
+export const setUserProfileImage = async (username: string, imageUrl: string | null) => {
+    return await prisma.userProfile.upsert({
+        where: { username },
+        create: { username, imageUrl },
+        update: { imageUrl }
+    })
+}

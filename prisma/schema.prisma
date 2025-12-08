@@ -73,3 +73,9 @@ model Theme {
     endDate     DateTime
     createdAt   DateTime    @default(now())
 }
+
+model UserProfile {
+    username    String      @id
+    imageUrl    String?
+    updatedAt   DateTime    @default(now()) @updatedAt
+}
