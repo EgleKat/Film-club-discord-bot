@@ -22,6 +22,7 @@ model Film {
     revenue BigInt?  // Box office revenue in dollars
     tmdbVoteAverage Float?  // TMDB public rating (0-10)
     genres String?  // JSON array of genre names e.g. '["Action", "Drama"]'
+    country String?  // Primary production country name e.g. "United States of America"
     meetings Meeting[]
     watchListEntries WatchListEntry[]
 }

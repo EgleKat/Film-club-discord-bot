@@ -36,6 +36,11 @@ export interface CrewMember {
     department :string,
     job :string,
 }
+export interface TmdbProductionCountry {
+    iso_3166_1: string;
+    name: string;
+}
+
 export interface TmdbFilmWithExtras extends TmdbFilm {
     imdb_id: string,
     // Additional fields for Wrapped awards
@@ -44,6 +49,7 @@ export interface TmdbFilmWithExtras extends TmdbFilm {
     revenue: number,
     vote_average: number,
     genres: TmdbGenre[],
+    production_countries: TmdbProductionCountry[],
 }
 export interface TmdbFilmCredits {
     crew: CrewMember[],
@@ -58,7 +64,8 @@ export type Meeting = {
         poster: string
         plot: string,
         director: string,
-        budget: number
+        budget: number,
+        country: string | null
     }
     id: number
     date: Date

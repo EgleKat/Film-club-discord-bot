@@ -10,6 +10,11 @@ export async function findAndAddFilm(tmdbId: FormDataEntryValue) {
     const credits = await MovieSearch.tmdbGetMovieCredits(parseInt(tmdbId as string, 10));
     const directors = credits.crew.filter((cm) => cm.job === 'Director').map(cm => cm.original_name).join(', ');
 
+    // Extract primary production country
+    const country = film.production_countries && film.production_countries.length > 0
+        ? film.production_countries[0].name
+        : null;
+
     // Populate all TMDB fields on initial add
     await addFilm(
         film.imdb_id,
@@ -24,7 +29,8 @@ export async function findAndAddFilm(tmdbId: FormDataEntryValue) {
         film.original_language,
         film.revenue ? BigInt(film.revenue) : null,
         film.vote_average,
-        film.genres ? JSON.stringify(film.genres.map(g => g.name)) : null
+        film.genres ? JSON.stringify(film.genres.map(g => g.name)) : null,
+        country
     );
     return film;
 }
