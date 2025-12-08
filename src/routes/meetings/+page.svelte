@@ -41,15 +41,19 @@
                 class="tab-button"
                 class:active={viewMode === 'cards'}
                 on:click={() => viewMode = 'cards'}
+                title="Cards view"
             >
-                Cards
+                <Icon type="grid" width="1rem" height="1rem" />
+                <span class="tab-label">Cards</span>
             </button>
             <button
                 class="tab-button"
                 class:active={viewMode === 'table'}
                 on:click={() => viewMode = 'table'}
+                title="Table view"
             >
-                Table
+                <Icon type="table" width="1rem" height="1rem" />
+                <span class="tab-label">Table</span>
             </button>
         </div>
         <label class="show-hidden-toggle">
@@ -213,29 +217,53 @@
 
     .view-tabs {
         display: flex;
-        background: #e8e8e8;
-        border-radius: 6px;
-        padding: 3px;
+        background: #e0e0e0;
+        border-radius: 8px;
+        padding: 4px;
+        gap: 2px;
     }
 
     .tab-button {
-        padding: 0.4rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 1rem;
         border: none;
         background: transparent;
-        border-radius: 4px;
+        border-radius: 6px;
         cursor: pointer;
         font-size: 0.85rem;
+        font-weight: 500;
         color: #666;
         transition: all 0.2s ease;
 
+        :global(svg) {
+            flex-shrink: 0;
+        }
+
         &:hover {
             color: #333;
+            background: rgba(255, 255, 255, 0.5);
         }
 
         &.active {
             background: white;
             color: $main-blue;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            padding: 0.5rem 0.75rem;
+
+            .tab-label {
+                display: none;
+            }
+        }
+    }
+
+    .tab-label {
+        @media (max-width: 480px) {
+            display: none;
         }
     }
 
