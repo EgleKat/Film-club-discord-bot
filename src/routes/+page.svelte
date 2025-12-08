@@ -54,10 +54,12 @@
         <div class="film-description">
             <div class="film-header">
                 <div class="film-title"><FilmTitle film={meeting.film} /></div>
-                <Button variant="tertiary" size="small" class="add-film" on:click={() => (isSidePanelOpen = !isSidePanelOpen)}>
-                    Choose next film
-                    <Icon type="chevron-double-right" width="1.5rem" height="1.5rem" />
-                </Button>
+                <button class="action-button" on:click={() => (isSidePanelOpen = !isSidePanelOpen)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                    <span>Choose next</span>
+                </button>
             </div>
             {#if film.director}
                 <p class="film-director">Director - {film.director}</p>
@@ -76,10 +78,12 @@
         </div>
     {:else}
         <p>No film set for this week yet!</p>
-        <Button variant="tertiary" size="small" class="add-film" on:click={() => (isSidePanelOpen = !isSidePanelOpen)}>
-            Choose next film
-            <Icon type="chevron-double-right" width="1.5rem" height="1.5rem" />
-        </Button>
+        <button class="action-button action-button--large" on:click={() => (isSidePanelOpen = !isSidePanelOpen)}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+            <span>Choose next film</span>
+        </button>
     {/if}
     {#if isSidePanelOpen}
         <div
@@ -211,13 +215,64 @@
             width: 400px;
         }
     }
-    .add-film {
-        font-size: large;
-        height: 8rem;
-        width: 8rem;
-        background-color: $main-blue;
-        color: rgb(229, 230, 244);
-        padding: 1rem;
-        border-radius: 50%;
+    .action-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1rem;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, $main-blue 0%, darken($main-blue, 10%) 100%);
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(white, 0.2),
+                transparent
+            );
+            transition: left 0.4s ease;
+        }
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba($main-blue, 0.4);
+
+            &::before {
+                left: 100%;
+            }
+        }
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba($main-blue, 0.3);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+
+        svg {
+            flex-shrink: 0;
+        }
+
+        &--large {
+            padding: 0.85rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 10px;
+        }
     }
 </style>
