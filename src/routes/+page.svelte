@@ -196,14 +196,20 @@
         }
     }
     .side-panel {
-        background: rgb(216, 216, 216);
+        background: $body-color;
         right: 0;
         position: fixed;
-        top: 1vh;
-        height: 90vh;
-        margin: auto;
-        padding: 2rem;
-        z-index: 1;
+        top: 0;
+        height: 100vh;
+        width: 90vw;
+        max-width: 420px;
+        overflow-y: auto;
+        z-index: 10;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+
+        @include desktop {
+            width: 400px;
+        }
     }
     .add-film {
         font-size: large;
