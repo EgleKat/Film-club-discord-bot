@@ -46,7 +46,7 @@
 {#if autoCompleteList && autoCompleteList.length > 0}
     <ul>
         {#each autoCompleteList as film}
-        <li style="list-style-type: none;">
+        <li class="film-option">
             <input
                 type="radio"
                 id={film.id.toString()}
@@ -55,9 +55,18 @@
                 autocomplete="off"
                 required
             />
-            <label for={film.id.toString()}
-            >{getTitleWithOriginalTitle({title: film.title, originalTitle: film.original_title, year: film.release_date?.substring(0, 4) ?? 'unknown'})}</label
-            >
+            <label for={film.id.toString()} class="film-label">
+                {#if film.poster_path}
+                    <img
+                        src="https://image.tmdb.org/t/p/w92{film.poster_path}"
+                        alt="{film.title} poster"
+                        class="film-poster"
+                    />
+                {:else}
+                    <div class="film-poster-placeholder"></div>
+                {/if}
+                <span class="film-title">{getTitleWithOriginalTitle({title: film.title, originalTitle: film.original_title, year: film.release_date?.substring(0, 4) ?? 'unknown'})}</span>
+            </label>
         </li>
         {/each}
     </ul>
@@ -67,5 +76,38 @@
     ul {
         overflow-y: auto;
         max-height: 60vh;
+        padding-left: 0;
+    }
+
+    .film-option {
+        list-style-type: none;
+        margin-bottom: 0.5rem;
+    }
+
+    .film-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: pointer;
+    }
+
+    .film-poster {
+        width: 46px;
+        height: 69px;
+        object-fit: cover;
+        border-radius: 4px;
+        flex-shrink: 0;
+    }
+
+    .film-poster-placeholder {
+        width: 46px;
+        height: 69px;
+        background-color: var(--secondary-bg, #333);
+        border-radius: 4px;
+        flex-shrink: 0;
+    }
+
+    .film-title {
+        flex: 1;
     }
 </style>
