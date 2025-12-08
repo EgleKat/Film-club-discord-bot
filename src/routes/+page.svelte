@@ -10,7 +10,8 @@
     import Button from "$lib/components/Button.svelte";
     import { getTitleWithOriginalTitle } from "$lib";
     import type { PageData } from "./$types";
-  import FilmTitle from "$lib/components/FilmTitle.svelte";
+    import FilmTitle from "$lib/components/FilmTitle.svelte";
+    import UserAvatar from "$lib/components/UserAvatar.svelte";
 
     export let data: PageData;
     export let form;
@@ -19,6 +20,7 @@
     const theme = data.theme;
     const scores = data?.scores;
     const numberOfSubmittedScores = data?.numberOfSubmittedScores;
+    const hostProfileImageUrl = data?.hostProfileImageUrl;
     let isSidePanelOpen = false;
 </script>
 
@@ -39,7 +41,7 @@
         <div class="this-week">
             <SpanWithIcon>
                 <span> This week, chosen by </span>
-                <Icon type="user" />
+                <UserAvatar imageUrl={hostProfileImageUrl} username={meeting?.host} size="1rem" />
                 <span class="film-host">{meeting?.host}</span>
             </SpanWithIcon>
         </div>

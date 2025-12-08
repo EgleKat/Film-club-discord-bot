@@ -2,17 +2,31 @@
     <title>North Pole Film Club</title>
 </svelte:head>
 <script lang="ts">
+    import ProfileDropdown from '$lib/components/ProfileDropdown.svelte';
+    import ProfileImageModal from '$lib/components/ProfileImageModal.svelte';
+
     type PageData = {
         username: string
+        profileImageUrl: string | null
     }
     export let data: PageData
     let username = data?.username;
+    let profileImageUrl = data?.profileImageUrl;
+    let isProfileModalOpen = false;
 
     // Check if it's December
     const now = new Date()
     const isDecember = now.getMonth() === 11
     const isSecondHalfOfDecember = isDecember && now.getDate() >= 15
     const showWrappedLink = isDecember
+
+    function handleChangeImage() {
+        isProfileModalOpen = true;
+    }
+
+    function handleProfileUpdated(event: CustomEvent<{ imageUrl: string | null }>) {
+        profileImageUrl = event.detail.imageUrl;
+    }
 </script>
 <main>
     <div class="header">
@@ -32,14 +46,23 @@
             {/if}
         </div>
         <div class="right-side">
-            <span class="username">
-                Hello, {username}
-            </span>
+            <ProfileDropdown
+                {username}
+                imageUrl={profileImageUrl}
+                on:changeImage={handleChangeImage}
+            />
         </div>
-
     </div>
     <slot />
 </main>
+
+<ProfileImageModal
+    bind:isOpen={isProfileModalOpen}
+    currentImageUrl={profileImageUrl}
+    {username}
+    on:close={() => isProfileModalOpen = false}
+    on:updated={handleProfileUpdated}
+/>
 <style lang="scss" >
     .header {
         display: flex;
