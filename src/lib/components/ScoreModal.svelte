@@ -34,12 +34,16 @@
             </Button>
         </div>
     </form>
-    <input 
-        type="submit" 
-        name="send-discord" 
-        value="Send Scores to Discord" 
+    <button
+        type="button"
+        class="action-button"
         on:click={sendScores}
-    />
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+        </svg>
+        <span>Send to Discord</span>
+    </button>
     {numberOfSubmittedScores} Scores Submitted
     <br>
     Scores:
@@ -80,5 +84,61 @@
 
         }
 
+    }
+
+    .action-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        margin-top: 0.75rem;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, $main-blue 0%, darken($main-blue, 10%) 100%);
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(white, 0.2),
+                transparent
+            );
+            transition: left 0.4s ease;
+        }
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba($main-blue, 0.4);
+
+            &::before {
+                left: 100%;
+            }
+        }
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba($main-blue, 0.3);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+
+        svg {
+            flex-shrink: 0;
+        }
     }
 </style>

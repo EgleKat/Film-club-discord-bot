@@ -26,7 +26,7 @@
     }
 </script>
 
-<label for="filmSearch" class="search-label">Film:</label>
+<label for="filmSearch" class="search-label">Film</label>
 <input
     type="text"
     id="filmSearch"
@@ -73,7 +73,7 @@
                 <div class="poster-container">
                     {#if film.poster_path}
                         <img
-                            src="https://image.tmdb.org/t/p/w342{film.poster_path}"
+                            src="https://image.tmdb.org/t/p/w185{film.poster_path}"
                             alt="{film.title} poster"
                             class="film-poster"
                         />
@@ -100,24 +100,25 @@
 <style lang="scss">
     .search-label {
         display: block;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
         font-weight: 600;
+        font-size: 0.8rem;
         color: $main-blue;
     }
 
     .search-input {
         width: 100%;
-        padding: 0.75rem 1rem;
+        padding: 0.5rem 0.75rem;
         border: 2px solid $section-border;
-        border-radius: 8px;
-        font-size: 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
         background: white;
 
         &:focus {
             outline: none;
             border-color: $main-blue;
-            box-shadow: 0 0 0 3px rgba($main-blue, 0.15);
+            box-shadow: 0 0 0 2px rgba($main-blue, 0.15);
         }
 
         &::placeholder {
@@ -128,7 +129,8 @@
     .search-hint {
         color: #666;
         font-style: italic;
-        margin: 1rem 0;
+        font-size: 0.85rem;
+        margin: 0.5rem 0;
     }
 
     .hidden-radio {
@@ -142,34 +144,35 @@
     .films-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        margin-top: 1rem;
-        max-height: 65vh;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        flex: 1;
         overflow-y: auto;
-        padding: 0.25rem;
+        padding: 2px;
 
         @include desktop {
             grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
         }
     }
 
     .film-card {
         position: relative;
         cursor: pointer;
-        border-radius: 12px;
+        border-radius: 8px;
         overflow: hidden;
-        border: 3px solid transparent;
-        transition: border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        border: 2px solid transparent;
+        transition: border-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
         background: #1a1a2e;
 
         &:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         &.selected {
             border-color: $main-blue;
-            box-shadow: 0 0 0 2px rgba($main-blue, 0.3), 0 8px 25px rgba($main-blue, 0.2);
+            box-shadow: 0 0 0 1px rgba($main-blue, 0.3), 0 4px 12px rgba($main-blue, 0.2);
         }
     }
 
@@ -184,7 +187,7 @@
         height: 100%;
         object-fit: cover;
         display: block;
-        transition: transform 0.4s ease, filter 0.4s ease;
+        transition: transform 0.3s ease, filter 0.3s ease;
     }
 
     .film-poster-placeholder {
@@ -198,9 +201,9 @@
 
     .no-poster-text {
         color: #666;
-        font-size: 0.875rem;
+        font-size: 0.7rem;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
     }
 
     .title-overlay {
@@ -215,9 +218,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 1rem;
+        padding: 0.5rem;
         opacity: 0;
-        transition: opacity 0.4s ease;
+        transition: opacity 0.3s ease;
     }
 
     .film-card:hover .title-overlay,
@@ -227,22 +230,22 @@
 
     .film-card:hover .film-poster,
     .film-card:focus-within .film-poster {
-        transform: scale(1.1);
-        filter: blur(2px);
+        transform: scale(1.08);
+        filter: blur(1px);
     }
 
     .film-title {
         color: white;
-        font-size: 0.875rem;
+        font-size: 0.7rem;
         font-weight: 600;
         text-align: center;
-        line-height: 1.4;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        transform: translateY(20px);
-        transition: transform 0.4s ease;
+        line-height: 1.3;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        transform: translateY(10px);
+        transition: transform 0.3s ease;
 
         @include desktop {
-            font-size: 1rem;
+            font-size: 0.75rem;
         }
     }
 
