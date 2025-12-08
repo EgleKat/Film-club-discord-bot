@@ -66,6 +66,9 @@
             {#if film.director}
                 <p class="film-director">Director - {film.director}</p>
             {/if}
+            {#if film.country}
+                <p class="film-country">Country - {film.country}</p>
+            {/if}
             {#if film.budget && film.budget > 0}
                 <p class="film-budget">Budget - {film.budget.toLocaleString()}</p>
             {/if}
@@ -163,8 +166,11 @@
         .film-director{
 
         }
+        .film-country {
+
+        }
         .film-budget {
-            
+
         }
         .film-poster-and-plot {
             border-radius: 4px;

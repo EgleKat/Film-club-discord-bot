@@ -16,7 +16,8 @@ export const addFilm = async (
     originalLanguage?: string | null,
     revenue?: bigint | null,
     tmdbVoteAverage?: number | null,
-    genres?: string | null
+    genres?: string | null,
+    country?: string | null
 ) => {
     return await prisma.film.upsert({
         where: { imdbId },
@@ -33,7 +34,8 @@ export const addFilm = async (
             originalLanguage,
             revenue,
             tmdbVoteAverage,
-            genres
+            genres,
+            country
         },
         update: {
             title,
@@ -47,7 +49,8 @@ export const addFilm = async (
             originalLanguage,
             revenue,
             tmdbVoteAverage,
-            genres
+            genres,
+            country
         },
     })
 }
