@@ -146,7 +146,6 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
         margin-top: 0.5rem;
-        flex: 1;
         overflow-y: auto;
         padding: 2px;
 
