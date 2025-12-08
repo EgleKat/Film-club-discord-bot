@@ -164,6 +164,7 @@
         border: 2px solid transparent;
         transition: border-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
         background: #1a1a2e;
+        aspect-ratio: 2 / 3;
 
         &:hover {
             transform: translateY(-2px);
