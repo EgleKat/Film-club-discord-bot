@@ -80,7 +80,7 @@ export const getCurrentMeeting = async () => {
 
 export const getAllMeetings = async () => {
     return await prisma.meeting.findMany({
-        orderBy: { date: 'asc' },
+        orderBy: { date: 'desc' },
         include: { film: true, scores: true },
     })
 }
