@@ -79,7 +79,7 @@
     .set-next-film {
         padding: 1rem;
         background: $body-color;
-        height: 100%;
+        height: calc(100% - 2rem);
         display: flex;
         flex-direction: column;
 
