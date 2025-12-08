@@ -2,9 +2,12 @@
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import Button from '$lib/components/Button.svelte';
+  import confetti from 'canvas-confetti';
 
   export let data: PageData;
   export let form;
+
+  let confettiCanvas: HTMLCanvasElement;
 
   const currentTheme = data.theme;
 
@@ -71,12 +74,71 @@ festival entry/winner
 award winning
 `.split("\n").map(t => t.trim()).filter(Boolean)
 
+function fireFireworkConfetti() {
+  if (!confettiCanvas) return;
+
+  const myConfetti = confetti.create(confettiCanvas, {
+    resize: true,
+    useWorker: true
+  });
+
+  // Firework burst from center
+  const duration = 3000;
+  const end = Date.now() + duration;
+
+  const colors = ['#ffbe0b', '#fb5607', '#ff006e', '#8338ec', '#3a86ff'];
+
+  // Initial big burst
+  myConfetti({
+    particleCount: 100,
+    spread: 100,
+    origin: { y: 0.6 },
+    colors: colors
+  });
+
+  // Continuous firework effect
+  const frame = () => {
+    myConfetti({
+      particleCount: 7,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+      colors: colors
+    });
+    myConfetti({
+      particleCount: 7,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+      colors: colors
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  };
+  frame();
+
+  // Add some stars in the middle
+  setTimeout(() => {
+    myConfetti({
+      particleCount: 50,
+      spread: 360,
+      shapes: ['star'],
+      colors: colors,
+      origin: { x: 0.5, y: 0.5 },
+      scalar: 1.2
+    });
+  }, 500);
+}
+
 const props = {
   items: themes.map(t => ({label: t})),
   itemBackgroundColors: ["#ffbe0b", "#fb5607", "#ff006e", "#8338ec", "#3a86ff"],
   onRest: (event: { currentIndex: number }) => {
     selectedTheme = themes[event.currentIndex];
     hasSpun = true;
+    fireFireworkConfetti();
   }
 }
 
@@ -96,6 +158,8 @@ function spinWheel() {
   }
 }
 </script>
+
+<canvas bind:this={confettiCanvas} class="confetti-canvas"></canvas>
 
 <div class="theme-spinner-container">
   {#if currentTheme}
@@ -155,6 +219,16 @@ function spinWheel() {
 </div>
 
 <style lang="scss">
+  .confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
   .theme-spinner-container {
     display: flex;
     flex-direction: column;
