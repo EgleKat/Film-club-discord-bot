@@ -1,7 +1,11 @@
 import { PrismaClient } from "@prisma/client"
 import type { Film, WatchListEntry, UploadedFile } from "@prisma/client"
+import { env } from '$env/dynamic/private'
 
 const prisma = new PrismaClient()
+
+// Usernames from environment variable
+const envUsernames = env.FILM_CLUB_USERNAMES?.split(",") ?? []
 
 export const addFilm = async (
     imdbId: string,
@@ -1287,14 +1291,28 @@ export const toggleUserHidden = async (username: string) => {
 }
 
 /**
- * Get all visible (non-hidden) usernames
+ * Get all visible (non-hidden) usernames from both database and environment variable
  */
 export const getVisibleUsernames = async () => {
-    const users = await prisma.userProfile.findMany({
-        where: { hidden: false },
-        select: { username: true }
+    // Get all users from database to check visibility
+    const allDbUsers = await prisma.userProfile.findMany({
+        select: { username: true, hidden: true }
     })
-    return users.map(u => u.username)
+    const dbUserMap = new Map(allDbUsers.map(u => [u.username, u.hidden]))
+
+    // Get visible users from database
+    const visibleDbUsernames = allDbUsers.filter(u => !u.hidden).map(u => u.username)
+
+    // Get usernames from env var that are not in database (they're visible by default)
+    // or are in database but not hidden
+    const envOnlyUsers = envUsernames.filter(username => {
+        const inDb = dbUserMap.has(username)
+        if (!inDb) return true // Not in DB, so visible by default
+        return false // Already handled by database query
+    })
+
+    // Combine and sort
+    return [...visibleDbUsernames, ...envOnlyUsers].sort((a, b) => a.localeCompare(b))
 }
 
 // ============ CALENDAR FEED ============
