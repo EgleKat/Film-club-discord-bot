@@ -1,15 +1,26 @@
 import { env } from '$env/dynamic/private'
 import { building } from '$app/environment'
 import type { Handle, RequestEvent } from '@sveltejs/kit'
-import { createSession, getValidSession } from './database'
+import { createSession, getValidSession, getVisibleUsernames, getUserProfile } from './database'
 
 const password = env.FILM_CLUB_PASSWORD
 if (!building && !password || password === "") {
     throw new Error("FILM_CLUB_PASSWORD should be set to a password")
 }
-export const usernames = env.FILM_CLUB_USERNAMES?.split(",") ?? []
-if (!building && usernames.length === 0) {
-    throw new Error("FILM_CLUB_USERNAMES should be set to a comma-separated list of usernames")
+// Usernames from environment variable (legacy support)
+export const envUsernames = env.FILM_CLUB_USERNAMES?.split(",") ?? []
+
+/**
+ * Check if a username is valid (exists in env var or database and is not hidden)
+ */
+export const isValidUsername = async (username: string): Promise<boolean> => {
+    // First check env var (for backward compatibility)
+    if (envUsernames.includes(username)) {
+        return true
+    }
+    // Then check database
+    const profile = await getUserProfile(username)
+    return profile !== null && !profile.hidden
 }
 
 async function successfulLogin(event: RequestEvent, resolve: any, username: string, shouldCreateSession: boolean) {
@@ -44,7 +55,7 @@ export const authenticate: Handle = async ({ event, resolve }) => {
         const [authType, authValue] = authHeader.split(" ")
         if (authType === "Basic") {
             const [ username, passwordAttempt ] = atob(authValue).split(":")
-            if (passwordAttempt === password && usernames.includes(username)) {
+            if (passwordAttempt === password && await isValidUsername(username)) {
                 return await successfulLogin(event, resolve, username, true)
             }
         }

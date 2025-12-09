@@ -78,5 +78,6 @@ model Theme {
 model UserProfile {
     username    String      @id
     imageUrl    String?
+    hidden      Boolean     @default(false)
     updatedAt   DateTime    @default(now()) @updatedAt
 }

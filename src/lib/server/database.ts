@@ -1251,3 +1251,48 @@ export const setUserProfileImage = async (username: string, imageUrl: string | n
         update: { imageUrl }
     })
 }
+
+/**
+ * Get all user profiles (for user management)
+ */
+export const getAllUserProfiles = async () => {
+    return await prisma.userProfile.findMany({
+        orderBy: { username: 'asc' }
+    })
+}
+
+/**
+ * Create a new user profile
+ */
+export const createUserProfile = async (username: string, imageUrl?: string | null) => {
+    return await prisma.userProfile.create({
+        data: { username, imageUrl: imageUrl ?? null }
+    })
+}
+
+/**
+ * Toggle the hidden status of a user
+ */
+export const toggleUserHidden = async (username: string) => {
+    const user = await prisma.userProfile.findUnique({
+        where: { username }
+    })
+    if (!user) {
+        throw new Error(`User ${username} not found`)
+    }
+    return await prisma.userProfile.update({
+        where: { username },
+        data: { hidden: !user.hidden }
+    })
+}
+
+/**
+ * Get all visible (non-hidden) usernames
+ */
+export const getVisibleUsernames = async () => {
+    const users = await prisma.userProfile.findMany({
+        where: { hidden: false },
+        select: { username: true }
+    })
+    return users.map(u => u.username)
+}
