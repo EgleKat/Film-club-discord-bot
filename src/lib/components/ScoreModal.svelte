@@ -20,23 +20,6 @@
 </script>
 
 <section class="score-section">
-    <form method="post" action="?/score" class="score-form">
-        <div class="score-form__film">Score for - <span class="score-form__film-name">
-            {title}
-        </span>
-    </div>
-        <label for="score">
-            Your score:
-        </label>
-        <div class="score-form__inputs">
-            <Input type="text" name="score" placeholder="Enter your score" id="score" class="score-input"/>
-            <Button variant="secondary" size="medium" type="submit">
-                <Icon type="tick" class="medium-button" width="1.25rem" height="1.25rem"/>
-                Submit Score
-            </Button>
-        </div>
-    </form>
-
     <div class="scores-display">
         <div class="scores-header">
             <h3 class="scores-title">
@@ -81,6 +64,23 @@
             <span>Send to Discord</span>
         </button>
     </div>
+
+    <form method="post" action="?/score" class="score-form">
+        <div class="score-form__film">Score for - <span class="score-form__film-name">
+            {title}
+        </span>
+    </div>
+        <label for="score">
+            Your score:
+        </label>
+        <div class="score-form__inputs">
+            <Input type="text" name="score" placeholder="Enter your score" id="score" class="score-input"/>
+            <Button variant="secondary" size="medium" type="submit">
+                <Icon type="tick" class="medium-button" width="1.25rem" height="1.25rem"/>
+                Submit Score
+            </Button>
+        </div>
+    </form>
 </section>
 
 <style lang="scss">
@@ -92,7 +92,6 @@
 
     .score-form {
         padding: 1rem;
-        margin-bottom: 1.5rem;
         border-radius: 8px;
         background-color: rgba(0, 0, 0, 0.05);
         font-weight: normal;
@@ -126,6 +125,7 @@
         border-radius: 12px;
         padding: 1.25rem;
         color: #cadff4;
+        margin-bottom: 1.5rem;
     }
 
     .scores-header {
