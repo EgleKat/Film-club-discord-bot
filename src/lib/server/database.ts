@@ -1296,3 +1296,17 @@ export const getVisibleUsernames = async () => {
     })
     return users.map(u => u.username)
 }
+
+// ============ CALENDAR FEED ============
+
+/**
+ * Get all meetings for calendar feed (includes past and future, non-hidden only)
+ * Returns meetings with their associated film data
+ */
+export const getMeetingsForCalendar = async () => {
+    return await prisma.meeting.findMany({
+        where: { hidden: false },
+        include: { film: true },
+        orderBy: { date: 'asc' }
+    })
+}

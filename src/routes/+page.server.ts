@@ -4,7 +4,7 @@ import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumb
 import { findAndAddFilm } from '$lib/server/service'
 import type { Score } from '@prisma/client';
 
-export const load = async ({locals}) => {
+export const load = async ({locals, url}) => {
     const meeting = await getCurrentMeeting()
     const theme = await getCurrentTheme()
     let scores: Score[] = []
@@ -18,6 +18,8 @@ export const load = async ({locals}) => {
         hostProfileImageUrl = hostProfile?.imageUrl ?? null
     }
 
+    // Get base URL for calendar subscription
+    const baseUrl = `${url.protocol}//${url.host}`
 
     const usernames = await getVisibleUsernames()
 
@@ -28,7 +30,8 @@ export const load = async ({locals}) => {
         usernames,
         scores,
         numberOfSubmittedScores,
-        hostProfileImageUrl
+        hostProfileImageUrl,
+        baseUrl
     }
 }
 

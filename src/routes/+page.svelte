@@ -12,6 +12,7 @@
     import type { PageData } from "./$types";
     import FilmTitle from "$lib/components/FilmTitle.svelte";
     import UserAvatar from "$lib/components/UserAvatar.svelte";
+    import CalendarSubscribe from "$lib/components/CalendarSubscribe.svelte";
 
     export let data: PageData;
     export let form;
@@ -21,6 +22,7 @@
     const scores = data?.scores;
     const numberOfSubmittedScores = data?.numberOfSubmittedScores;
     const hostProfileImageUrl = data?.hostProfileImageUrl;
+    const baseUrl = data.baseUrl;
     let isSidePanelOpen = false;
 </script>
 
@@ -112,6 +114,10 @@
             {numberOfSubmittedScores}
         />
     {/if}
+</section>
+
+<section>
+    <CalendarSubscribe {baseUrl} />
 </section>
 
 <style lang="scss">
