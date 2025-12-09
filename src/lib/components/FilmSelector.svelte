@@ -177,8 +177,8 @@
     }
 
     .poster-container {
-        position: relative;
-        aspect-ratio: 2 / 3;
+        position: absolute;
+        inset: 0;
         overflow: hidden;
     }
 
