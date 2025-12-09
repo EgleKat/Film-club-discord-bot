@@ -4,6 +4,7 @@
 <script lang="ts">
     import ProfileDropdown from '$lib/components/ProfileDropdown.svelte';
     import ProfileImageModal from '$lib/components/ProfileImageModal.svelte';
+    import UserManagementModal from '$lib/components/UserManagementModal.svelte';
 
     type PageData = {
         username: string
@@ -13,6 +14,7 @@
     let username = data?.username;
     let profileImageUrl = data?.profileImageUrl;
     let isProfileModalOpen = false;
+    let isUserManagementModalOpen = false;
 
     // Check if it's December
     const now = new Date()
@@ -22,6 +24,10 @@
 
     function handleChangeImage() {
         isProfileModalOpen = true;
+    }
+
+    function handleManageUsers() {
+        isUserManagementModalOpen = true;
     }
 
     function handleProfileUpdated(event: CustomEvent<{ imageUrl: string | null }>) {
@@ -50,6 +56,7 @@
                 {username}
                 imageUrl={profileImageUrl}
                 on:changeImage={handleChangeImage}
+                on:manageUsers={handleManageUsers}
             />
         </div>
     </div>
@@ -62,6 +69,11 @@
     {username}
     on:close={() => isProfileModalOpen = false}
     on:updated={handleProfileUpdated}
+/>
+
+<UserManagementModal
+    bind:isOpen={isUserManagementModalOpen}
+    on:close={() => isUserManagementModalOpen = false}
 />
 <style lang="scss" >
     .header {
