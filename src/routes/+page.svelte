@@ -22,6 +22,7 @@
     const scores = data?.scores;
     const numberOfSubmittedScores = data?.numberOfSubmittedScores;
     const hostProfileImageUrl = data?.hostProfileImageUrl;
+    const scoreUserProfiles = data?.scoreUserProfiles ?? {};
     const baseUrl = data.baseUrl;
     let isSidePanelOpen = false;
 </script>
@@ -82,6 +83,12 @@
                 />
                 <p class="film-plot">{film.plot}</p>
             </div>
+            <ScoreModal
+                title={getTitleWithOriginalTitle(film)}
+                {scores}
+                {numberOfSubmittedScores}
+                userProfiles={scoreUserProfiles}
+            />
         </div>
     {:else}
         <p>No film set for this week yet!</p>
@@ -104,15 +111,6 @@
         >
             <SetNext closeSidePanel={() => isSidePanelOpen = false} usernames={data?.usernames} />
         </div>
-    {/if}
-</section>
-<section>
-    {#if film}
-        <ScoreModal
-            title={getTitleWithOriginalTitle(film)}
-            {scores}
-            {numberOfSubmittedScores}
-        />
     {/if}
 </section>
 
