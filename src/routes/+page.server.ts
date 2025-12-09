@@ -1,7 +1,6 @@
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
-import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile } from "$lib/server/database"
-import { usernames } from '$lib/server/password'
+import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile, getVisibleUsernames } from "$lib/server/database"
 import { findAndAddFilm } from '$lib/server/service'
 import type { Score } from '@prisma/client';
 
@@ -19,6 +18,8 @@ export const load = async ({locals}) => {
         hostProfileImageUrl = hostProfile?.imageUrl ?? null
     }
 
+
+    const usernames = await getVisibleUsernames()
 
     return {
         currentUserUsername,
