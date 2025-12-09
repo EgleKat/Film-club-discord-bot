@@ -1,6 +1,6 @@
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
-import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile, getVisibleUsernames } from "$lib/server/database"
+import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile, getUserProfiles, getVisibleUsernames } from "$lib/server/database"
 import { findAndAddFilm } from '$lib/server/service'
 import type { Score } from '@prisma/client';
 
@@ -10,12 +10,23 @@ export const load = async ({locals, url}) => {
     let scores: Score[] = []
     let numberOfSubmittedScores: number = 0
     let hostProfileImageUrl: string | null = null
+    let scoreUserProfiles: Record<string, string | null> = {}
     const currentUserUsername = locals.user.username;
     if (meeting) {
         scores = await getShownScores(meeting.id)
         numberOfSubmittedScores = await getNumberOfScoresSubmitted(meeting.id)
         const hostProfile = await getUserProfile(meeting.host)
         hostProfileImageUrl = hostProfile?.imageUrl ?? null
+
+        // Fetch user profiles for all users who submitted scores
+        if (scores.length > 0) {
+            const scoreUsernames = scores.map(s => s.clubber)
+            const profiles = await getUserProfiles(scoreUsernames)
+            scoreUserProfiles = profiles.reduce((acc, profile) => {
+                acc[profile.username] = profile.imageUrl
+                return acc
+            }, {} as Record<string, string | null>)
+        }
     }
 
     // Get base URL for calendar subscription
@@ -31,6 +42,7 @@ export const load = async ({locals, url}) => {
         scores,
         numberOfSubmittedScores,
         hostProfileImageUrl,
+        scoreUserProfiles,
         baseUrl
     }
 }
