@@ -7,7 +7,9 @@
     let showInstructions = false
 
     $: calendarUrl = `${baseUrl}/api/v1/calendar/feed.ics`
-    $: googleCalendarUrl = `https://www.google.com/calendar/render?cid=${encodeURIComponent(calendarUrl)}`
+    // Google Calendar requires webcal:// protocol for iCal subscriptions
+    $: webcalUrl = calendarUrl.replace(/^https?:\/\//, 'webcal://')
+    $: googleCalendarUrl = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcalUrl)}`
 
     async function copyToClipboard() {
         try {
