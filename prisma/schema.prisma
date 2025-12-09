@@ -38,6 +38,7 @@ model Meeting {
 
     scores      Score[]
     showScore   Boolean     @default(false)
+    comments    FilmComment[]
 }
 
 model Score {
@@ -80,4 +81,16 @@ model UserProfile {
     imageUrl    String?
     hidden      Boolean     @default(false)
     updatedAt   DateTime    @default(now()) @updatedAt
+}
+
+model FilmComment {
+    id              Int         @id @default(autoincrement())
+    clubber         String
+    meetingId       Int
+    meeting         Meeting     @relation(fields: [meetingId], references: [id])
+    recommendFriend Boolean     @default(false)
+    watchAgain      Boolean     @default(false)
+    updatedAt       DateTime    @default(now()) @updatedAt
+
+    @@unique([clubber, meetingId], name: "userMeetingCommentIdentifier")
 }

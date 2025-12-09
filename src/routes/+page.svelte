@@ -13,6 +13,7 @@
     import FilmTitle from "$lib/components/FilmTitle.svelte";
     import UserAvatar from "$lib/components/UserAvatar.svelte";
     import CalendarSubscribe from "$lib/components/CalendarSubscribe.svelte";
+    import { enhance } from "$app/forms";
 
     export let data: PageData;
     export let form;
@@ -25,6 +26,16 @@
     const scoreUserProfiles = data?.scoreUserProfiles ?? {};
     const baseUrl = data.baseUrl;
     let isSidePanelOpen = false;
+
+    let recommendFriend = data.userFilmComment?.recommendFriend ?? false;
+    let watchAgain = data.userFilmComment?.watchAgain ?? false;
+
+    function submitComment() {
+        const form = document.getElementById('comment-form') as HTMLFormElement;
+        if (form) {
+            form.requestSubmit();
+        }
+    }
 </script>
 
 <section>
@@ -117,6 +128,44 @@
 <section>
     <CalendarSubscribe {baseUrl} />
 </section>
+
+{#if film && meeting}
+    <section class="film-comments-section">
+        <h3>Your thoughts on this film</h3>
+        <form id="comment-form" method="post" action="?/comment" use:enhance>
+            <input type="hidden" name="recommendFriend" value={recommendFriend} />
+            <input type="hidden" name="watchAgain" value={watchAgain} />
+
+            <div class="comment-options">
+                <button
+                    type="button"
+                    class="comment-option"
+                    class:selected={recommendFriend}
+                    on:click={() => { recommendFriend = !recommendFriend; submitComment(); }}
+                >
+                    <span class="comment-icon">👍</span>
+                    <span class="comment-text">Would recommend to a friend</span>
+                    {#if recommendFriend}
+                        <span class="check-mark">✓</span>
+                    {/if}
+                </button>
+
+                <button
+                    type="button"
+                    class="comment-option"
+                    class:selected={watchAgain}
+                    on:click={() => { watchAgain = !watchAgain; submitComment(); }}
+                >
+                    <span class="comment-icon">🔄</span>
+                    <span class="comment-text">Would watch again</span>
+                    {#if watchAgain}
+                        <span class="check-mark">✓</span>
+                    {/if}
+                </button>
+            </div>
+        </form>
+    </section>
+{/if}
 
 <style lang="scss">
     .current-theme {
@@ -285,6 +334,66 @@
             padding: 0.85rem 1.5rem;
             font-size: 1rem;
             border-radius: 10px;
+        }
+    }
+
+    .film-comments-section {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+        h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.1rem;
+            color: #333;
+        }
+    }
+
+    .comment-options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .comment-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        background: #fafafa;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: left;
+        width: 100%;
+
+        &:hover {
+            border-color: $main-blue;
+            background: #f5f8ff;
+        }
+
+        &.selected {
+            border-color: $main-blue;
+            background: linear-gradient(135deg, rgba($main-blue, 0.1) 0%, rgba($main-blue, 0.05) 100%);
+        }
+
+        .comment-icon {
+            font-size: 1.25rem;
+        }
+
+        .comment-text {
+            flex: 1;
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        .check-mark {
+            color: $main-blue;
+            font-weight: bold;
+            font-size: 1.1rem;
         }
     }
 </style>

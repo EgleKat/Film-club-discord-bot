@@ -3,6 +3,7 @@
     import FilmTitle from "$lib/components/FilmTitle.svelte";
     import Button from "$lib/components/Button.svelte";
     import Icon from "$lib/components/Icon.svelte";
+    import UserAvatar from "$lib/components/UserAvatar.svelte";
     import type { PageData } from "./$types"
 
     export let data: PageData
@@ -30,6 +31,20 @@
 
     function formatScoresForTable(scores: { clubber: string, score: string }[]): string {
         return scores.map(s => `${s.clubber}: ${s.score}`).join(', ');
+    }
+
+    function getRecommendUsers(meetingId: number): { clubber: string, imageUrl: string | null }[] {
+        const comments = data.commentsByMeeting[meetingId] || [];
+        return comments
+            .filter(c => c.recommendFriend)
+            .map(c => ({ clubber: c.clubber, imageUrl: data.userProfileMap[c.clubber] || null }));
+    }
+
+    function getWatchAgainUsers(meetingId: number): { clubber: string, imageUrl: string | null }[] {
+        const comments = data.commentsByMeeting[meetingId] || [];
+        return comments
+            .filter(c => c.watchAgain)
+            .map(c => ({ clubber: c.clubber, imageUrl: data.userProfileMap[c.clubber] || null }));
     }
 </script>
 
@@ -118,6 +133,37 @@
                             </div>
                         {/if}
 
+                        {#if getRecommendUsers(meeting.id).length > 0 || getWatchAgainUsers(meeting.id).length > 0}
+                            <div class="comments-section">
+                                {#if getRecommendUsers(meeting.id).length > 0}
+                                    <div class="comment-row">
+                                        <span class="comment-label">👍 Would recommend</span>
+                                        <div class="comment-users">
+                                            {#each getRecommendUsers(meeting.id) as user}
+                                                <div class="comment-user" title={user.clubber}>
+                                                    <UserAvatar imageUrl={user.imageUrl} username={user.clubber} size="1.25rem" />
+                                                    <span class="comment-username">{user.clubber}</span>
+                                                </div>
+                                            {/each}
+                                        </div>
+                                    </div>
+                                {/if}
+                                {#if getWatchAgainUsers(meeting.id).length > 0}
+                                    <div class="comment-row">
+                                        <span class="comment-label">🔄 Would watch again</span>
+                                        <div class="comment-users">
+                                            {#each getWatchAgainUsers(meeting.id) as user}
+                                                <div class="comment-user" title={user.clubber}>
+                                                    <UserAvatar imageUrl={user.imageUrl} username={user.clubber} size="1.25rem" />
+                                                    <span class="comment-username">{user.clubber}</span>
+                                                </div>
+                                            {/each}
+                                        </div>
+                                    </div>
+                                {/if}
+                            </div>
+                        {/if}
+
                         <div class="card-actions">
                             <form method="post" action="?/toggleHidden">
                                 <input type="hidden" name="id" value={meeting.id} />
@@ -151,6 +197,8 @@
                     <th>Host</th>
                     <th>Avg</th>
                     <th>Scores</th>
+                    <th>👍 Recommend</th>
+                    <th>🔄 Watch again</th>
                     <th></th>
                 </tr>
             </thead>
@@ -165,6 +213,34 @@
                             <td class="host-cell">{meeting.host}</td>
                             <td class="avg-cell">{calculateAverageScore(meeting.scores) || '-'}</td>
                             <td class="scores-cell">{formatScoresForTable(meeting.scores) || '-'}</td>
+                            <td class="comments-cell">
+                                {#if getRecommendUsers(meeting.id).length > 0}
+                                    <div class="table-comment-users">
+                                        {#each getRecommendUsers(meeting.id) as user}
+                                            <div class="table-comment-user" title={user.clubber}>
+                                                <UserAvatar imageUrl={user.imageUrl} username={user.clubber} size="1.1rem" />
+                                                <span>{user.clubber}</span>
+                                            </div>
+                                        {/each}
+                                    </div>
+                                {:else}
+                                    -
+                                {/if}
+                            </td>
+                            <td class="comments-cell">
+                                {#if getWatchAgainUsers(meeting.id).length > 0}
+                                    <div class="table-comment-users">
+                                        {#each getWatchAgainUsers(meeting.id) as user}
+                                            <div class="table-comment-user" title={user.clubber}>
+                                                <UserAvatar imageUrl={user.imageUrl} username={user.clubber} size="1.1rem" />
+                                                <span>{user.clubber}</span>
+                                            </div>
+                                        {/each}
+                                    </div>
+                                {:else}
+                                    -
+                                {/if}
+                            </td>
                             <td class="actions-cell">
                                 <form method="post" action="?/toggleHidden">
                                     <input type="hidden" name="id" value={meeting.id} />
@@ -181,7 +257,7 @@
                     {/if}
                 {:else}
                     <tr>
-                        <td colspan="6" class="no-meetings-cell">No meetings yet!</td>
+                        <td colspan="8" class="no-meetings-cell">No meetings yet!</td>
                     </tr>
                 {/each}
             </tbody>
@@ -533,5 +609,68 @@
         text-align: center;
         padding: 2rem;
         color: #666;
+    }
+
+    // Comments section styles for card view
+    .comments-section {
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid #eee;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .comment-row {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+    }
+
+    .comment-label {
+        font-size: 0.75rem;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .comment-users {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .comment-user {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        background: #f4f4f4;
+        padding: 0.25rem 0.5rem;
+        border-radius: 16px;
+        font-size: 0.8rem;
+    }
+
+    .comment-username {
+        color: #555;
+        text-transform: capitalize;
+    }
+
+    // Comments cell styles for table view
+    .comments-cell {
+        font-size: 0.85rem;
+        color: #555;
+    }
+
+    .table-comment-users {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .table-comment-user {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.8rem;
+        text-transform: capitalize;
     }
 </style>
