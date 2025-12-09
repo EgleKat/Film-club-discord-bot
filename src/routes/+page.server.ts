@@ -1,6 +1,6 @@
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
-import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile, getUserProfiles, getVisibleUsernames } from "$lib/server/database"
+import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile, getUserProfiles, getVisibleUsernames, getFilmComment, updateFilmComment } from "$lib/server/database"
 import { findAndAddFilm } from '$lib/server/service'
 import type { Score } from '@prisma/client';
 
@@ -11,6 +11,7 @@ export const load = async ({locals, url}) => {
     let numberOfSubmittedScores: number = 0
     let hostProfileImageUrl: string | null = null
     let scoreUserProfiles: Record<string, string | null> = {}
+    let userFilmComment: { recommendFriend: boolean, watchAgain: boolean } | null = null
     const currentUserUsername = locals.user.username;
     if (meeting) {
         scores = await getShownScores(meeting.id)
@@ -26,6 +27,14 @@ export const load = async ({locals, url}) => {
                 acc[profile.username] = profile.imageUrl
                 return acc
             }, {} as Record<string, string | null>)
+        }
+
+        const comment = await getFilmComment(meeting.id, currentUserUsername)
+        if (comment) {
+            userFilmComment = {
+                recommendFriend: comment.recommendFriend,
+                watchAgain: comment.watchAgain
+            }
         }
     }
 
@@ -43,7 +52,8 @@ export const load = async ({locals, url}) => {
         numberOfSubmittedScores,
         hostProfileImageUrl,
         scoreUserProfiles,
-        baseUrl
+        baseUrl,
+        userFilmComment
     }
 }
 
@@ -69,6 +79,16 @@ export const actions = {
 
         if (meeting) {
             createScore(meeting.id,  locals.user.username, score)
+        }
+    },
+    comment: async ({request, locals}) => {
+        const data = await request.formData()
+        const recommendFriend = data.get('recommendFriend') === 'true'
+        const watchAgain = data.get('watchAgain') === 'true'
+        const meeting = await getCurrentMeeting()
+
+        if (meeting) {
+            await updateFilmComment(meeting.id, locals.user.username, recommendFriend, watchAgain)
         }
     }
 } satisfies Actions

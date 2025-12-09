@@ -1375,3 +1375,65 @@ export const setUserProfileUploadedImage = async (username: string, uploadedFile
         update: { uploadedFileId, imageUrl: null }
     })
 }
+
+// ============ FILM COMMENTS ============
+
+/**
+ * Get or create a film comment for a user on a meeting
+ */
+export const getOrCreateFilmComment = async (meetingId: number, clubber: string) => {
+    return await prisma.filmComment.upsert({
+        where: {
+            userMeetingCommentIdentifier: { meetingId, clubber }
+        },
+        create: { meetingId, clubber },
+        update: {}
+    })
+}
+
+/**
+ * Update a user's film comment selections
+ */
+export const updateFilmComment = async (
+    meetingId: number,
+    clubber: string,
+    recommendFriend: boolean,
+    watchAgain: boolean
+) => {
+    return await prisma.filmComment.upsert({
+        where: {
+            userMeetingCommentIdentifier: { meetingId, clubber }
+        },
+        create: { meetingId, clubber, recommendFriend, watchAgain },
+        update: { recommendFriend, watchAgain }
+    })
+}
+
+/**
+ * Get a user's film comment for a meeting
+ */
+export const getFilmComment = async (meetingId: number, clubber: string) => {
+    return await prisma.filmComment.findUnique({
+        where: {
+            userMeetingCommentIdentifier: { meetingId, clubber }
+        }
+    })
+}
+
+/**
+ * Get all film comments for a meeting
+ */
+export const getFilmComments = async (meetingId: number) => {
+    return await prisma.filmComment.findMany({
+        where: { meetingId }
+    })
+}
+
+/**
+ * Get film comments for multiple meetings
+ */
+export const getFilmCommentsForMeetings = async (meetingIds: number[]) => {
+    return await prisma.filmComment.findMany({
+        where: { meetingId: { in: meetingIds } }
+    })
+}
