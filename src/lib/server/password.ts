@@ -39,7 +39,18 @@ async function successfulLogin(event: RequestEvent, resolve: any, username: stri
     return resolve(event)
 }
 
+// Public paths that don't require authentication
+const publicPaths = [
+    '/api/v1/calendar/feed.ics'
+]
+
 export const authenticate: Handle = async ({ event, resolve }) => {
+    // Allow public paths without authentication
+    if (publicPaths.some(path => event.url.pathname === path)) {
+        event.locals.user = { username: 'anonymous' }
+        return resolve(event)
+    }
+
     const sessionId = event.cookies.get("sessionId")
     const authHeader = event.request.headers.get("Authorization")
     // either login with basic auth, or if the user logged in within the last year, a session ID cookie
