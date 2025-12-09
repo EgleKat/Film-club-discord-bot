@@ -6,15 +6,25 @@
     export let currentImageUrl: string | null = null;
     export let username: string;
 
+    type InputMode = 'url' | 'file';
+
+    let inputMode: InputMode = 'file';
     let imageUrl = currentImageUrl || '';
+    let selectedFile: File | null = null;
+    let filePreviewUrl: string | null = null;
     let isSubmitting = false;
     let previewError = false;
+    let uploadError: string | null = null;
 
     const dispatch = createEventDispatcher();
 
     $: if (isOpen) {
         imageUrl = currentImageUrl || '';
+        selectedFile = null;
+        filePreviewUrl = null;
         previewError = false;
+        uploadError = null;
+        inputMode = 'file';
     }
 
     function close() {
@@ -23,16 +33,37 @@
 
     async function handleSubmit() {
         isSubmitting = true;
-        try {
-            const response = await fetch('/api/v1/profile-image', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ imageUrl: imageUrl || null })
-            });
+        uploadError = null;
 
-            if (response.ok) {
-                dispatch('updated', { imageUrl: imageUrl || null });
-                close();
+        try {
+            if (inputMode === 'file' && selectedFile) {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                const response = await fetch('/api/v1/profile-image/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    dispatch('updated', { imageUrl: result.fileUrl });
+                    close();
+                } else {
+                    uploadError = result.error || 'Upload failed';
+                }
+            } else {
+                const response = await fetch('/api/v1/profile-image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ imageUrl: imageUrl || null })
+                });
+
+                if (response.ok) {
+                    dispatch('updated', { imageUrl: imageUrl || null });
+                    close();
+                }
             }
         } finally {
             isSubmitting = false;
@@ -40,8 +71,33 @@
     }
 
     function handleClear() {
-        imageUrl = '';
+        if (inputMode === 'file') {
+            selectedFile = null;
+            if (filePreviewUrl) {
+                URL.revokeObjectURL(filePreviewUrl);
+                filePreviewUrl = null;
+            }
+        } else {
+            imageUrl = '';
+        }
         previewError = false;
+        uploadError = null;
+    }
+
+    function handleFileSelect(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
+
+        if (file) {
+            if (filePreviewUrl) {
+                URL.revokeObjectURL(filePreviewUrl);
+            }
+
+            selectedFile = file;
+            filePreviewUrl = URL.createObjectURL(file);
+            previewError = false;
+            uploadError = null;
+        }
     }
 
     function handlePreviewError() {
@@ -59,6 +115,16 @@
             close();
         }
     }
+
+    function switchMode(mode: InputMode) {
+        inputMode = mode;
+        previewError = false;
+        uploadError = null;
+    }
+
+    $: previewSrc = inputMode === 'file' ? filePreviewUrl : imageUrl;
+    $: hasPreview = inputMode === 'file' ? !!selectedFile : !!imageUrl;
+    $: canSubmit = inputMode === 'file' ? !!selectedFile : true;
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -79,9 +145,9 @@
                 <div class="preview-section">
                     <span class="preview-label">Preview</span>
                     <div class="preview-container">
-                        {#if imageUrl && !previewError}
+                        {#if previewSrc && !previewError}
                             <img
-                                src={imageUrl}
+                                src={previewSrc}
                                 alt="Preview"
                                 class="preview-image"
                                 on:error={handlePreviewError}
@@ -95,31 +161,81 @@
                     {/if}
                 </div>
 
-                <div class="input-section">
-                    <label for="image-url">Image URL</label>
-                    <div class="input-row">
-                        <input
-                            id="image-url"
-                            type="url"
-                            bind:value={imageUrl}
-                            placeholder="https://example.com/your-image.jpg"
-                            on:input={() => previewError = false}
-                        />
-                        {#if imageUrl}
-                            <button class="clear-button" on:click={handleClear} type="button">
-                                Clear
-                            </button>
+                <div class="mode-tabs">
+                    <button
+                        class="mode-tab"
+                        class:active={inputMode === 'file'}
+                        on:click={() => switchMode('file')}
+                        type="button"
+                    >
+                        Upload File
+                    </button>
+                    <button
+                        class="mode-tab"
+                        class:active={inputMode === 'url'}
+                        on:click={() => switchMode('url')}
+                        type="button"
+                    >
+                        Image URL
+                    </button>
+                </div>
+
+                {#if inputMode === 'file'}
+                    <div class="input-section">
+                        <label for="file-input">Select Image</label>
+                        <div class="file-input-row">
+                            <input
+                                id="file-input"
+                                type="file"
+                                accept="image/jpeg,image/png,image/gif,image/webp"
+                                on:change={handleFileSelect}
+                                class="file-input"
+                            />
+                            <label for="file-input" class="file-input-label">
+                                {selectedFile ? selectedFile.name : 'Choose a file...'}
+                            </label>
+                            {#if selectedFile}
+                                <button class="clear-button" on:click={handleClear} type="button">
+                                    Clear
+                                </button>
+                            {/if}
+                        </div>
+                        <span class="hint">Accepted formats: JPEG, PNG, GIF, WebP. Max size: 5MB</span>
+                        {#if uploadError}
+                            <span class="error-text">{uploadError}</span>
                         {/if}
                     </div>
-                    <span class="hint">Enter a URL to an image. Leave empty to use the default icon.</span>
-                </div>
+                {:else}
+                    <div class="input-section">
+                        <label for="image-url">Image URL</label>
+                        <div class="input-row">
+                            <input
+                                id="image-url"
+                                type="url"
+                                bind:value={imageUrl}
+                                placeholder="https://example.com/your-image.jpg"
+                                on:input={() => previewError = false}
+                            />
+                            {#if imageUrl}
+                                <button class="clear-button" on:click={handleClear} type="button">
+                                    Clear
+                                </button>
+                            {/if}
+                        </div>
+                        <span class="hint">Enter a URL to an image. Leave empty to use the default icon.</span>
+                    </div>
+                {/if}
             </div>
 
             <div class="modal-footer">
                 <button class="cancel-button" on:click={close} disabled={isSubmitting}>
                     Cancel
                 </button>
-                <button class="save-button" on:click={handleSubmit} disabled={isSubmitting || previewError}>
+                <button
+                    class="save-button"
+                    on:click={handleSubmit}
+                    disabled={isSubmitting || previewError || !canSubmit}
+                >
                     {isSubmitting ? 'Saving...' : 'Save'}
                 </button>
             </div>
@@ -220,6 +336,37 @@
         }
     }
 
+    .mode-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 0.5rem;
+    }
+
+    .mode-tab {
+        flex: 1;
+        padding: 0.6rem 1rem;
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-family: inherit;
+        color: #666;
+        transition: all 0.2s ease;
+
+        &:hover:not(.active) {
+            background: #eee;
+        }
+
+        &.active {
+            background: $main-blue;
+            border-color: $main-blue;
+            color: white;
+        }
+    }
+
     .input-section {
         label {
             display: block;
@@ -229,12 +376,13 @@
             margin-bottom: 0.5rem;
         }
 
-        .input-row {
+        .input-row,
+        .file-input-row {
             display: flex;
             gap: 0.5rem;
         }
 
-        input {
+        input[type="url"] {
             flex: 1;
             padding: 0.75rem;
             border: 1px solid #ddd;
@@ -246,6 +394,37 @@
                 outline: none;
                 border-color: $main-blue;
                 box-shadow: 0 0 0 3px rgba($main-blue, 0.1);
+            }
+        }
+
+        .file-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .file-input-label {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #666;
+            cursor: pointer;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: center;
+            transition: all 0.2s ease;
+
+            &:hover {
+                border-color: $main-blue;
+                background: rgba($main-blue, 0.05);
             }
         }
 
@@ -268,6 +447,13 @@
             margin-top: 0.5rem;
             font-size: 0.8rem;
             color: #888;
+        }
+
+        .error-text {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #de3c4b;
         }
     }
 

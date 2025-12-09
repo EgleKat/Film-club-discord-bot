@@ -78,6 +78,18 @@ model Theme {
 model UserProfile {
     username    String      @id
     imageUrl    String?
+    uploadedFileId String?  @unique
+    uploadedFile   UploadedFile? @relation(fields: [uploadedFileId], references: [id])
     hidden      Boolean     @default(false)
     updatedAt   DateTime    @default(now()) @updatedAt
+}
+
+model UploadedFile {
+    id          String      @id @default(uuid())
+    filename    String
+    mimeType    String
+    data        Bytes
+    size        Int
+    createdAt   DateTime    @default(now())
+    userProfile UserProfile?
 }

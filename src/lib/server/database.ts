@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client"
-import type { Film, WatchListEntry } from "@prisma/client"
+import type { Film, WatchListEntry, UploadedFile } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
@@ -1308,5 +1308,70 @@ export const getMeetingsForCalendar = async () => {
         where: { hidden: false },
         include: { film: true },
         orderBy: { date: 'asc' }
+    })
+}
+
+// ============ FILE UPLOAD ============
+
+/**
+ * Upload a file and store it in the database
+ */
+export const uploadFile = async (
+    filename: string,
+    mimeType: string,
+    data: Buffer,
+    size: number
+): Promise<UploadedFile> => {
+    return await prisma.uploadedFile.create({
+        data: {
+            filename,
+            mimeType,
+            data,
+            size
+        }
+    })
+}
+
+/**
+ * Get an uploaded file by ID
+ */
+export const getUploadedFile = async (id: string) => {
+    return await prisma.uploadedFile.findUnique({
+        where: { id }
+    })
+}
+
+/**
+ * Delete an uploaded file by ID
+ */
+export const deleteUploadedFile = async (id: string) => {
+    return await prisma.uploadedFile.delete({
+        where: { id }
+    })
+}
+
+/**
+ * Set a user's profile image to an uploaded file
+ */
+export const setUserProfileUploadedImage = async (username: string, uploadedFileId: string | null) => {
+    // First, get the current user profile to see if there's an existing uploaded file
+    const currentProfile = await prisma.userProfile.findUnique({
+        where: { username },
+        select: { uploadedFileId: true }
+    })
+
+    // If the user had a previous uploaded file, delete it
+    if (currentProfile?.uploadedFileId && currentProfile.uploadedFileId !== uploadedFileId) {
+        await prisma.uploadedFile.delete({
+            where: { id: currentProfile.uploadedFileId }
+        }).catch(() => {
+            // Ignore if file doesn't exist
+        })
+    }
+
+    return await prisma.userProfile.upsert({
+        where: { username },
+        create: { username, uploadedFileId, imageUrl: null },
+        update: { uploadedFileId, imageUrl: null }
     })
 }
