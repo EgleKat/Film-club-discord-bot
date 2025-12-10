@@ -9,6 +9,7 @@
     export let scores: Score[]
     export let numberOfSubmittedScores: number
     export let userProfiles: Record<string, string | null> = {}
+    export let showForm: boolean = true
 
     const sendScores = () => {
         fetch("/api/v1/discord/scores", { method: 'POST' })
@@ -65,22 +66,24 @@
         </button>
     </div>
 
-    <form method="post" action="?/score" class="score-form">
-        <div class="score-form__film">Score for - <span class="score-form__film-name">
-            {title}
-        </span>
-    </div>
-        <label for="score">
-            Your score:
-        </label>
-        <div class="score-form__inputs">
-            <Input type="text" name="score" placeholder="Enter your score" id="score" class="score-input"/>
-            <Button variant="secondary" size="medium" type="submit">
-                <Icon type="tick" class="medium-button" width="1.25rem" height="1.25rem"/>
-                Submit Score
-            </Button>
+    {#if showForm}
+        <form method="post" action="?/score" class="score-form">
+            <div class="score-form__film">Score for - <span class="score-form__film-name">
+                {title}
+            </span>
         </div>
-    </form>
+            <label for="score">
+                Your score:
+            </label>
+            <div class="score-form__inputs">
+                <Input type="text" name="score" placeholder="Enter your score" id="score" class="score-input"/>
+                <Button variant="secondary" size="medium" type="submit">
+                    <Icon type="tick" class="medium-button" width="1.25rem" height="1.25rem"/>
+                    Submit Score
+                </Button>
+            </div>
+        </form>
+    {/if}
 </section>
 
 <style lang="scss">
