@@ -85,9 +85,6 @@
 
 <style lang="scss">
     .score-section {
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
-        border-top: 2px solid rgba(0, 0, 0, 0.1);
     }
 
     .score-form {
