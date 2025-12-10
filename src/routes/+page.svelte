@@ -94,13 +94,50 @@
                 />
                 <p class="film-plot">{film.plot}</p>
             </div>
+        </div>
+        <section class="score-and-thoughts-section">
             <ScoreModal
                 title={getTitleWithOriginalTitle(film)}
                 {scores}
                 {numberOfSubmittedScores}
                 userProfiles={scoreUserProfiles}
             />
-        </div>
+            <div class="film-comments">
+                <h3>Your thoughts on this film</h3>
+                <form id="comment-form" method="post" action="?/comment" use:enhance>
+                    <input type="hidden" name="recommendFriend" value={recommendFriend} />
+                    <input type="hidden" name="watchAgain" value={watchAgain} />
+
+                    <div class="comment-options">
+                        <button
+                            type="button"
+                            class="comment-option"
+                            class:selected={recommendFriend}
+                            on:click={() => { recommendFriend = !recommendFriend; submitComment(); }}
+                        >
+                            <span class="comment-icon">👍</span>
+                            <span class="comment-text">Would recommend to a friend</span>
+                            {#if recommendFriend}
+                                <span class="check-mark">✓</span>
+                            {/if}
+                        </button>
+
+                        <button
+                            type="button"
+                            class="comment-option"
+                            class:selected={watchAgain}
+                            on:click={() => { watchAgain = !watchAgain; submitComment(); }}
+                        >
+                            <span class="comment-icon">🔄</span>
+                            <span class="comment-text">Would watch again</span>
+                            {#if watchAgain}
+                                <span class="check-mark">✓</span>
+                            {/if}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
     {:else}
         <p>No film set for this week yet!</p>
         <button class="action-button action-button--large" on:click={() => (isSidePanelOpen = !isSidePanelOpen)}>
@@ -129,43 +166,6 @@
     <CalendarSubscribe {baseUrl} />
 </section>
 
-{#if film && meeting}
-    <section class="film-comments-section">
-        <h3>Your thoughts on this film</h3>
-        <form id="comment-form" method="post" action="?/comment" use:enhance>
-            <input type="hidden" name="recommendFriend" value={recommendFriend} />
-            <input type="hidden" name="watchAgain" value={watchAgain} />
-
-            <div class="comment-options">
-                <button
-                    type="button"
-                    class="comment-option"
-                    class:selected={recommendFriend}
-                    on:click={() => { recommendFriend = !recommendFriend; submitComment(); }}
-                >
-                    <span class="comment-icon">👍</span>
-                    <span class="comment-text">Would recommend to a friend</span>
-                    {#if recommendFriend}
-                        <span class="check-mark">✓</span>
-                    {/if}
-                </button>
-
-                <button
-                    type="button"
-                    class="comment-option"
-                    class:selected={watchAgain}
-                    on:click={() => { watchAgain = !watchAgain; submitComment(); }}
-                >
-                    <span class="comment-icon">🔄</span>
-                    <span class="comment-text">Would watch again</span>
-                    {#if watchAgain}
-                        <span class="check-mark">✓</span>
-                    {/if}
-                </button>
-            </div>
-        </form>
-    </section>
-{/if}
 
 <style lang="scss">
     .current-theme {
@@ -194,18 +194,7 @@
         background-color: $main-orange;
         padding: 2rem;
         position: relative;
-        $cutout-height: 6rem;
-        margin-bottom: $cutout-height;
-        &:after {
-            content: "";
-            position: absolute;
-            display: block;
-            left: 0rem;
-            width: 101%;
-            background-color: #f0f0ff;
-            transform: skewY(-3deg);
-            border-top: solid #f0f0ff $cutout-height;
-        }
+        border-radius: 12px;
         .film-header{
             display: flex;
             justify-content: space-between;
@@ -337,12 +326,18 @@
         }
     }
 
-    .film-comments-section {
+    .score-and-thoughts-section {
         margin-top: 2rem;
         padding: 1.5rem;
         background: white;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .film-comments {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 2px solid rgba(0, 0, 0, 0.1);
 
         h3 {
             margin: 0 0 1rem 0;
