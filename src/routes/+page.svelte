@@ -72,7 +72,10 @@
 
         <div class="film-description">
             <div class="film-header">
-                <div class="film-title"><FilmTitle film={meeting.film} /></div>
+                <div class="film-title-wrapper">
+                    <div class="film-title"><FilmTitle film={meeting.film} /></div>
+                    <span class="mobile-select-text">select film</span>
+                </div>
                 <button class="action-button" on:click={() => (isSidePanelOpen = !isSidePanelOpen)}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -238,12 +241,30 @@
         .film-header{
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
+        }
+        .film-title-wrapper {
+            display: flex;
+            flex-direction: column;
         }
         .film-title {
             color: #2a1a04;
             font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 1rem;
+        }
+        .mobile-select-text {
+            display: none;
+            font-size: 0.85rem;
+            color: #5a3a0a;
+            margin-top: -0.5rem;
+            margin-bottom: 0.5rem;
+            @include tablet {
+                display: block;
+            }
+            @include desktop {
+                display: none;
+            }
         }
         .film-director{
 
