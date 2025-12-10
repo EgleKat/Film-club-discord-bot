@@ -26,6 +26,7 @@
     const scoreUserProfiles = data?.scoreUserProfiles ?? {};
     const baseUrl = data.baseUrl;
     let isSidePanelOpen = false;
+    let isScorePopupOpen = false;
 
     let recommendFriend = data.userFilmComment?.recommendFriend ?? false;
     let watchAgain = data.userFilmComment?.watchAgain ?? false;
@@ -92,52 +93,88 @@
                     src={film.poster}
                     alt={`Poster for ${film.originalTitle}`}
                 />
-                <p class="film-plot">{film.plot}</p>
+                <div class="plot-and-score-wrapper">
+                    <p class="film-plot">{film.plot}</p>
+                    <button class="score-section-button" on:click={() => isScorePopupOpen = true}>
+                        <ScoreModal
+                            title={getTitleWithOriginalTitle(film)}
+                            {scores}
+                            {numberOfSubmittedScores}
+                            userProfiles={scoreUserProfiles}
+                            showForm={false}
+                        />
+                    </button>
+                </div>
             </div>
         </div>
-        <section class="score-and-thoughts-section">
-            <ScoreModal
-                title={getTitleWithOriginalTitle(film)}
-                {scores}
-                {numberOfSubmittedScores}
-                userProfiles={scoreUserProfiles}
-            />
-            <div class="film-comments">
-                <h3>Your thoughts on this film</h3>
-                <form id="comment-form" method="post" action="?/comment" use:enhance>
-                    <input type="hidden" name="recommendFriend" value={recommendFriend} />
-                    <input type="hidden" name="watchAgain" value={watchAgain} />
 
-                    <div class="comment-options">
-                        <button
-                            type="button"
-                            class="comment-option"
-                            class:selected={recommendFriend}
-                            on:click={() => { recommendFriend = !recommendFriend; submitComment(); }}
-                        >
-                            <span class="comment-icon">👍</span>
-                            <span class="comment-text">Would recommend to a friend</span>
-                            {#if recommendFriend}
-                                <span class="check-mark">✓</span>
-                            {/if}
-                        </button>
+        {#if isScorePopupOpen}
+            <div class="popup-overlay" on:click={() => isScorePopupOpen = false} on:keydown={(e) => e.key === 'Escape' && (isScorePopupOpen = false)} role="button" tabindex="0">
+                <div class="score-popup" on:click|stopPropagation on:keydown|stopPropagation role="dialog">
+                    <button class="popup-close" on:click={() => isScorePopupOpen = false}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
 
-                        <button
-                            type="button"
-                            class="comment-option"
-                            class:selected={watchAgain}
-                            on:click={() => { watchAgain = !watchAgain; submitComment(); }}
-                        >
-                            <span class="comment-icon">🔄</span>
-                            <span class="comment-text">Would watch again</span>
-                            {#if watchAgain}
-                                <span class="check-mark">✓</span>
-                            {/if}
-                        </button>
+                    <div class="popup-content">
+                        <form method="post" action="?/score" class="score-form">
+                            <div class="score-form__film">Score for - <span class="score-form__film-name">
+                                {getTitleWithOriginalTitle(film)}
+                            </span>
+                            </div>
+                            <label for="popup-score">
+                                Your score:
+                            </label>
+                            <div class="score-form__inputs">
+                                <input type="text" name="score" placeholder="Enter your score" id="popup-score" class="score-input"/>
+                                <Button variant="secondary" size="medium" type="submit">
+                                    <Icon type="tick" class="medium-button" width="1.25rem" height="1.25rem"/>
+                                    Submit Score
+                                </Button>
+                            </div>
+                        </form>
+
+                        <div class="film-comments">
+                            <h3>Your thoughts on this film</h3>
+                            <form id="comment-form" method="post" action="?/comment" use:enhance>
+                                <input type="hidden" name="recommendFriend" value={recommendFriend} />
+                                <input type="hidden" name="watchAgain" value={watchAgain} />
+
+                                <div class="comment-options">
+                                    <button
+                                        type="button"
+                                        class="comment-option"
+                                        class:selected={recommendFriend}
+                                        on:click={() => { recommendFriend = !recommendFriend; submitComment(); }}
+                                    >
+                                        <span class="comment-icon">👍</span>
+                                        <span class="comment-text">Would recommend to a friend</span>
+                                        {#if recommendFriend}
+                                            <span class="check-mark">✓</span>
+                                        {/if}
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="comment-option"
+                                        class:selected={watchAgain}
+                                        on:click={() => { watchAgain = !watchAgain; submitComment(); }}
+                                    >
+                                        <span class="comment-icon">🔄</span>
+                                        <span class="comment-text">Would watch again</span>
+                                        {#if watchAgain}
+                                            <span class="check-mark">✓</span>
+                                        {/if}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </form>
+                </div>
             </div>
-        </section>
+        {/if}
     {:else}
         <p>No film set for this week yet!</p>
         <button class="action-button action-button--large" on:click={() => (isSidePanelOpen = !isSidePanelOpen)}>
@@ -219,7 +256,7 @@
             margin-bottom: 3rem;
             display: flex;
             gap: 1rem;
-            align-items: center;
+            align-items: flex-start;
             @include tablet {
                 flex-direction: column;
             }
@@ -238,8 +275,14 @@
                     width: 50%;
                 }
             }
+            .plot-and-score-wrapper {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                flex: 1;
+            }
             .film-plot {
-                margin: auto 1rem;
+                margin: 0;
                 padding: 1rem;
                 border-radius: 4px;
                 line-height: 1.5rem;
@@ -326,12 +369,118 @@
         }
     }
 
-    .score-and-thoughts-section {
-        margin-top: 2rem;
-        padding: 1.5rem;
+    .score-section-button {
+        display: block;
+        width: 100%;
+        padding: 0;
+        border: none;
         background: white;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: left;
+
+        &:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba($main-blue, 0.3);
+        }
+    }
+
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+    }
+
+    .score-popup {
+        background: white;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 8px;
+        color: #666;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: #333;
+        }
+    }
+
+    .popup-content {
+        padding: 2rem;
+    }
+
+    .score-form {
+        padding: 1rem;
+        border-radius: 8px;
+        background-color: rgba(0, 0, 0, 0.05);
+        font-weight: normal;
+
+        &__film {
+            font-size: 1.1rem;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        &__film-name {
+            letter-spacing: 0.4px;
+            font-weight: 700;
+        }
+
+        label {
+            font-size: 0.95rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        &__inputs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+    }
+
+    .score-input {
+        padding: 0.75rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        flex: 1;
+        min-width: 150px;
+
+        &:focus {
+            outline: none;
+            border-color: $main-blue;
+        }
     }
 
     .film-comments {
