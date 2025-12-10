@@ -123,13 +123,25 @@ export const getScores = async (meetingId: number) => {
 
 export const getNumberOfScoresSubmitted = async (meetingId: number) => {
     const aggregation =  await prisma.score.aggregate({
-        _count: { 
+        _count: {
             id: true
         },
         where: { meetingId }
     })
 
     return aggregation._count.id
+}
+
+/**
+ * Get the usernames of users who submitted scores (without revealing the scores)
+ */
+export const getSubmittedScoreUsers = async (meetingId: number) => {
+    const scores = await prisma.score.findMany({
+        where: { meetingId },
+        select: { clubber: true },
+        orderBy: { clubber: 'asc' }
+    })
+    return scores.map(s => s.clubber)
 }
 
 

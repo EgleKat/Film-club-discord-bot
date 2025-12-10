@@ -24,6 +24,8 @@
     const numberOfSubmittedScores = data?.numberOfSubmittedScores;
     const hostProfileImageUrl = data?.hostProfileImageUrl;
     const scoreUserProfiles = data?.scoreUserProfiles ?? {};
+    const submittedUsers = data?.submittedUsers ?? [];
+    const submittedUserProfiles = data?.submittedUserProfiles ?? {};
     const baseUrl = data.baseUrl;
     let isSidePanelOpen = false;
     let isScorePopupOpen = false;
@@ -95,15 +97,16 @@
                 />
                 <div class="plot-and-score-wrapper">
                     <p class="film-plot">{film.plot}</p>
-                    <button class="score-section-button" on:click={() => isScorePopupOpen = true}>
-                        <ScoreModal
-                            title={getTitleWithOriginalTitle(film)}
-                            {scores}
-                            {numberOfSubmittedScores}
-                            userProfiles={scoreUserProfiles}
-                            showForm={false}
-                        />
-                    </button>
+                    <ScoreModal
+                        title={getTitleWithOriginalTitle(film)}
+                        {scores}
+                        {numberOfSubmittedScores}
+                        userProfiles={scoreUserProfiles}
+                        {submittedUsers}
+                        {submittedUserProfiles}
+                        showForm={false}
+                        onAddScore={() => isScorePopupOpen = true}
+                    />
                 </div>
             </div>
         </div>
@@ -366,29 +369,6 @@
             padding: 0.85rem 1.5rem;
             font-size: 1rem;
             border-radius: 10px;
-        }
-    }
-
-    .score-section-button {
-        display: block;
-        width: 100%;
-        padding: 0;
-        border: none;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-align: left;
-
-        &:hover {
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
-        }
-
-        &:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba($main-blue, 0.3);
         }
     }
 

@@ -1,6 +1,6 @@
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
-import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile, getUserProfiles, getVisibleUsernames, getFilmComment, updateFilmComment } from "$lib/server/database"
+import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile, getUserProfiles, getVisibleUsernames, getFilmComment, updateFilmComment, getSubmittedScoreUsers } from "$lib/server/database"
 import { findAndAddFilm } from '$lib/server/service'
 import type { Score } from '@prisma/client';
 
@@ -11,11 +11,14 @@ export const load = async ({locals, url}) => {
     let numberOfSubmittedScores: number = 0
     let hostProfileImageUrl: string | null = null
     let scoreUserProfiles: Record<string, string | null> = {}
+    let submittedUsers: string[] = []
+    let submittedUserProfiles: Record<string, string | null> = {}
     let userFilmComment: { recommendFriend: boolean, watchAgain: boolean } | null = null
     const currentUserUsername = locals.user.username;
     if (meeting) {
         scores = await getShownScores(meeting.id)
         numberOfSubmittedScores = await getNumberOfScoresSubmitted(meeting.id)
+        submittedUsers = await getSubmittedScoreUsers(meeting.id)
         const hostProfile = await getUserProfile(meeting.host)
         hostProfileImageUrl = hostProfile?.imageUrl ?? null
 
@@ -24,6 +27,15 @@ export const load = async ({locals, url}) => {
             const scoreUsernames = scores.map(s => s.clubber)
             const profiles = await getUserProfiles(scoreUsernames)
             scoreUserProfiles = profiles.reduce((acc, profile) => {
+                acc[profile.username] = profile.imageUrl
+                return acc
+            }, {} as Record<string, string | null>)
+        }
+
+        // Fetch profiles for submitted users (even when scores not revealed)
+        if (submittedUsers.length > 0) {
+            const profiles = await getUserProfiles(submittedUsers)
+            submittedUserProfiles = profiles.reduce((acc, profile) => {
                 acc[profile.username] = profile.imageUrl
                 return acc
             }, {} as Record<string, string | null>)
@@ -52,6 +64,8 @@ export const load = async ({locals, url}) => {
         numberOfSubmittedScores,
         hostProfileImageUrl,
         scoreUserProfiles,
+        submittedUsers,
+        submittedUserProfiles,
         baseUrl,
         userFilmComment
     }

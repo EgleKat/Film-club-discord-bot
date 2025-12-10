@@ -10,6 +10,9 @@
     export let numberOfSubmittedScores: number
     export let userProfiles: Record<string, string | null> = {}
     export let showForm: boolean = true
+    export let submittedUsers: string[] = []
+    export let submittedUserProfiles: Record<string, string | null> = {}
+    export let onAddScore: (() => void) | null = null
 
     const sendScores = () => {
         fetch("/api/v1/discord/scores", { method: 'POST' })
@@ -50,20 +53,51 @@
                     </div>
                 {/each}
             </div>
+        {:else if submittedUsers.length > 0}
+            <p class="no-scores-text">Scores not revealed yet</p>
+            <div class="submitted-users">
+                <p class="submitted-label">Submitted:</p>
+                <div class="submitted-users-grid">
+                    {#each submittedUsers as user}
+                        <div class="submitted-user">
+                            <UserAvatar
+                                imageUrl={submittedUserProfiles[user] ?? null}
+                                username={user}
+                                size="2rem"
+                            />
+                            <span class="submitted-user__name">{user}</span>
+                        </div>
+                    {/each}
+                </div>
+            </div>
         {:else}
-            <p class="no-scores">No scores revealed yet</p>
+            <p class="no-scores">No scores submitted yet</p>
         {/if}
 
-        <button
-            type="button"
-            class="action-button"
-            on:click={sendScores}
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-            </svg>
-            <span>Send to Discord</span>
-        </button>
+        <div class="action-buttons">
+            {#if onAddScore}
+                <button
+                    type="button"
+                    class="action-button"
+                    on:click={onAddScore}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    <span>Add your score</span>
+                </button>
+            {/if}
+            <button
+                type="button"
+                class="action-button"
+                on:click={sendScores}
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+                <span>Send to Discord</span>
+            </button>
+        </div>
     </div>
 
     {#if showForm}
@@ -211,12 +245,56 @@
         margin: 0;
     }
 
+    .no-scores-text {
+        text-align: center;
+        opacity: 0.7;
+        font-style: italic;
+        margin: 0 0 0.75rem 0;
+    }
+
+    .submitted-users {
+        margin-bottom: 1rem;
+    }
+
+    .submitted-label {
+        font-size: 0.85rem;
+        opacity: 0.8;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .submitted-users-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .submitted-user {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        background-color: rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+
+        &__name {
+            font-size: 0.85rem;
+            text-transform: capitalize;
+            color: rgba(255, 255, 255, 0.9);
+        }
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+
     .action-button {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
         padding: 0.5rem 1rem;
-        margin-top: 0.5rem;
         border: none;
         border-radius: 8px;
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
