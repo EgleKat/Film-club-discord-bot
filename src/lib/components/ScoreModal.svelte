@@ -156,10 +156,10 @@
     }
 
     .scores-display {
-        background-color: $main-blue;
+        background-color: $main-teal;
         border-radius: 12px;
         padding: 1.25rem;
-        color: #cadff4;
+        color: #d4f4f3;
         margin-bottom: 1.5rem;
     }
 
