@@ -1,4 +1,4 @@
-import { getAllUserProfiles, createUserProfile, getUserProfile, setUserProfileImage } from "$lib/server/database";
+import { getAllUserProfiles, createUserProfile, getUserProfile, setUserProfileImage, getProfileImageUrl } from "$lib/server/database";
 import { envUsernames } from "$lib/server/password";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
@@ -20,7 +20,7 @@ export const GET: RequestHandler = async () => {
         })),
         ...dbUsers.map(u => ({
             username: u.username,
-            imageUrl: u.imageUrl,
+            imageUrl: getProfileImageUrl(u),
             hidden: u.hidden,
             updatedAt: u.updatedAt
         }))
