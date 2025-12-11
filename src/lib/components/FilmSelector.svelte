@@ -79,7 +79,10 @@
                         />
                     {:else}
                         <div class="film-poster-placeholder">
-                            <span class="no-poster-text">No Poster</span>
+                            <span class="no-poster-title">{film.title}</span>
+                            {#if film.release_date}
+                                <span class="no-poster-year">{film.release_date.substring(0, 4)}</span>
+                            {/if}
                         </div>
                     {/if}
                     <div class="title-overlay">
@@ -163,7 +166,6 @@
         border: 2px solid transparent;
         transition: border-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
         background: #1a1a2e;
-        aspect-ratio: 2 / 3;
 
         &:hover {
             transform: translateY(-2px);
@@ -177,12 +179,16 @@
     }
 
     .poster-container {
-        position: absolute;
-        inset: 0;
+        position: relative;
+        width: 100%;
+        aspect-ratio: 2 / 3;
         overflow: hidden;
     }
 
     .film-poster {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -191,19 +197,38 @@
     }
 
     .film-poster-placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         background: linear-gradient(135deg, #2d2d44 0%, #1a1a2e 100%);
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        padding: 1rem;
+        box-sizing: border-box;
+        gap: 0.25rem;
     }
 
-    .no-poster-text {
-        color: #666;
+    .no-poster-title {
+        color: #b0b0b0;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-align: center;
+        line-height: 1.3;
+        word-break: break-word;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    .no-poster-year {
+        color: #888;
         font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        font-weight: 400;
     }
 
     .title-overlay {
