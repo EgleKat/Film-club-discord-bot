@@ -1355,7 +1355,7 @@ export const getVisibleUserProfiles = async () => {
         .map(u => ({
             username: u.username,
             imageUrl: u.uploadedFileId
-                ? `/api/v1/profile-image/${u.uploadedFileId}`
+                ? `/api/v1/files/${u.uploadedFileId}`
                 : u.imageUrl
         }))
 
