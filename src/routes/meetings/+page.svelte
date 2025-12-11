@@ -311,7 +311,7 @@
                 <Button variant="tertiary" on:click={cancelDelete}>
                     Cancel
                 </Button>
-                <form method="post" action="?/deleteFilm" on:submit={cancelDelete}>
+                <form method="post" action="?/deleteFilm">
                     <input type="hidden" name="filmId" value={deleteConfirmFilmId} />
                     <Button type="submit" variant="primary">
                         <Icon type="trash" width="1rem" height="1rem" />
