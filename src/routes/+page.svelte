@@ -106,6 +106,23 @@
             {#if film.budget && film.budget > 0}
                 <p class="film-budget">Budget - {film.budget.toLocaleString()}</p>
             {/if}
+            {#if film.runtime}
+                <p class="film-runtime">Runtime - {Math.floor(film.runtime / 60)}h {film.runtime % 60}m</p>
+            {/if}
+            {#if film.revenue && film.revenue > 0}
+                <p class="film-revenue">Revenue - {Number(film.revenue) >= 1_000_000_000
+                    ? `$${(Number(film.revenue) / 1_000_000_000).toFixed(1)}B`
+                    : Number(film.revenue) >= 1_000_000
+                        ? `$${Math.round(Number(film.revenue) / 1_000_000)}M`
+                        : `$${Number(film.revenue).toLocaleString()}`}</p>
+            {/if}
+            {#if film.genres}
+                <div class="film-genres">
+                    {#each JSON.parse(film.genres) as genre}
+                        <span class="genre-tag">{genre}</span>
+                    {/each}
+                </div>
+            {/if}
             <div class="film-poster-and-plot">
                 <img
                     class="film-poster"
@@ -283,14 +300,26 @@
             font-weight: bold;
             margin-bottom: 1rem;
         }
-        .film-director{
-
+        .film-director,
+        .film-country,
+        .film-budget,
+        .film-runtime,
+        .film-revenue {
+            margin: 0.25rem 0;
         }
-        .film-country {
-
+        .film-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.75rem 0;
         }
-        .film-budget {
-
+        .genre-tag {
+            background-color: rgba(0, 0, 0, 0.15);
+            color: #2a1a04;
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
         .film-poster-and-plot {
             border-radius: 4px;
