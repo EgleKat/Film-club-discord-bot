@@ -159,7 +159,7 @@
         background-color: $main-teal;
         border-radius: 12px;
         padding: 1.25rem;
-        color: #d4f4f3;
+        color: #2d3b2d;
         margin-bottom: 1.5rem;
     }
 
@@ -169,7 +169,7 @@
         align-items: center;
         margin-bottom: 1rem;
         padding-bottom: 0.75rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.15);
     }
 
     .scores-title {
@@ -179,13 +179,13 @@
         margin: 0;
         font-size: 1.1rem;
         font-weight: 600;
-        color: white;
+        color: #1a2e1a;
     }
 
     .scores-count {
         font-size: 0.85rem;
         opacity: 0.8;
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(0, 0, 0, 0.1);
         padding: 0.25rem 0.75rem;
         border-radius: 20px;
     }
@@ -202,12 +202,12 @@
         align-items: center;
         gap: 0.75rem;
         padding: 0.75rem;
-        background-color: rgba(255, 255, 255, 0.08);
+        background-color: rgba(0, 0, 0, 0.08);
         border-radius: 10px;
         transition: all 0.2s ease;
 
         &:hover {
-            background-color: rgba(255, 255, 255, 0.12);
+            background-color: rgba(0, 0, 0, 0.12);
             transform: translateY(-2px);
         }
 
@@ -228,13 +228,13 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(0, 0, 0, 0.8);
         }
 
         &__score {
             font-size: 1.1rem;
             font-weight: 700;
-            color: white;
+            color: #1a2e1a;
         }
     }
 
@@ -274,13 +274,13 @@
         align-items: center;
         gap: 0.5rem;
         padding: 0.5rem 0.75rem;
-        background-color: rgba(255, 255, 255, 0.08);
+        background-color: rgba(0, 0, 0, 0.08);
         border-radius: 8px;
 
         &__name {
             font-size: 0.85rem;
             text-transform: capitalize;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(0, 0, 0, 0.8);
         }
     }
 
@@ -298,8 +298,8 @@
         padding: 0.5rem 1rem;
         border: none;
         border-radius: 8px;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-        color: white;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.08) 100%);
+        color: #1a2e1a;
         font-size: 0.85rem;
         font-weight: 600;
         cursor: pointer;
@@ -317,7 +317,7 @@
             background: linear-gradient(
                 90deg,
                 transparent,
-                rgba(white, 0.2),
+                rgba(0, 0, 0, 0.1),
                 transparent
             );
             transition: left 0.4s ease;
@@ -325,7 +325,7 @@
 
         &:hover {
             transform: translateY(-2px);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
 
             &::before {
                 left: 100%;
@@ -334,7 +334,7 @@
 
         &:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
         }
 
         &:active {
