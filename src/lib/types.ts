@@ -65,7 +65,10 @@ export type Meeting = {
         plot: string,
         director: string,
         budget: number,
-        country: string | null
+        country: string | null,
+        runtime: number | null,
+        revenue: bigint | null,
+        genres: string | null
     }
     id: number
     date: Date
