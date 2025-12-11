@@ -156,7 +156,7 @@
     }
 
     .scores-display {
-        background-color: $main-teal;
+        background-color: rgba($main-teal, 0.5);
         border-radius: 12px;
         padding: 1.25rem;
         color: #2d3b2d;
