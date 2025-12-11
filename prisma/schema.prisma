@@ -23,6 +23,7 @@ model Film {
     tmdbVoteAverage Float?  // TMDB public rating (0-10)
     genres String?  // JSON array of genre names e.g. '["Action", "Drama"]'
     country String?  // Primary production country name e.g. "United States of America"
+    deleted Boolean @default(false)  // Soft delete flag - film is hidden but kept for debugging
     meetings Meeting[]
     watchListEntries WatchListEntry[]
 }

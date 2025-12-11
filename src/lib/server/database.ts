@@ -71,7 +71,7 @@ export const getCurrentMeeting = async () => {
     const meeting = await prisma.meeting.findFirst({
         orderBy: { date: 'asc' },
         include: { film: true, scores: true },
-        where: { date: { gte: new Date() }, hidden: false }
+        where: { date: { gte: new Date() }, hidden: false, film: { deleted: false } }
     })
     if (meeting !== null) {
         return meeting
@@ -81,7 +81,7 @@ export const getCurrentMeeting = async () => {
     return await prisma.meeting.findFirst({
         orderBy: { date: 'desc' },
         include: { film: true, scores: true },
-        where: { hidden: false },
+        where: { hidden: false, film: { deleted: false } },
     })
 }
 
@@ -89,6 +89,7 @@ export const getAllMeetings = async () => {
     return await prisma.meeting.findMany({
         orderBy: { date: 'desc' },
         include: { film: true, scores: true },
+        where: { film: { deleted: false } },
     })
 }
 
@@ -207,7 +208,7 @@ interface MergedWatchListEntry {
  */
 export const getWatchList = async (clubber: string) => {
     const myWatchlist = await prisma.watchListEntry.findMany({
-        where: { clubber },
+        where: { clubber, film: { deleted: false } },
         orderBy: { dateWatched: "desc" },
         include: { film: true }
     })
@@ -218,11 +219,11 @@ export const getWatchList = async (clubber: string) => {
         where: { NOT: { clubber }, filmId: { in: watchListFilms } },
     })
     const meetingsIwasIn = await prisma.meeting.findMany({
-        where: { scores: { some: { clubber } }, hidden: false },
+        where: { scores: { some: { clubber } }, hidden: false, film: { deleted: false } },
         include: { scores: true, film: true }
     });
     const meetingsWithMyFilmsIWasNotIn = await prisma.meeting.findMany({
-        where: { filmId: { in: watchListFilms }, hidden: false, NOT: { scores: { some: { clubber } } } },
+        where: { filmId: { in: watchListFilms }, hidden: false, NOT: { scores: { some: { clubber } } }, film: { deleted: false } },
         include: { scores: true }
     })
     let filmToScores: MergedWatchListEntry[] = meetingsIwasIn.map(meeting => ({
@@ -327,6 +328,7 @@ export const getWrappedMeetings = async (year: number) => {
     return await prisma.meeting.findMany({
         where: {
             hidden: false,
+            film: { deleted: false },
             date: {
                 gte: startOfYear,
                 lt: endOfYear
@@ -1214,10 +1216,23 @@ export const getAllWrappedAwards = async (year: number): Promise<WrappedAward[]>
 // ============ TMDB DATA REFRESH ============
 
 /**
- * Get all films in the database
+ * Get all films in the database (excluding deleted)
  */
 export const getAllFilms = async () => {
-    return await prisma.film.findMany()
+    return await prisma.film.findMany({
+        where: { deleted: false }
+    })
+}
+
+/**
+ * Soft delete a film by setting deleted=true
+ * The film is kept in the database for debugging purposes
+ */
+export const deleteFilm = async (imdbId: string) => {
+    return await prisma.film.update({
+        where: { imdbId },
+        data: { deleted: true }
+    })
 }
 
 /**
@@ -1376,7 +1391,7 @@ export const getVisibleUserProfiles = async () => {
  */
 export const getMeetingsForCalendar = async () => {
     return await prisma.meeting.findMany({
-        where: { hidden: false },
+        where: { hidden: false, film: { deleted: false } },
         include: { film: true },
         orderBy: { date: 'asc' }
     })

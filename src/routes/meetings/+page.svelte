@@ -11,6 +11,20 @@
     let showHidden = false;
     let viewMode: 'cards' | 'table' = 'cards';
 
+    // Delete confirmation state
+    let deleteConfirmFilmId: string | null = null;
+    let deleteConfirmFilmTitle: string | null = null;
+
+    function showDeleteConfirm(filmId: string, filmTitle: string) {
+        deleteConfirmFilmId = filmId;
+        deleteConfirmFilmTitle = filmTitle;
+    }
+
+    function cancelDelete() {
+        deleteConfirmFilmId = null;
+        deleteConfirmFilmTitle = null;
+    }
+
     function formatDate(date: Date): string {
         return date.toLocaleDateString('en-GB', {
             day: 'numeric',
@@ -177,6 +191,15 @@
                                     {/if}
                                 </Button>
                             </form>
+                            <Button
+                                type="button"
+                                variant="tertiary"
+                                size="small"
+                                on:click={() => showDeleteConfirm(meeting.film.imdbId, meeting.film.title || meeting.film.originalTitle)}
+                            >
+                                <Icon type="trash" width="1rem" height="1rem" />
+                                Delete
+                            </Button>
                         </div>
                     </div>
                 </article>
@@ -252,6 +275,14 @@
                                         {/if}
                                     </Button>
                                 </form>
+                                <Button
+                                    type="button"
+                                    variant="tertiary"
+                                    size="small"
+                                    on:click={() => showDeleteConfirm(meeting.film.imdbId, meeting.film.title || meeting.film.originalTitle)}
+                                >
+                                    Delete
+                                </Button>
                             </td>
                         </tr>
                     {/if}
@@ -262,6 +293,33 @@
                 {/each}
             </tbody>
         </table>
+    </div>
+{/if}
+
+<!-- Delete Confirmation Dialog -->
+{#if deleteConfirmFilmId}
+    <div class="modal-overlay" on:click={cancelDelete} on:keydown={(e) => e.key === 'Escape' && cancelDelete()} role="button" tabindex="0">
+        <div class="modal-content" on:click|stopPropagation role="dialog" aria-modal="true">
+            <h2 class="modal-title">Delete Film</h2>
+            <p class="modal-text">
+                Are you sure you want to delete <strong>{deleteConfirmFilmTitle}</strong>?
+            </p>
+            <p class="modal-warning">
+                This will remove the film from all meetings. This action cannot be undone.
+            </p>
+            <div class="modal-actions">
+                <Button variant="tertiary" on:click={cancelDelete}>
+                    Cancel
+                </Button>
+                <form method="post" action="?/deleteFilm" on:submit={cancelDelete}>
+                    <input type="hidden" name="filmId" value={deleteConfirmFilmId} />
+                    <Button type="submit" variant="primary">
+                        <Icon type="trash" width="1rem" height="1rem" />
+                        Delete Film
+                    </Button>
+                </form>
+            </div>
+        </div>
     </div>
 {/if}
 
@@ -672,5 +730,62 @@
         gap: 0.35rem;
         font-size: 0.8rem;
         text-transform: capitalize;
+    }
+
+    // Delete confirmation modal styles
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 1rem;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        max-width: 400px;
+        width: 100%;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-title {
+        margin: 0 0 1rem;
+        font-size: 1.25rem;
+        color: #333;
+    }
+
+    .modal-text {
+        margin: 0 0 0.5rem;
+        color: #555;
+        line-height: 1.5;
+
+        strong {
+            color: #333;
+        }
+    }
+
+    .modal-warning {
+        margin: 0 0 1.5rem;
+        color: #c53030;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+
+        form {
+            display: inline-block;
+        }
     }
 </style>
