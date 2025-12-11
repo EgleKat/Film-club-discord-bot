@@ -26,6 +26,11 @@
         closeDropdown();
     }
 
+    function handleChangePassword() {
+        dispatch('changePassword');
+        closeDropdown();
+    }
+
     function handleClickOutside(event: MouseEvent) {
         const target = event.target as HTMLElement;
         if (!target.closest('.profile-dropdown')) {
@@ -54,6 +59,13 @@
                     <path d="M21 15l-5-5L5 21"/>
                 </svg>
                 <span>Change profile image</span>
+            </button>
+            <button class="dropdown-item" on:click={handleChangePassword}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span>Change your password</span>
             </button>
             <button class="dropdown-item" on:click={handleManageUsers}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

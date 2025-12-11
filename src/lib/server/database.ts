@@ -1524,3 +1524,38 @@ export const getFilmCommentsForMeetings = async (meetingIds: number[]) => {
         where: { meetingId: { in: meetingIds } }
     })
 }
+
+// ============ PASSWORD MANAGEMENT ============
+
+/**
+ * Set or update a user's password
+ */
+export const setUserPassword = async (username: string, password: string) => {
+    return await prisma.userProfile.upsert({
+        where: { username },
+        create: { username, password },
+        update: { password }
+    })
+}
+
+/**
+ * Get a user's password (returns null if no custom password set)
+ */
+export const getUserPassword = async (username: string): Promise<string | null> => {
+    const profile = await prisma.userProfile.findUnique({
+        where: { username },
+        select: { password: true }
+    })
+    return profile?.password ?? null
+}
+
+/**
+ * Reset a user's password (remove custom password, revert to global)
+ */
+export const resetUserPassword = async (username: string) => {
+    return await prisma.userProfile.upsert({
+        where: { username },
+        create: { username, password: null },
+        update: { password: null }
+    })
+}
