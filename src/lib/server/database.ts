@@ -1245,7 +1245,8 @@ export const updateFilmTmdbData = async (
         originalLanguage?: string | null,
         revenue?: bigint | null,
         tmdbVoteAverage?: number | null,
-        genres?: string | null
+        genres?: string | null,
+        country?: string | null
     }
 ) => {
     return await prisma.film.update({
