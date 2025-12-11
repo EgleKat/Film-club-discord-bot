@@ -228,7 +228,7 @@
                 axis: "x",
             }}
         >
-            <SetNext closeSidePanel={() => isSidePanelOpen = false} usernames={data?.usernames} />
+            <SetNext closeSidePanel={() => isSidePanelOpen = false} userProfiles={data?.userProfiles} />
         </div>
     {/if}
 </section>

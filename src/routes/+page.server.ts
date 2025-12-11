@@ -1,6 +1,6 @@
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
-import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile, getUserProfiles, getVisibleUsernames, getFilmComment, updateFilmComment, getSubmittedScoreUsers } from "$lib/server/database"
+import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile, getUserProfiles, getVisibleUserProfiles, getFilmComment, updateFilmComment, getSubmittedScoreUsers } from "$lib/server/database"
 import { findAndAddFilm } from '$lib/server/service'
 import type { Score } from '@prisma/client';
 
@@ -53,13 +53,13 @@ export const load = async ({locals, url}) => {
     // Get base URL for calendar subscription
     const baseUrl = `${url.protocol}//${url.host}`
 
-    const usernames = await getVisibleUsernames()
+    const userProfiles = await getVisibleUserProfiles()
 
     return {
         currentUserUsername,
         meeting,
         theme,
-        usernames,
+        userProfiles,
         scores,
         numberOfSubmittedScores,
         hostProfileImageUrl,
