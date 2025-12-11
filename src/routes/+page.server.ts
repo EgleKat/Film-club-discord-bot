@@ -1,6 +1,6 @@
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
-import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile, getUserProfiles, getVisibleUserProfiles, getFilmComment, updateFilmComment, getSubmittedScoreUsers } from "$lib/server/database"
+import { createMeeting, createScore, getCurrentMeeting, getCurrentTheme, getNumberOfScoresSubmitted, getShownScores, getUserProfile, getUserProfiles, getVisibleUserProfiles, getFilmComment, updateFilmComment, getSubmittedScoreUsers, getProfileImageUrl } from "$lib/server/database"
 import { findAndAddFilm } from '$lib/server/service'
 import type { Score } from '@prisma/client';
 
@@ -20,14 +20,14 @@ export const load = async ({locals, url}) => {
         numberOfSubmittedScores = await getNumberOfScoresSubmitted(meeting.id)
         submittedUsers = await getSubmittedScoreUsers(meeting.id)
         const hostProfile = await getUserProfile(meeting.host)
-        hostProfileImageUrl = hostProfile?.imageUrl ?? null
+        hostProfileImageUrl = getProfileImageUrl(hostProfile)
 
         // Fetch user profiles for all users who submitted scores
         if (scores.length > 0) {
             const scoreUsernames = scores.map(s => s.clubber)
             const profiles = await getUserProfiles(scoreUsernames)
             scoreUserProfiles = profiles.reduce((acc, profile) => {
-                acc[profile.username] = profile.imageUrl
+                acc[profile.username] = getProfileImageUrl(profile)
                 return acc
             }, {} as Record<string, string | null>)
         }
@@ -36,7 +36,7 @@ export const load = async ({locals, url}) => {
         if (submittedUsers.length > 0) {
             const profiles = await getUserProfiles(submittedUsers)
             submittedUserProfiles = profiles.reduce((acc, profile) => {
-                acc[profile.username] = profile.imageUrl
+                acc[profile.username] = getProfileImageUrl(profile)
                 return acc
             }, {} as Record<string, string | null>)
         }

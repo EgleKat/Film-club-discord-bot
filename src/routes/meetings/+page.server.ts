@@ -1,4 +1,4 @@
-import { toggleHiddenMeeting, getAllMeetings, getFilmCommentsForMeetings, getUserProfiles } from '$lib/server/database.js'
+import { toggleHiddenMeeting, getAllMeetings, getFilmCommentsForMeetings, getUserProfiles, getProfileImageUrl } from '$lib/server/database.js'
 import type { Actions } from '@sveltejs/kit'
 
 export const load = async ({locals}) => {
@@ -13,7 +13,7 @@ export const load = async ({locals}) => {
     // Create a map of username to profile image
     const userProfileMap: Record<string, string | null> = {}
     for (const profile of userProfiles) {
-        userProfileMap[profile.username] = profile.imageUrl
+        userProfileMap[profile.username] = getProfileImageUrl(profile)
     }
 
     // Group comments by meetingId

@@ -1269,6 +1269,18 @@ export const setUserProfileImage = async (username: string, imageUrl: string | n
 }
 
 /**
+ * Helper function to get the effective profile image URL
+ * Checks both imageUrl and uploadedFileId and returns the appropriate URL
+ */
+export const getProfileImageUrl = (profile: { imageUrl: string | null, uploadedFileId: string | null } | null): string | null => {
+    if (!profile) return null
+    if (profile.uploadedFileId) {
+        return `/api/v1/files/${profile.uploadedFileId}`
+    }
+    return profile.imageUrl
+}
+
+/**
  * Get all user profiles (for user management)
  */
 export const getAllUserProfiles = async () => {
