@@ -1,6 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher, onMount } from 'svelte';
     import UserAvatar from './UserAvatar.svelte';
+    import ConfirmationDialog from './ConfirmationDialog.svelte';
 
     interface User {
         username: string;
@@ -17,6 +18,9 @@
     let newUsername = '';
     let isAddingUser = false;
     let addUserError: string | null = null;
+    let showResetConfirm = false;
+    let userToReset: string | null = null;
+    let resetMessage: string | null = null;
 
     const dispatch = createEventDispatcher();
 
@@ -114,6 +118,46 @@
             addUser();
         }
     }
+
+    function promptResetPassword(username: string) {
+        userToReset = username;
+        showResetConfirm = true;
+        resetMessage = null;
+    }
+
+    async function confirmResetPassword() {
+        if (!userToReset) return;
+
+        try {
+            const response = await fetch(`/api/v1/users/${encodeURIComponent(userToReset)}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'reset-password' })
+            });
+
+            if (response.ok) {
+                resetMessage = `Password for ${userToReset} has been reset to the default.`;
+            } else {
+                const data = await response.json();
+                resetMessage = data.error || 'Failed to reset password';
+            }
+        } catch (e) {
+            resetMessage = 'Failed to reset password';
+        }
+
+        showResetConfirm = false;
+        userToReset = null;
+
+        // Clear message after 3 seconds
+        setTimeout(() => {
+            resetMessage = null;
+        }, 3000);
+    }
+
+    function cancelResetPassword() {
+        showResetConfirm = false;
+        userToReset = null;
+    }
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -161,6 +205,9 @@
 
                     <div class="users-section">
                         <h3>Users ({users.length})</h3>
+                        {#if resetMessage}
+                            <div class="reset-message">{resetMessage}</div>
+                        {/if}
                         <div class="users-list">
                             {#each users as user (user.username)}
                                 <div class="user-row" class:hidden={user.hidden}>
@@ -171,13 +218,24 @@
                                             <span class="hidden-badge">Hidden</span>
                                         {/if}
                                     </div>
-                                    <button
-                                        class="toggle-button"
-                                        class:show={user.hidden}
-                                        on:click={() => toggleUserHidden(user.username)}
-                                    >
-                                        {user.hidden ? 'Show' : 'Hide'}
-                                    </button>
+                                    <div class="user-actions">
+                                        <button
+                                            class="reset-password-button"
+                                            on:click={() => promptResetPassword(user.username)}
+                                            title="Reset password to default"
+                                        >
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+                                            </svg>
+                                        </button>
+                                        <button
+                                            class="toggle-button"
+                                            class:show={user.hidden}
+                                            on:click={() => toggleUserHidden(user.username)}
+                                        >
+                                            {user.hidden ? 'Show' : 'Hide'}
+                                        </button>
+                                    </div>
                                 </div>
                             {/each}
                         </div>
@@ -193,6 +251,16 @@
         </div>
     </div>
 {/if}
+
+<ConfirmationDialog
+    isOpen={showResetConfirm}
+    title="Reset Password"
+    message="Are you sure you want to reset the password for {userToReset}? Their password will be reset to the default club password."
+    confirmText="Reset Password"
+    confirmButtonClass="danger"
+    on:confirm={confirmResetPassword}
+    on:close={cancelResetPassword}
+/>
 
 <style lang="scss">
     .modal-backdrop {
@@ -347,6 +415,16 @@
         gap: 0.5rem;
     }
 
+    .reset-message {
+        margin-bottom: 0.75rem;
+        padding: 0.75rem;
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        border-radius: 8px;
+        color: #065f46;
+        font-size: 0.9rem;
+    }
+
     .user-row {
         display: flex;
         justify-content: space-between;
@@ -378,6 +456,31 @@
                 background: #999;
                 color: white;
                 border-radius: 4px;
+            }
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reset-password-button {
+            padding: 0.4rem;
+            background: transparent;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+                background: #fff3cd;
+                border-color: #ffc107;
+                color: #856404;
             }
         }
 

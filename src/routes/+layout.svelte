@@ -5,6 +5,7 @@
     import ProfileDropdown from '$lib/components/ProfileDropdown.svelte';
     import ProfileImageModal from '$lib/components/ProfileImageModal.svelte';
     import UserManagementModal from '$lib/components/UserManagementModal.svelte';
+    import ChangePasswordModal from '$lib/components/ChangePasswordModal.svelte';
 
     type PageData = {
         username: string
@@ -15,6 +16,7 @@
     let profileImageUrl = data?.profileImageUrl;
     let isProfileModalOpen = false;
     let isUserManagementModalOpen = false;
+    let isChangePasswordModalOpen = false;
 
     // Check if it's December
     const now = new Date()
@@ -28,6 +30,10 @@
 
     function handleManageUsers() {
         isUserManagementModalOpen = true;
+    }
+
+    function handleChangePassword() {
+        isChangePasswordModalOpen = true;
     }
 
     function handleProfileUpdated(event: CustomEvent<{ imageUrl: string | null }>) {
@@ -57,6 +63,7 @@
                 imageUrl={profileImageUrl}
                 on:changeImage={handleChangeImage}
                 on:manageUsers={handleManageUsers}
+                on:changePassword={handleChangePassword}
             />
         </div>
     </div>
@@ -74,6 +81,12 @@
 <UserManagementModal
     bind:isOpen={isUserManagementModalOpen}
     on:close={() => isUserManagementModalOpen = false}
+/>
+
+<ChangePasswordModal
+    bind:isOpen={isChangePasswordModalOpen}
+    {username}
+    on:close={() => isChangePasswordModalOpen = false}
 />
 <style lang="scss" >
     .header {

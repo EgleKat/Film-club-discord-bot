@@ -83,6 +83,7 @@ model UserProfile {
     uploadedFileId String?  @unique
     uploadedFile   UploadedFile? @relation(fields: [uploadedFileId], references: [id])
     hidden      Boolean     @default(false)
+    password    String?     // User-specific password (overrides global password)
     updatedAt   DateTime    @default(now()) @updatedAt
 }
 

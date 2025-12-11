@@ -1,10 +1,10 @@
 import { env } from '$env/dynamic/private'
 import { building } from '$app/environment'
 import type { Handle, RequestEvent } from '@sveltejs/kit'
-import { createSession, getValidSession, getVisibleUsernames, getUserProfile } from './database'
+import { createSession, getValidSession, getVisibleUsernames, getUserProfile, getUserPassword } from './database'
 
-const password = env.FILM_CLUB_PASSWORD
-if (!building && !password || password === "") {
+const globalPassword = env.FILM_CLUB_PASSWORD
+if (!building && !globalPassword || globalPassword === "") {
     throw new Error("FILM_CLUB_PASSWORD should be set to a password")
 }
 // Usernames from environment variable (legacy support)
@@ -21,6 +21,20 @@ export const isValidUsername = async (username: string): Promise<boolean> => {
     // Then check database
     const profile = await getUserProfile(username)
     return profile !== null && !profile.hidden
+}
+
+/**
+ * Check if the provided password is valid for the given username
+ * First checks for a user-specific password, then falls back to global password
+ */
+export const isValidPassword = async (username: string, passwordAttempt: string): Promise<boolean> => {
+    // Check for user-specific password first
+    const userPassword = await getUserPassword(username)
+    if (userPassword) {
+        return passwordAttempt === userPassword
+    }
+    // Fall back to global password
+    return passwordAttempt === globalPassword
 }
 
 async function successfulLogin(event: RequestEvent, resolve: any, username: string, shouldCreateSession: boolean) {
@@ -66,7 +80,7 @@ export const authenticate: Handle = async ({ event, resolve }) => {
         const [authType, authValue] = authHeader.split(" ")
         if (authType === "Basic") {
             const [ username, passwordAttempt ] = atob(authValue).split(":")
-            if (passwordAttempt === password && await isValidUsername(username)) {
+            if (await isValidUsername(username) && await isValidPassword(username, passwordAttempt)) {
                 return await successfulLogin(event, resolve, username, true)
             }
         }
