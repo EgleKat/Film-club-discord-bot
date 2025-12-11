@@ -1,5 +1,6 @@
 <script lang="ts">
     import FilmSelector from "./FilmSelector.svelte";
+    import UserAvatar from "./UserAvatar.svelte";
 
     const today = new Date();
     const nextSundayUtc = new Date(
@@ -9,7 +10,7 @@
             today.getDate() + (7 - today.getDay())
         )
     );
-    export let usernames: string[];
+    export let userProfiles: { username: string; imageUrl: string | null }[];
     export let closeSidePanel: () => void;
 </script>
 
@@ -45,7 +46,7 @@
             <fieldset class="form-fieldset">
                 <legend class="form-legend">Host</legend>
                 <div class="host-options">
-                    {#each usernames as username}
+                    {#each userProfiles as { username, imageUrl }}
                         <label class="host-option" for={username}>
                             <input
                                 type="radio"
@@ -55,6 +56,7 @@
                                 autocomplete="off"
                                 required
                             />
+                            <UserAvatar {imageUrl} {username} size="1.2rem" />
                             <span class="host-name">{username}</span>
                         </label>
                     {/each}

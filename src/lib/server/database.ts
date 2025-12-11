@@ -1327,6 +1327,35 @@ export const getVisibleUsernames = async () => {
     return [...visibleDbUsernames, ...envOnlyUsers].sort((a, b) => a.localeCompare(b))
 }
 
+/**
+ * Get all visible (non-hidden) user profiles with their image URLs
+ */
+export const getVisibleUserProfiles = async () => {
+    // Get all users from database
+    const allDbUsers = await prisma.userProfile.findMany({
+        select: { username: true, hidden: true, imageUrl: true, uploadedFileId: true }
+    })
+    const dbUserMap = new Map(allDbUsers.map(u => [u.username, u]))
+
+    // Get visible users from database with their image URLs
+    const visibleDbUsers = allDbUsers
+        .filter(u => !u.hidden)
+        .map(u => ({
+            username: u.username,
+            imageUrl: u.uploadedFileId
+                ? `/api/v1/profile-image/${u.uploadedFileId}`
+                : u.imageUrl
+        }))
+
+    // Get usernames from env var that are not in database (they're visible by default)
+    const envOnlyUsers = envUsernames
+        .filter(username => !dbUserMap.has(username))
+        .map(username => ({ username, imageUrl: null }))
+
+    // Combine and sort
+    return [...visibleDbUsers, ...envOnlyUsers].sort((a, b) => a.username.localeCompare(b.username))
+}
+
 // ============ CALENDAR FEED ============
 
 /**
