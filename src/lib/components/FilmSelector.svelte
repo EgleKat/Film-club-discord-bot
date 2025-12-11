@@ -181,7 +181,9 @@
     .poster-container {
         position: relative;
         width: 100%;
+        padding-bottom: 150%; /* 3/2 ratio fallback for older browsers */
         aspect-ratio: 2 / 3;
+        height: auto;
         overflow: hidden;
     }
 
@@ -191,9 +193,11 @@
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
+        object-position: center top;
         display: block;
         transition: transform 0.3s ease, filter 0.3s ease;
+        background: #1a1a2e;
     }
 
     .film-poster-placeholder {
