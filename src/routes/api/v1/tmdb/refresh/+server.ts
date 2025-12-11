@@ -23,8 +23,8 @@ export const POST: RequestHandler = async () => {
 
     for (const film of films) {
         try {
-            // Skip films that already have the new data
-            if (film.runtime !== null && film.genres !== null) {
+            // Skip films that already have all the new data (including country)
+            if (film.runtime !== null && film.genres !== null && film.country !== null) {
                 results.skipped++
                 continue
             }
@@ -44,13 +44,19 @@ export const POST: RequestHandler = async () => {
                 continue
             }
 
+            // Extract primary production country
+            const country = tmdbData.production_countries && tmdbData.production_countries.length > 0
+                ? tmdbData.production_countries[0].name
+                : null
+
             // Update the film with new data
             await updateFilmTmdbData(film.imdbId, {
                 runtime: tmdbData.runtime,
                 originalLanguage: tmdbData.original_language,
                 revenue: tmdbData.revenue ? BigInt(tmdbData.revenue) : null,
                 tmdbVoteAverage: tmdbData.vote_average,
-                genres: tmdbData.genres ? JSON.stringify(tmdbData.genres.map(g => g.name)) : null
+                genres: tmdbData.genres ? JSON.stringify(tmdbData.genres.map(g => g.name)) : null,
+                country
             })
 
             results.updated++
