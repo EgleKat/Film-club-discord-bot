@@ -177,7 +177,7 @@
                                 </Button>
                                 <form method="post" action="?/toggleHidden">
                                     <input type="hidden" name="id" value={watchlistEntry.id} />
-                                    <Button type="submit" variant="tertiary" size="small">
+                                    <Button type="submit" variant="tertiary" size="small" title={watchlistEntry.hidden ? "Show this film in the list" : "Hide this film from the list"}>
                                         {#if watchlistEntry.hidden}
                                             <Icon type="eye" width="1rem" height="1rem" />
                                             Unhide
@@ -252,7 +252,7 @@
                                     </Button>
                                     <form method="post" action="?/toggleHidden">
                                         <input type="hidden" name="id" value={watchlistEntry.id} />
-                                        <Button type="submit" variant="tertiary" size="small">
+                                        <Button type="submit" variant="tertiary" size="small" title={watchlistEntry.hidden ? "Show this film in the list" : "Hide this film from the list"}>
                                             {#if watchlistEntry.hidden}
                                                 Unhide
                                             {:else}
@@ -345,7 +345,7 @@
                                 <div class="card-actions">
                                     <form method="post" action="?/toggleHidden">
                                         <input type="hidden" name="id" value={watchlistEntry.id} />
-                                        <Button type="submit" variant="tertiary" size="small">
+                                        <Button type="submit" variant="tertiary" size="small" title={watchlistEntry.hidden ? "Show this film in the list" : "Hide this film from the list"}>
                                             {#if watchlistEntry.hidden}
                                                 <Icon type="eye" width="1rem" height="1rem" />
                                                 Unhide
@@ -401,7 +401,7 @@
                                     {#if !watchlistEntry.isMeeting}
                                         <form method="post" action="?/toggleHidden">
                                             <input type="hidden" name="id" value={watchlistEntry.id} />
-                                            <Button type="submit" variant="tertiary" size="small">
+                                            <Button type="submit" variant="tertiary" size="small" title={watchlistEntry.hidden ? "Show this film in the list" : "Hide this film from the list"}>
                                                 {#if watchlistEntry.hidden}
                                                     Unhide
                                                 {:else}

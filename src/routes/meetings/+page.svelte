@@ -167,7 +167,7 @@
                         <div class="card-actions">
                             <form method="post" action="?/toggleHidden">
                                 <input type="hidden" name="id" value={meeting.id} />
-                                <Button type="submit" variant="tertiary" size="small">
+                                <Button type="submit" variant="tertiary" size="small" title={meeting.hidden ? "Show this film in the list" : "Hide this film from the list"}>
                                     {#if meeting.hidden}
                                         <Icon type="eye" width="1rem" height="1rem" />
                                         Unhide
@@ -244,7 +244,7 @@
                             <td class="actions-cell">
                                 <form method="post" action="?/toggleHidden">
                                     <input type="hidden" name="id" value={meeting.id} />
-                                    <Button type="submit" variant="tertiary" size="small">
+                                    <Button type="submit" variant="tertiary" size="small" title={meeting.hidden ? "Show this film in the list" : "Hide this film from the list"}>
                                         {#if meeting.hidden}
                                             Unhide
                                         {:else}
