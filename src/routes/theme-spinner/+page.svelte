@@ -511,8 +511,8 @@ function spinWheel() {
       }
 
       #wheel {
-        width: 100vw;
-        height: 100vw;
+        width: 90vw;
+        height: 90vw;
         max-height: 80vh;
         transform: rotate(90deg);
 
