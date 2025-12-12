@@ -8,10 +8,12 @@
   export let form;
 
   let confettiCanvas: HTMLCanvasElement;
+  let wheelContainer: HTMLElement;
   let audioContext: AudioContext | null = null;
   let isSpinning = false;
   let spinAnimationFrame: number | null = null;
   let lastSegmentIndex = -1;
+  let isMobile = false;
 
   const currentTheme = data.theme;
 
@@ -208,11 +210,127 @@ const props = {
 
 onMount(async () => {
   const { Wheel } = await import('spin-wheel');
+
+  // Detect mobile for touch handling
+  isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+  // Listen for resize to update mobile state
+  const mediaQuery = window.matchMedia('(max-width: 768px)');
+  const handleResize = (e: MediaQueryListEvent) => {
+    isMobile = e.matches;
+    // Update wheel interactivity based on screen size
+    if (wheel) {
+      wheel.isInteractive = !isMobile;
+    }
+  };
+  mediaQuery.addEventListener('change', handleResize);
+
   wheel = new Wheel(
-    document.getElementById('wheel'),
-    props,
-  )
+    wheelContainer,
+    {
+      ...props,
+      // Disable built-in drag on mobile since 90deg rotation breaks touch coordinates
+      isInteractive: !isMobile
+    },
+  );
+
+  // Add custom touch handling for mobile that accounts for the 90-degree rotation
+  if (isMobile) {
+    setupMobileTouchHandling();
+  }
+
+  return () => {
+    mediaQuery.removeEventListener('change', handleResize);
+  };
 })
+
+// Touch handling variables for mobile swipe-to-spin
+let touchStartY = 0;
+let touchStartTime = 0;
+let touchStartRotation = 0;
+let isTouchDragging = false;
+
+function setupMobileTouchHandling() {
+  if (!wheelContainer) return;
+
+  const canvas = wheelContainer.querySelector('canvas');
+  if (!canvas) return;
+
+  canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+  canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+  canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+}
+
+function handleTouchStart(e: TouchEvent) {
+  if (isSpinning || !wheel) return;
+
+  e.preventDefault();
+  const touch = e.touches[0];
+
+  // On mobile with 90deg rotation, horizontal swipe = wheel rotation
+  // We use clientX because the wheel is rotated, so horizontal movement spins it
+  touchStartY = touch.clientX;
+  touchStartTime = Date.now();
+  touchStartRotation = wheel.rotation;
+  isTouchDragging = true;
+}
+
+function handleTouchMove(e: TouchEvent) {
+  if (!isTouchDragging || !wheel) return;
+
+  e.preventDefault();
+  const touch = e.touches[0];
+
+  // Calculate drag delta (using X because wheel is rotated 90deg)
+  const deltaY = touch.clientX - touchStartY;
+
+  // Convert pixel movement to rotation degrees
+  // Negative because we want natural drag direction
+  const rotationDelta = -deltaY * 0.5;
+
+  // Update wheel rotation directly during drag
+  wheel.rotation = touchStartRotation + rotationDelta;
+}
+
+function handleTouchEnd(e: TouchEvent) {
+  if (!isTouchDragging || !wheel) return;
+
+  e.preventDefault();
+  isTouchDragging = false;
+
+  const touchEndTime = Date.now();
+  const touchDuration = touchEndTime - touchStartTime;
+
+  // Get the final touch position from changedTouches
+  const touch = e.changedTouches[0];
+  const deltaY = touch.clientX - touchStartY;
+
+  // Calculate velocity (pixels per millisecond)
+  const velocity = Math.abs(deltaY) / touchDuration;
+
+  // Only trigger spin if there was a meaningful flick gesture
+  if (velocity > 0.3 && Math.abs(deltaY) > 30) {
+    // Flick detected - trigger a spin
+    triggerFlickSpin(velocity, deltaY > 0 ? -1 : 1);
+  }
+}
+
+function triggerFlickSpin(velocity: number, direction: number) {
+  if (!wheel) return;
+
+  // Scale duration and revolutions based on flick velocity
+  const baseRevolutions = Math.min(velocity * 2, 4);
+  const revolutions = Math.max(1.5, baseRevolutions);
+  const duration = 4000 + revolutions * 1000;
+
+  // Start tracking rotation for sound
+  isSpinning = true;
+  lastSegmentIndex = getCurrentSegmentIndex();
+  trackWheelRotation();
+
+  // Spin to a random item
+  wheel.spinToItem(Math.floor(Math.random() * themes.length), duration, true, revolutions);
+}
 
 function spinWheel() {
   if (wheel) {
@@ -254,7 +372,7 @@ function spinWheel() {
     <svg viewBox="0 0 100 100" class="pointer desktop-only">
       <polygon fill="currentColor" points="50 100, 100 0, 0 0"/>
     </svg>
-    <div id="wheel">
+    <div id="wheel" bind:this={wheelContainer}>
       <svg viewBox="0 0 100 100" class="pointer mobile-only">
         <polygon fill="currentColor" points="50 100, 100 0, 0 0"/>
       </svg>
@@ -373,6 +491,14 @@ function spinWheel() {
       height: 500px;
       position: relative;
       top: -5%;
+
+      :global(canvas) {
+        cursor: grab;
+
+        &:active {
+          cursor: grabbing;
+        }
+      }
     }
 
     @media (max-width: 768px) {
@@ -392,6 +518,13 @@ function spinWheel() {
         height: 80vh;
         max-height: 600px;
         transform: rotate(90deg);
+
+        // Prevent browser scroll/zoom during touch interactions
+        :global(canvas) {
+          touch-action: none;
+          -webkit-user-select: none;
+          user-select: none;
+        }
 
         .pointer.mobile-only {
           display: block;
