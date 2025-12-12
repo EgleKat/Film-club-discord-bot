@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import Button from '$lib/components/Button.svelte';
+  import SetThemeDialog from '$lib/components/SetThemeDialog.svelte';
   import confetti from 'canvas-confetti';
 
   export let data: PageData;
@@ -29,6 +30,7 @@
 
   let selectedTheme: string = '';
   let hasSpun: boolean = false;
+  let showThemeDialog: boolean = false;
   let wheel: any = null;
 
 function initAudioContext() {
@@ -208,6 +210,7 @@ const props = {
     stopTrackingRotation();
     selectedTheme = themes[event.currentIndex];
     hasSpun = true;
+    showThemeDialog = true;
     fireFireworkConfetti();
   }
 }
@@ -396,32 +399,14 @@ function spinWheel() {
     <Button variant="primary" on:click={spinWheel}>Spin!</Button>
   </div>
 
-  {#if hasSpun}
-    <div class="set-theme-form">
-      <form method="POST" action="?/setTheme">
-        <label>
-          Theme:
-          <input
-            type="text"
-            name="theme"
-            bind:value={selectedTheme}
-            required
-          />
-        </label>
-        <label>
-          Theme ends on:
-          <input
-            type="date"
-            name="endDate"
-            value={fourWeeksSundayUtc.toISOString().substring(0, 10)}
-            required
-          />
-        </label>
-        <Button type="submit" variant="primary">Set as current theme</Button>
-      </form>
-    </div>
-  {/if}
 </div>
+
+<SetThemeDialog
+  bind:isOpen={showThemeDialog}
+  bind:selectedTheme={selectedTheme}
+  defaultEndDate={fourWeeksSundayUtc}
+  on:close={() => showThemeDialog = false}
+/>
 
 <style lang="scss">
   .confetti-canvas {
@@ -554,42 +539,5 @@ function spinWheel() {
 
   .controls {
     margin: 1rem 0;
-  }
-
-  .set-theme-form {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background-color: $main-orange;
-    border-radius: 8px;
-    text-align: center;
-
-    h3 {
-      margin: 0 0 1rem 0;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    label {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-
-    input[type="date"],
-    input[type="text"] {
-      padding: 0.5rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-
-    input[type="text"] {
-      font-size: 1rem;
-      min-width: 200px;
-    }
   }
 </style>
