@@ -426,7 +426,6 @@ function spinWheel() {
     padding: 1rem;
 
     @media (max-width: 768px) {
-      overflow-x: clip;
       width: 100%;
       padding: 0;
     }
@@ -502,19 +501,19 @@ function spinWheel() {
     @media (max-width: 768px) {
       flex-direction: row;
       align-items: center;
+      justify-content: center;
       max-width: none;
-      width: 150vw;
-      margin-left: -50vw;
-      overflow: visible;
+      width: 100%;
+      position: relative;
 
       .pointer.desktop-only {
         display: none;
       }
 
       #wheel {
-        width: 100%;
-        height: 80vh;
-        max-height: 600px;
+        width: 100vw;
+        height: 100vw;
+        max-height: 80vh;
         transform: rotate(90deg);
 
         // Prevent browser scroll/zoom during touch interactions
@@ -527,8 +526,9 @@ function spinWheel() {
         .pointer.mobile-only {
           display: block;
           position: absolute;
-          top: 0;
-          right: calc(50% - 18px);
+          top: 50%;
+          right: -15px;
+          transform: translateY(-50%) rotate(-90deg);
           width: 30px;
           height: 30px;
           z-index: 10;
