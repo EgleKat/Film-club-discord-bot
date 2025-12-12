@@ -191,9 +191,13 @@ function fireFireworkConfetti() {
   }, 500);
 }
 
+const segmentAngle = 360 / themes.length;
+
 const props = {
   items: themes.map(t => ({label: t})),
   itemBackgroundColors: ["#ffbe0b", "#fb5607", "#ff006e", "#8338ec", "#3a86ff"],
+  pointerAngle: 0,
+  rotation: -(segmentAngle / 2), // Offset to center segments on the pointer
   onRest: (event: { currentIndex: number }) => {
     stopTrackingRotation();
     selectedTheme = themes[event.currentIndex];
