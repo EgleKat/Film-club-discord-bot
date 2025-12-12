@@ -25,7 +25,7 @@
     // Check if it's December
     const now = new Date()
     const isDecember = now.getMonth() === 11
-    const isSecondHalfOfDecember = isDecember && now.getDate() >= 15
+    const isSecondHalfOfDecember = isDecember && now.getDate() >= 14
     const showWrappedLink = isDecember
 
     function handleChangeImage() {
