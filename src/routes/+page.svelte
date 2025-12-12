@@ -34,6 +34,11 @@
     let recommendFriend = data.userFilmComment?.recommendFriend ?? false;
     let watchAgain = data.userFilmComment?.watchAgain ?? false;
 
+    // Lock body scroll when side panel is open
+    $: if (typeof document !== 'undefined') {
+        document.body.style.overflow = isSidePanelOpen ? 'hidden' : '';
+    }
+
     function submitComment() {
         const form = document.getElementById('comment-form') as HTMLFormElement;
         if (form) {
@@ -236,6 +241,14 @@
     {/if}
     {#if isSidePanelOpen}
         <div
+            class="side-panel-overlay"
+            on:click={() => isSidePanelOpen = false}
+            on:keydown={(e) => e.key === 'Escape' && (isSidePanelOpen = false)}
+            role="button"
+            tabindex="0"
+            aria-label="Close side panel"
+        ></div>
+        <div
             class="side-panel"
             transition:slide={{
                 delay: 250,
@@ -362,6 +375,19 @@
             }
         }
     }
+    .side-panel-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        z-index: 10;
+        cursor: pointer;
+    }
+
     .side-panel {
         background: $body-color;
         right: 0;
@@ -371,7 +397,7 @@
         width: 90vw;
         max-width: 420px;
         overflow-y: auto;
-        z-index: 10;
+        z-index: 11;
         box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
 
         @include desktop {

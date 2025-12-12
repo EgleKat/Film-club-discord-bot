@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher, onDestroy } from 'svelte';
     import UserAvatar from './UserAvatar.svelte';
 
     export let isOpen = false;
@@ -17,6 +17,17 @@
     let uploadError: string | null = null;
 
     const dispatch = createEventDispatcher();
+
+    // Lock body scroll when modal is open
+    $: if (typeof document !== 'undefined') {
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+
+    onDestroy(() => {
+        if (typeof document !== 'undefined') {
+            document.body.style.overflow = '';
+        }
+    });
 
     $: if (isOpen) {
         imageUrl = currentImageUrl || '';
