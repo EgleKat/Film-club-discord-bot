@@ -505,7 +505,9 @@ function spinWheel() {
       align-items: center;
       justify-content: flex-start;
       max-width: none;
-      width: 100%;
+      // Break out of body's 5vw margin to reach viewport edge
+      width: 100vw;
+      margin-left: -5vw;
       position: relative;
       overflow: hidden;
 
