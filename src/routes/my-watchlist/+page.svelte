@@ -15,6 +15,11 @@
     let isSidePanelOpen = false;
     let closeSidePanel = () => (isSidePanelOpen = false);
     let watched = false;
+
+    // Lock body scroll when side panel is open
+    $: if (typeof document !== 'undefined') {
+        document.body.style.overflow = isSidePanelOpen ? 'hidden' : '';
+    }
     const initDateInput = (node: HTMLInputElement) => {
         node.valueAsDate = new Date();
     };
@@ -818,10 +823,11 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(255, 255, 255, 0.5);
-        backdrop-filter: blur(1px);
-        -webkit-backdrop-filter: blur(1px);
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
         z-index: 10;
+        cursor: pointer;
     }
 
     .side-panel {

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher, onDestroy } from 'svelte';
 
     export let isOpen = false;
     export let title = 'Confirm Action';
@@ -9,6 +9,17 @@
     export let confirmButtonClass: 'primary' | 'danger' = 'primary';
 
     const dispatch = createEventDispatcher();
+
+    // Lock body scroll when dialog is open
+    $: if (typeof document !== 'undefined') {
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+
+    onDestroy(() => {
+        if (typeof document !== 'undefined') {
+            document.body.style.overflow = '';
+        }
+    });
 
     function close() {
         dispatch('close');

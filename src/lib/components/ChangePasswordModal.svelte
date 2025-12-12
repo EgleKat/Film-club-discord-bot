@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher, onDestroy } from 'svelte';
 
     export let isOpen = false;
     export let username: string;
@@ -12,6 +12,17 @@
     let success = false;
 
     const dispatch = createEventDispatcher();
+
+    // Lock body scroll when modal is open
+    $: if (typeof document !== 'undefined') {
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+
+    onDestroy(() => {
+        if (typeof document !== 'undefined') {
+            document.body.style.overflow = '';
+        }
+    });
 
     $: if (isOpen) {
         currentPassword = '';

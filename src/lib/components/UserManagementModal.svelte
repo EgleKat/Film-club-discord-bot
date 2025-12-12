@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createEventDispatcher, onMount } from 'svelte';
+    import { createEventDispatcher, onMount, onDestroy } from 'svelte';
     import UserAvatar from './UserAvatar.svelte';
     import ConfirmationDialog from './ConfirmationDialog.svelte';
 
@@ -23,6 +23,17 @@
     let resetMessage: string | null = null;
 
     const dispatch = createEventDispatcher();
+
+    // Lock body scroll when modal is open
+    $: if (typeof document !== 'undefined') {
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+
+    onDestroy(() => {
+        if (typeof document !== 'undefined') {
+            document.body.style.overflow = '';
+        }
+    });
 
     $: if (isOpen) {
         loadUsers();
