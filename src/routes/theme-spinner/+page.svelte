@@ -234,6 +234,11 @@ function spinWheel() {
     flex-direction: column;
     align-items: center;
     padding: 1rem;
+
+    @media (max-width: 768px) {
+      overflow: hidden;
+      width: 100%;
+    }
   }
 
   .current-theme-banner {
@@ -277,7 +282,7 @@ function spinWheel() {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 600px;
+    max-width: 800px;
 
     .pointer {
       width: 5%;
@@ -286,9 +291,27 @@ function spinWheel() {
 
     #wheel {
       width: 100%;
-      height: 400px;
+      height: 500px;
       position: relative;
       top: -5%;
+    }
+
+    @media (max-width: 768px) {
+      max-width: 100%;
+      overflow: hidden;
+      align-items: flex-start;
+      margin-left: -25%;
+
+      .pointer {
+        display: none;
+      }
+
+      #wheel {
+        width: 150%;
+        height: 400px;
+        transform: rotate(45deg);
+        transform-origin: center center;
+      }
     }
   }
 
