@@ -35,6 +35,10 @@ function initAudioContext() {
   if (!audioContext) {
     audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
   }
+  // Resume audio context if suspended (required for mobile browsers)
+  if (audioContext && audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
   return audioContext;
 }
 
@@ -264,6 +268,9 @@ function setupMobileTouchHandling() {
 function handleTouchStart(e: TouchEvent) {
   if (isSpinning || !wheel) return;
 
+  // Initialize audio context on first touch interaction (required for mobile)
+  initAudioContext();
+
   e.preventDefault();
   const touch = e.touches[0];
 
@@ -318,6 +325,9 @@ function handleTouchEnd(e: TouchEvent) {
 function triggerFlickSpin(velocity: number, direction: number) {
   if (!wheel) return;
 
+  // Ensure audio context is ready (should already be initialized from touchstart)
+  initAudioContext();
+
   // Scale duration and revolutions based on flick velocity
   const baseRevolutions = Math.min(velocity * 2, 4);
   const revolutions = Math.max(1.5, baseRevolutions);
@@ -334,6 +344,9 @@ function triggerFlickSpin(velocity: number, direction: number) {
 
 function spinWheel() {
   if (wheel) {
+    // Initialize audio context on user interaction (required for mobile)
+    initAudioContext();
+
     const duration = 6000 + Math.random() * 3000;
     const revolutions = 2 + Math.random() * 2;
 
