@@ -212,8 +212,8 @@ onMount(async () => {
 
 function spinWheel() {
   if (wheel) {
-    const duration = 3000 + Math.random() * 2000;
-    const revolutions = 3 + Math.random() * 3;
+    const duration = 6000 + Math.random() * 3000;
+    const revolutions = 2 + Math.random() * 2;
 
     // Start tracking rotation for sound
     isSpinning = true;
