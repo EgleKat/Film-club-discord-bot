@@ -210,8 +210,11 @@ const props = {
     stopTrackingRotation();
     selectedTheme = themes[event.currentIndex];
     hasSpun = true;
-    showThemeDialog = true;
     fireFireworkConfetti();
+    // Delay showing dialog by 1 second to let user see the result
+    setTimeout(() => {
+      showThemeDialog = true;
+    }, 1000);
   }
 }
 
@@ -388,11 +391,10 @@ function spinWheel() {
     <svg viewBox="0 0 100 100" class="pointer desktop-only">
       <polygon fill="currentColor" points="50 100, 100 0, 0 0"/>
     </svg>
-    <div id="wheel" bind:this={wheelContainer}>
-      <svg viewBox="0 0 100 100" class="pointer mobile-only">
-        <polygon fill="currentColor" points="50 100, 100 0, 0 0"/>
-      </svg>
-    </div>
+    <div id="wheel" bind:this={wheelContainer}></div>
+    <svg viewBox="0 0 100 100" class="pointer mobile-only">
+      <polygon fill="currentColor" points="50 100, 100 0, 0 0"/>
+    </svg>
   </div>
 
   <div class="controls">
@@ -501,19 +503,36 @@ function spinWheel() {
     @media (max-width: 768px) {
       flex-direction: row;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       max-width: none;
       width: 100%;
       position: relative;
+      overflow: hidden;
 
       .pointer.desktop-only {
         display: none;
       }
 
+      .pointer.mobile-only {
+        display: block;
+        position: absolute;
+        top: 50%;
+        // Position arrow on right side of screen
+        right: 5vw;
+        // Rotate to point left (toward the wheel)
+        transform: translateY(-50%) rotate(90deg);
+        width: 30px;
+        height: 30px;
+        z-index: 10;
+      }
+
       #wheel {
-        width: 90vw;
-        height: 90vw;
-        max-height: 80vh;
+        // Make wheel large enough so half is visible and readable
+        width: 150vw;
+        height: 150vw;
+        max-height: none;
+        // Shift wheel left so only right half is visible (peeking from left)
+        margin-left: -75vw;
         transform: rotate(90deg);
 
         // Prevent browser scroll/zoom during touch interactions
@@ -521,17 +540,6 @@ function spinWheel() {
           touch-action: none;
           -webkit-user-select: none;
           user-select: none;
-        }
-
-        .pointer.mobile-only {
-          display: block;
-          position: absolute;
-          top: 50%;
-          right: -15px;
-          transform: translateY(-50%) rotate(-90deg);
-          width: 30px;
-          height: 30px;
-          z-index: 10;
         }
       }
     }
