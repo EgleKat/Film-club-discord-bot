@@ -8,6 +8,10 @@
   export let form;
 
   let confettiCanvas: HTMLCanvasElement;
+  let audioContext: AudioContext | null = null;
+  let isSpinning = false;
+  let spinAnimationFrame: number | null = null;
+  let lastSegmentIndex = -1;
 
   const currentTheme = data.theme;
 
@@ -24,6 +28,61 @@
   let selectedTheme: string = '';
   let hasSpun: boolean = false;
   let wheel: any = null;
+
+function initAudioContext() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return audioContext;
+}
+
+function playTickSound() {
+  const ctx = initAudioContext();
+  if (!ctx) return;
+
+  const oscillator = ctx.createOscillator();
+  const gainNode = ctx.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(ctx.destination);
+
+  oscillator.type = 'square';
+  oscillator.frequency.setValueAtTime(1200, ctx.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.03);
+
+  gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+
+  oscillator.start(ctx.currentTime);
+  oscillator.stop(ctx.currentTime + 0.05);
+}
+
+function getCurrentSegmentIndex(): number {
+  if (!wheel) return -1;
+  const rotation = wheel.rotation % 360;
+  const segmentAngle = 360 / themes.length;
+  return Math.floor(((360 - rotation + segmentAngle / 2) % 360) / segmentAngle);
+}
+
+function trackWheelRotation() {
+  if (!isSpinning) return;
+
+  const currentSegment = getCurrentSegmentIndex();
+  if (currentSegment !== lastSegmentIndex && lastSegmentIndex !== -1) {
+    playTickSound();
+  }
+  lastSegmentIndex = currentSegment;
+
+  spinAnimationFrame = requestAnimationFrame(trackWheelRotation);
+}
+
+function stopTrackingRotation() {
+  isSpinning = false;
+  if (spinAnimationFrame !== null) {
+    cancelAnimationFrame(spinAnimationFrame);
+    spinAnimationFrame = null;
+  }
+}
 
 const themes = `
 Female Protagonist
@@ -136,6 +195,7 @@ const props = {
   items: themes.map(t => ({label: t})),
   itemBackgroundColors: ["#ffbe0b", "#fb5607", "#ff006e", "#8338ec", "#3a86ff"],
   onRest: (event: { currentIndex: number }) => {
+    stopTrackingRotation();
     selectedTheme = themes[event.currentIndex];
     hasSpun = true;
     fireFireworkConfetti();
@@ -154,6 +214,12 @@ function spinWheel() {
   if (wheel) {
     const duration = 3000 + Math.random() * 2000;
     const revolutions = 3 + Math.random() * 3;
+
+    // Start tracking rotation for sound
+    isSpinning = true;
+    lastSegmentIndex = getCurrentSegmentIndex();
+    trackWheelRotation();
+
     wheel.spinToItem(Math.floor(Math.random() * themes.length), duration, true, revolutions);
   }
 }
