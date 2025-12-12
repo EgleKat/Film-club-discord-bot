@@ -327,7 +327,7 @@ function spinWheel() {
           display: block;
           position: absolute;
           top: 0;
-          right: 50%;
+          right: calc(50% - 18px);
           width: 30px;
           height: 30px;
           z-index: 10;
