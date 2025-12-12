@@ -12,7 +12,6 @@
     import type { PageData } from "./$types";
     import FilmTitle from "$lib/components/FilmTitle.svelte";
     import UserAvatar from "$lib/components/UserAvatar.svelte";
-    import CalendarSubscribe from "$lib/components/CalendarSubscribe.svelte";
     import { enhance } from "$app/forms";
 
     export let data: PageData;
@@ -26,10 +25,8 @@
     const scoreUserProfiles = data?.scoreUserProfiles ?? {};
     const submittedUsers = data?.submittedUsers ?? [];
     const submittedUserProfiles = data?.submittedUserProfiles ?? {};
-    const baseUrl = data.baseUrl;
     let isSidePanelOpen = false;
     let isScorePopupOpen = false;
-    let isCalendarPopupOpen = false;
 
     let recommendFriend = data.userFilmComment?.recommendFriend ?? false;
     let watchAgain = data.userFilmComment?.watchAgain ?? false;
@@ -68,27 +65,11 @@
                 <span class="film-host">{meeting?.host}</span>
             </SpanWithIcon>
         </div>
-        <div class="date-with-calendar">
-            <SpanWithIcon>
-                <span>To be discussed on </span>
-                <Icon type="calendar-mark" />
-                <span>{meeting?.date.toLocaleDateString()}</span></SpanWithIcon
-            >
-            <button
-                class="calendar-add-button"
-                on:click={() => isCalendarPopupOpen = true}
-                title="Add to calendar"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                    <line x1="12" y1="14" x2="12" y2="18"></line>
-                    <line x1="10" y1="16" x2="14" y2="16"></line>
-                </svg>
-            </button>
-        </div>
+        <SpanWithIcon>
+            <span>To be discussed on </span>
+            <Icon type="calendar-mark" />
+            <span>{meeting?.date.toLocaleDateString()}</span>
+        </SpanWithIcon>
 
         <div class="film-description">
             <div class="film-header">
@@ -214,19 +195,6 @@
                             </form>
                         </div>
                     </div>
-                </div>
-            </div>
-        {/if}
-        {#if isCalendarPopupOpen}
-            <div class="popup-overlay" on:click={() => isCalendarPopupOpen = false} on:keydown={(e) => e.key === 'Escape' && (isCalendarPopupOpen = false)} role="button" tabindex="0">
-                <div class="calendar-popup" on:click|stopPropagation on:keydown|stopPropagation role="dialog">
-                    <button class="popup-close calendar-popup-close" on:click={() => isCalendarPopupOpen = false}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                    <CalendarSubscribe {baseUrl} />
                 </div>
             </div>
         {/if}
@@ -616,64 +584,4 @@
         }
     }
 
-    .date-with-calendar {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .calendar-add-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 28px;
-        height: 28px;
-        padding: 0;
-        border: none;
-        border-radius: 6px;
-        background: linear-gradient(135deg, $main-blue 0%, darken($main-blue, 10%) 100%);
-        color: white;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        position: relative;
-
-        &:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba($main-blue, 0.4);
-        }
-
-        &:active {
-            transform: translateY(0);
-        }
-
-        svg {
-            flex-shrink: 0;
-        }
-    }
-
-    .calendar-popup {
-        background: transparent;
-        border-radius: 16px;
-        width: 90%;
-        max-width: 500px;
-        max-height: 90vh;
-        overflow: hidden;
-        position: relative;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-
-        :global(.calendar-subscribe) {
-            margin: 0;
-            border-radius: 16px;
-        }
-    }
-
-    .calendar-popup-close {
-        z-index: 1;
-        color: rgba(255, 255, 255, 0.8);
-
-        &:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-        }
-    }
 </style>
