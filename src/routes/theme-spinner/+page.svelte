@@ -236,8 +236,9 @@ function spinWheel() {
     padding: 1rem;
 
     @media (max-width: 768px) {
-      overflow: hidden;
+      overflow-x: clip;
       width: 100%;
+      padding: 0;
     }
   }
 
@@ -297,20 +298,26 @@ function spinWheel() {
     }
 
     @media (max-width: 768px) {
-      max-width: 100%;
-      overflow: hidden;
-      align-items: flex-start;
-      margin-left: -25%;
+      flex-direction: row;
+      align-items: center;
+      max-width: none;
+      width: 150vw;
+      margin-left: -50vw;
+      overflow: visible;
 
       .pointer {
-        display: none;
+        position: absolute;
+        right: calc(50vw - 10px);
+        width: 30px;
+        height: 30px;
+        transform: rotate(-90deg);
+        z-index: 10;
       }
 
       #wheel {
-        width: 150%;
-        height: 400px;
-        transform: rotate(45deg);
-        transform-origin: center center;
+        width: 100%;
+        height: 80vh;
+        max-height: 600px;
       }
     }
   }
