@@ -326,11 +326,10 @@ function spinWheel() {
         .pointer.mobile-only {
           display: block;
           position: absolute;
-          top: 50%;
-          right: 10%;
+          top: 0;
+          right: 50%;
           width: 30px;
           height: 30px;
-          transform: translateY(-50%) rotate(90deg);
           z-index: 10;
         }
       }
