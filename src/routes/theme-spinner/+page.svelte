@@ -181,10 +181,14 @@ function spinWheel() {
   {/if}
 
   <div class="wheel-container">
-    <svg viewBox="0 0 100 100" class="pointer">
+    <svg viewBox="0 0 100 100" class="pointer desktop-only">
       <polygon fill="currentColor" points="50 100, 100 0, 0 0"/>
     </svg>
-    <div id="wheel"></div>
+    <div id="wheel">
+      <svg viewBox="0 0 100 100" class="pointer mobile-only">
+        <polygon fill="currentColor" points="50 100, 100 0, 0 0"/>
+      </svg>
+    </div>
   </div>
 
   <div class="controls">
@@ -288,6 +292,10 @@ function spinWheel() {
     .pointer {
       width: 5%;
       z-index: 1;
+
+      &.mobile-only {
+        display: none;
+      }
     }
 
     #wheel {
@@ -305,19 +313,26 @@ function spinWheel() {
       margin-left: -50vw;
       overflow: visible;
 
-      .pointer {
-        position: absolute;
-        right: calc(50vw - 10px);
-        width: 30px;
-        height: 30px;
-        transform: rotate(-90deg);
-        z-index: 10;
+      .pointer.desktop-only {
+        display: none;
       }
 
       #wheel {
         width: 100%;
         height: 80vh;
         max-height: 600px;
+        transform: rotate(90deg);
+
+        .pointer.mobile-only {
+          display: block;
+          position: absolute;
+          top: 50%;
+          right: 10%;
+          width: 30px;
+          height: 30px;
+          transform: translateY(-50%) rotate(90deg);
+          z-index: 10;
+        }
       }
     }
   }
